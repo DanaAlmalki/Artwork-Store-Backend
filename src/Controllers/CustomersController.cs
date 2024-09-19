@@ -130,7 +130,7 @@ namespace Backend_Teamwork.src.Controllers
             customer.Email = updateCustomer.Email;
             customer.Password = updateCustomer.Password;
 
-            return Ok("Customer updated successfully.");
+            return NoContent();
         }
 
         // DELETE: api/v1/customers/{id}
