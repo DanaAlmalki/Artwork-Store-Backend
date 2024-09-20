@@ -88,7 +88,7 @@ namespace Backend.src.Controllers
             }
             else
             {
-                return NotFound();
+                return BadRequest();
             }
             return Ok(foundCategory);
         }
@@ -99,7 +99,7 @@ namespace Backend.src.Controllers
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
             {
-                return BadRequest();
+                return NotFound();
             }
             _categories.Remove(foundCategory);
             return NoContent();
