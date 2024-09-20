@@ -99,7 +99,7 @@ namespace Backend.src.Controllers
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             _categories.Remove(foundCategory);
             return NoContent();
