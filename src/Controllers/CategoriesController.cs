@@ -40,7 +40,7 @@ namespace Backend.src.Controllers
             return Ok(foundCategory);
         }
 
-        [HttpGet("search/{name}")]
+        [HttpGet("search-by-name/{name}")]
         public ActionResult GetCategoryByName(string name)
         {
             Category? foundCategory = _categories.FirstOrDefault(c => c.Name == name);
@@ -70,6 +70,11 @@ namespace Backend.src.Controllers
         [HttpPost]
         public ActionResult AddCategory(Category category)
         {
+            Category? foundCategory = _categories.FirstOrDefault(c => c.Name == category.Name);
+            if (foundCategory != null)
+            {
+                return BadRequest();
+            }
             _categories.Add(category);
             return Created("Category has been added successfully", category);
         }
