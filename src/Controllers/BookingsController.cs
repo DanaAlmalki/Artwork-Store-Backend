@@ -169,8 +169,8 @@ namespace Backend.src.Controllers
                         ?.GetValue(workshopsActionResult);
             Workshop foundWorkshop = workshops.Find(w =>
                 (w.StartTime == workshop.StartTime && w.EndTime == workshop.EndTime)
-                || (w.EndTime > workshop.StartTime && w.StartTime < workshop.StartTime)
-                || (w.StartTime < workshop.EndTime && w.StartTime > workshop.StartTime)
+                || (w.StartTime < workshop.StartTime && w.EndTime > workshop.StartTime)
+                || (w.StartTime < workshop.EndTime && w.EndTime > workshop.EndTime)
             );
             bool isFound = _bookings.Any(b =>
                 b.CustomerId == booking.CustomerId && b.WorkshopId == foundWorkshop.Id
