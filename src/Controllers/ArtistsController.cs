@@ -8,7 +8,7 @@ namespace Backend_Teamwork.src.Controllers
 
     [ApiController]
     [Route("api/v1/[controller]")]
-    // base endpoint: api/v1/users
+    // base endpoint: api/v1/
 
     public class ArtistsController : ControllerBase
     {
@@ -66,19 +66,24 @@ namespace Backend_Teamwork.src.Controllers
             return NoContent();
 
         }
-        //  // update
-        // [HttpPut("{id}")]
-        // public ActionResult UpdateArtist(int id)
-        // {
-        //     Artist? foundArtist = artists.FirstOrDefault(p => p.Id == id);
-        //     if (foundArtist == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     artists.put;
-        //     return NoContent();
+        // update
+        [HttpPut("{id}")]
+        public ActionResult UpdateArtist(int id, Artist updateArtist)
+        {
+            Artist? currentArtist = artists.FirstOrDefault(p => p.Id == id);
+            if (currentArtist == null)
+            {
+                return NotFound();
+            }
 
-        // }
+            currentArtist.Name = updateArtist.Name;
+            currentArtist.Email = updateArtist.Email;
+            currentArtist.PhoneNumber = updateArtist.PhoneNumber;
+            currentArtist.Description = updateArtist.Description;
+            currentArtist.Password = updateArtist.Password;
+            return NoContent();
+
+        }
 
     }
 
