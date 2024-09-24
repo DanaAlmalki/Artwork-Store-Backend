@@ -41,14 +41,14 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/artworks/{id}
         [HttpGet("{id}")]
-        public ActionResult GetArtworks(int id)
+        public ActionResult GetArtwork(int id)
         {
             Artwork? artwork = artworks.FirstOrDefault(a => a.Id == id);
             if (artwork == null)
             {
                 return NotFound($"Artwork with ID {id} not found.");
             }
-            return Ok(artworks);
+            return Ok(artwork);
         }
 
         // POST: api/v1/artworks
@@ -60,7 +60,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // PUT: api/v1/artworks/{id}
-        [HttpPut]
+        [HttpPut("{id}")]
         public ActionResult UpdateArtwork(int id, Artwork newArtwork)
         {
             var artwork = artworks.FirstOrDefault(a => a.Id == id);
@@ -77,7 +77,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Delete: api/v1/artworks/{id}
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteArtwork(int id)
         {
             var artwork = artworks.FirstOrDefault(a => a.Id == id);
