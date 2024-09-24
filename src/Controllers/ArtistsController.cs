@@ -63,7 +63,7 @@ namespace Backend_Teamwork.src.Controllers
             if (foundArtistByPhone != null)
             {
                 return BadRequest("Phone number already in use.");
-                
+
             }
             // plain password: 123
             // hashed => 
@@ -143,6 +143,70 @@ namespace Backend_Teamwork.src.Controllers
 
         }
 
+        //custom Get Method
+        //sort-by-name
+        [HttpGet("sort-by-name")]
+        public ActionResult SortArtistByName()
+        {
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.Name).ToList());
+        }
+        //sort-by-email
+        [HttpGet("sort-by-email")]
+        public ActionResult SortArtistByEmail()
+        {
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.Email).ToList());
+        }
+        //sort-by-phoneNumber
+        [HttpGet("sort-by-phone-num")]
+        public ActionResult SortArtistByPhoneNum()
+        {
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.PhoneNumber).ToList());
+        }
+        //search-by-name
+        [HttpGet("search-by-name/{name}")]
+        public ActionResult GetArtistByName(string name)
+        {
+            Artist? foundArtist = artists.FirstOrDefault(c => c.Name == name);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
+        //search-by-email
+        [HttpGet("search-by-email/{email}")]
+        public ActionResult GetArtistByEmail(string email)
+        {
+            Artist? foundArtist = artists.FirstOrDefault(c => c.Email == email);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
+        //search-by-phone-num
+        [HttpGet("search-by-phoneNum/{phoneNum}")]
+        public ActionResult GetArtistByPhoneNum(string phoneNum)
+        {
+            Artist? foundArtist = artists.FirstOrDefault(c => c.PhoneNumber == phoneNum);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
     }
 
 }
