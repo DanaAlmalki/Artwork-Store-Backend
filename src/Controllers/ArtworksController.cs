@@ -18,6 +18,7 @@ namespace Backend_Teamwork.src.Controllers
                 Title = "first art work",
                 Description = "first art work description",
                 Quantity = 3,
+                Price = 130,
                 CreatedAt = DateTime.Now,
             },
             new Artwork
@@ -26,6 +27,7 @@ namespace Backend_Teamwork.src.Controllers
                 Title = "second art work",
                 Description = "second art work description",
                 Quantity = 7,
+                Price = 80.5,
                 CreatedAt = DateTime.Now,
             },
         };
@@ -69,6 +71,7 @@ namespace Backend_Teamwork.src.Controllers
             artwork.Title = newArtwork.Title;
             artwork.Description = newArtwork.Description;
             artwork.Quantity = newArtwork.Quantity;
+            artwork.Price = newArtwork.Price;
             artwork.CreatedAt = newArtwork.CreatedAt;
             return NoContent();
         }
