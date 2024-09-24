@@ -26,6 +26,10 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetArtists()
         {
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(artists);
 
         }
@@ -37,7 +41,8 @@ namespace Backend_Teamwork.src.Controllers
             Artist? foundArtist = artists.FirstOrDefault(p => p.Id == id);
             if (foundArtist == null)
             {
-                return NotFound();
+                return NotFound($"Artist with ID {id} not found.");
+
             }
             return Ok(foundArtist);
         }
@@ -47,10 +52,22 @@ namespace Backend_Teamwork.src.Controllers
         [HttpPost]
         public ActionResult CreateArtist(Artist newArtist)
         {
+            Artist? foundArtistByEmail = artists.FirstOrDefault(c => c.Email == newArtist.Email);
+            if (foundArtistByEmail != null)
+            {
+                return BadRequest("Email already in use.");
+            }
+
+            Artist? foundArtistByPhone = artists.FirstOrDefault(c => c.PhoneNumber == newArtist.PhoneNumber);
+            if (foundArtistByPhone != null)
+            {
+                return BadRequest("Phone number already in use.");
+            }
+
             artists.Add(newArtist);
 
-
-            return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
+            return Created("", "Artist created successfully");
+            // return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
         }
 
         // delete
@@ -60,7 +77,7 @@ namespace Backend_Teamwork.src.Controllers
             Artist? foundArtist = artists.FirstOrDefault(p => p.Id == id);
             if (foundArtist == null)
             {
-                return NotFound();
+                return NotFound($"Artist with ID {id} not found.");
             }
             artists.Remove(foundArtist);
             return NoContent();
@@ -73,7 +90,7 @@ namespace Backend_Teamwork.src.Controllers
             Artist? currentArtist = artists.FirstOrDefault(p => p.Id == id);
             if (currentArtist == null)
             {
-                return NotFound();
+                return NotFound($"Artist with ID {id} not found.");
             }
 
             currentArtist.Name = updateArtist.Name;
