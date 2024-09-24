@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Backend.src.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +22,16 @@ namespace Backend.src.Controllers
             {
                 return NotFound();
             }
+            return Ok(_categories);
+        }
+
+        [HttpGet("sort-by-name")]
+        public ActionResult SortCategoriesByName()
+        {
+            if (_categories.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(_categories.OrderBy(c => c.Name).ToList());
         }
 
@@ -35,7 +41,7 @@ namespace Backend.src.Controllers
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
             {
-                return NotFound();
+                return NotFound($"Category with ID {id} not found.");
             }
             return Ok(foundCategory);
         }

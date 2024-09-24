@@ -8,7 +8,9 @@ namespace sda_3_online_Backend_Teamwork.src.Entities
         public string Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public decimal HourlyRate { get; set; }
-        public Boolean Availability { get; set; }
+        public decimal Price { get; set; }
+        public int Capacity { get; set; } 
+        public bool Availability { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

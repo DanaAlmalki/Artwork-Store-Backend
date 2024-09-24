@@ -111,6 +111,7 @@ namespace Backend_Teamwork.src.Controllers
         [HttpPost]
         public ActionResult AddCustomer(Customers newCustomer)
         {
+            // check if the email&phone number exist ot not then add
             customers.Add(newCustomer);
             return Created("", "Customer created successfully");
         }
