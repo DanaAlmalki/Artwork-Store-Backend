@@ -1,39 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
 using sda_3_online_Backend_Teamwork.src.Entities;
+
 namespace sda_3_online_Backend_Teamwork.src.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
     public class PaymentController : ControllerBase
     {
-        public static List<Payment> payments = new List<Payment>(){
-
-            new Payment {
+        public static List<Payment> payments = new List<Payment>()
+        {
+            new Payment
+            {
                 Id = 1,
                 PaymentMethod = "Credit Card ",
                 Amount = 100.0m,
-                PaymentDate = new DateTime(2024, 9, 20)
+                CreatedAt = new DateTime(2024, 9, 20),
             },
-            new Payment {
+            new Payment
+            {
                 Id = 2,
                 PaymentMethod = "PayPal",
                 Amount = 250.0m,
-                PaymentDate = new DateTime(2024, 9, 12)
+                CreatedAt = new DateTime(2024, 9, 12),
             },
-             new Payment {
+            new Payment
+            {
                 Id = 2,
                 PaymentMethod = "Bank Transfer",
                 Amount = 850.0m,
-                PaymentDate = new DateTime(2024, 9, 12)
-            }
+                CreatedAt = new DateTime(2024, 9, 12),
+            },
         };
 
         [HttpGet]
         public ActionResult GetPayments()
         {
+            if (payments.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(payments);
         }
-        //work
+
         [HttpGet("{id}")]
         public ActionResult GetPaymentById(int id)
         {
@@ -48,10 +56,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         [HttpGet("page/{pageNumber}/{pageSize}")]
         public ActionResult GetPaymentByPage(int pageNumber, int pageSize)
         {
-            var pagedPayment = payments
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var pagedPayment = payments.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return Ok(pagedPayment);
         }
 
@@ -73,6 +78,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             payments.Remove(foundpayment);
             return NoContent();
         }
+
         [HttpPut("{id}")]
         public ActionResult UpdatePayment(int id, Payment updatedPayment)
         {
@@ -85,15 +91,9 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
 
             existingPayment.PaymentMethod = updatedPayment.PaymentMethod;
             existingPayment.Amount = updatedPayment.Amount;
-            existingPayment.PaymentDate = updatedPayment.PaymentDate;
+            existingPayment.CreatedAt = updatedPayment.CreatedAt;
 
             return NoContent();
         }
-
-
-
-
-
-
     }
 }
