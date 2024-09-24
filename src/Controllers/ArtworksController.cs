@@ -36,6 +36,10 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetArtworks()
         {
+            if (artworks.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(artworks);
         }
 
@@ -58,7 +62,7 @@ namespace Backend_Teamwork.src.Controllers
             artworks.Add(artwork);
             return Created("", artwork);
         }
-
+        
         // PUT: api/v1/artworks/{id}
         [HttpPut("{id}")]
         public ActionResult UpdateArtwork(int id, Artwork newArtwork)
