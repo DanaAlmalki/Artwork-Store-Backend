@@ -13,21 +13,21 @@ namespace Backend_Teamwork.src.Controllers
                 OrderId = 1,
                 TotalAmount = 150.50m,
                 ShippingAddress = "123 Main St",
-                OrderDate = DateTime.Now.AddDays(-5),
+                CreatedAt = DateTime.Now.AddDays(-5),
             },
             new Order
             {
                 OrderId = 2,
                 TotalAmount = 250.75m,
                 ShippingAddress = "456 Elm St",
-                OrderDate = DateTime.Now.AddDays(-3),
+                CreatedAt = DateTime.Now.AddDays(-3),
             },
             new Order
             {
                 OrderId = 3,
                 TotalAmount = 500.00m,
                 ShippingAddress = "789 Oak St",
-                OrderDate = DateTime.Now.AddDays(-1),
+                CreatedAt = DateTime.Now.AddDays(-1),
             },
         };
 
@@ -35,7 +35,21 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetOrders()
         {
+            if (orders.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(orders);
+        }
+
+        [HttpGet("sort-by-date")]
+        public ActionResult SortOrdersByDate()
+        {
+            if (orders.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(orders.OrderBy(x => x.CreatedAt).ToList());
         }
 
         // GET: api/v1/orders/{id}
@@ -70,7 +84,7 @@ namespace Backend_Teamwork.src.Controllers
 
             order.TotalAmount = updatedOrder.TotalAmount;
             order.ShippingAddress = updatedOrder.ShippingAddress;
-            order.OrderDate = updatedOrder.OrderDate;
+            order.CreatedAt = updatedOrder.CreatedAt;
 
             return NoContent();
         }
