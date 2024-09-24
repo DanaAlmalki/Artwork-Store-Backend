@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+
 namespace Backend_Teamwork.src.Controllers
 {
 
@@ -50,7 +51,7 @@ namespace Backend_Teamwork.src.Controllers
         // post
 
         [HttpPost]
-        public ActionResult CreateArtist(Artist newArtist)
+        public ActionResult SignUpArtist(Artist newArtist)
         {
             Artist? foundArtistByEmail = artists.FirstOrDefault(c => c.Email == newArtist.Email);
             if (foundArtistByEmail != null)
@@ -62,14 +63,54 @@ namespace Backend_Teamwork.src.Controllers
             if (foundArtistByPhone != null)
             {
                 return BadRequest("Phone number already in use.");
+                
             }
+            // plain password: 123
+            // hashed => 
+            // HashPassword(string originalPassword, out string hashedPassword, out byte[] salt)
+            PasswordUtils.HashPassword(newArtist.Password, out string hashedPassword, out byte[] salt);
+
+            //update
+            // 123 = 12u37595uf3ht3484hf
+            newArtist.Password = hashedPassword;
+
+            // null = hmac.Key
+            newArtist.Salt = salt;
+            // update id to 5
 
             artists.Add(newArtist);
 
             return Created("", "Artist created successfully");
             // return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
         }
+        // login
+        [HttpPost("login")]
+        public ActionResult LogInArtist(Artist artist)
+        {
+            // find with email
+            Artist? foundArtist = artists.FirstOrDefault(p => p.Email == artist.Email);
 
+            if (foundArtist == null)
+            {
+                return NotFound();
+                // 404
+
+            }
+            // hash == plain
+            // if (found.Password == user.Password)
+
+            // check if password is match
+            // plain password, 
+            bool isMatched = PasswordUtils.VerifyPassword(artist.Password, foundArtist.Password, foundArtist.Salt);
+
+            if (!isMatched)
+            {
+                return Unauthorized();
+                // 401
+            }
+
+            return Ok(foundArtist);
+        }
         // delete
         [HttpDelete("{id}")]
         public ActionResult DeleteArtist(int id)
