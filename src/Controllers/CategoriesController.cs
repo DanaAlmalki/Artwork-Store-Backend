@@ -41,7 +41,7 @@ namespace Backend.src.Controllers
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
             {
-                return NotFound($"Category with ID {id} not found.");
+                return NotFound();
             }
             return Ok(foundCategory);
         }
@@ -82,7 +82,7 @@ namespace Backend.src.Controllers
                 return BadRequest();
             }
             _categories.Add(category);
-            return Created("Category has been added successfully", category);
+            return CreatedAtAction(nameof(AddCategory), new { id = category.Id }, category);
         }
 
         [HttpPatch("{id}")]
