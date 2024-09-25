@@ -8,14 +8,43 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
     public class WorkshopController : ControllerBase
     {
         public static List<Workshop> workshops = new List<Workshop>()
-    {
-        new Workshop { Id = 1, Name = "Artify-Art Workshop", Location = "Jeddah", StartTime = new DateTime(2024, 9, 20, 10, 0, 0), HourlyRate = 50.0m, Availability = true },
-        new Workshop { Id = 2, Name = "Artify-Photography Workshop", Location = "Riyadh", StartTime = new DateTime(2024, 10, 1, 14, 0, 0), HourlyRate = 75.0m, Availability = true },
-        new Workshop { Id = 3, Name = "Artify-Painting Workshop", Location = "Dammam", StartTime = new DateTime(2024, 9, 25, 9, 0, 0), HourlyRate = 60.0m, Availability = false }
-    };
+        {
+            new Workshop
+            {
+                Id = 1,
+                Name = "Artify-Art Workshop",
+                Location = "Jeddah",
+                StartTime = new DateTime(2024, 9, 20, 10, 0, 0),
+                Price = 50.0m,
+                Availability = true,
+            },
+            new Workshop
+            {
+                Id = 2,
+                Name = "Artify-Photography Workshop",
+                Location = "Riyadh",
+                StartTime = new DateTime(2024, 10, 1, 14, 0, 0),
+                Price = 75.0m,
+                Availability = true,
+            },
+            new Workshop
+            {
+                Id = 3,
+                Name = "Artify-Painting Workshop",
+                Location = "Dammam",
+                StartTime = new DateTime(2024, 9, 25, 9, 0, 0),
+                Price = 60.0m,
+                Availability = false,
+            },
+        };
+
         [HttpGet]
         public ActionResult GetWorkshops()
         {
+            if (workshops.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(workshops);
         }
 
@@ -33,10 +62,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         [HttpGet("page/{pageNumber}/{pageSize}")]
         public ActionResult GetWorkShopByPage(int pageNumber, int pageSize)
         {
-            var pagedWorkshop = workshops
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var pagedWorkshop = workshops.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return Ok(pagedWorkshop);
         }
 
@@ -44,7 +70,11 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         public ActionResult CreateWorkshop(Workshop newWorkshop)
         {
             workshops.Add(newWorkshop);
-            return CreatedAtAction(nameof(GetWorkshopById), new { id = newWorkshop.Id }, newWorkshop);
+            return CreatedAtAction(
+                nameof(GetWorkshopById),
+                new { id = newWorkshop.Id },
+                newWorkshop
+            );
         }
 
         [HttpDelete("{id}")]
@@ -72,8 +102,9 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             existingWorkshop.Name = updatedWorkshop.Name;
             existingWorkshop.Location = updatedWorkshop.Location;
             existingWorkshop.StartTime = updatedWorkshop.StartTime;
-            existingWorkshop.HourlyRate = updatedWorkshop.HourlyRate;
+            existingWorkshop.Price = updatedWorkshop.Price;
             existingWorkshop.Availability = updatedWorkshop.Availability;
+            existingWorkshop.Capacity = updatedWorkshop.Capacity;
 
             return NoContent();
         }

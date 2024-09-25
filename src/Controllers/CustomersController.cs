@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using Backend_Teamwork.src.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Teamwork.src.Controllers
@@ -58,6 +55,10 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetCustomers()
         {
+            if (customers.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(customers);
         }
 
@@ -109,10 +110,48 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/customers
         [HttpPost]
-        public ActionResult AddCustomer(Customers newCustomer)
+        public ActionResult SignUp(Customers newCustomer)
         {
+            if (
+                customers.Any(c =>
+                    c.Email == newCustomer.Email || c.PhoneNumber == newCustomer.PhoneNumber
+                )
+            )
+            {
+                return BadRequest("A customer with the same email or phone number already exists.");
+            }
+            PasswordUtils.HashPassword(
+                newCustomer.Password,
+                out string hashedPassword,
+                out byte[] salt
+            );
+            newCustomer.Password = hashedPassword;
+            newCustomer.Salt = salt;
+
             customers.Add(newCustomer);
-            return Created("", "Customer created successfully");
+            return Created($"/api/users/{newCustomer.Id}", newCustomer);
+        }
+
+        // POST: api/v1/customers/login
+        [HttpPost("login")]
+        public ActionResult Login(Customers customer)
+        {
+            Customers? foundCustomer = customers.FirstOrDefault(p => p.Email == customer.Email);
+            if (foundCustomer == null)
+            {
+                return NotFound();
+            }
+
+            bool isMatched = PasswordUtils.VerifyPassword(
+                customer.Password,
+                foundCustomer.Password,
+                foundCustomer.Salt
+            );
+            if (!isMatched)
+            {
+                return Unauthorized();
+            }
+            return Ok(foundCustomer);
         }
 
         // PUT: api/v1/customers/{id}
