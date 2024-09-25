@@ -15,7 +15,8 @@ namespace Backend_Teamwork.src.Controllers
         {
             new Artist
             {
-                Id = 11,
+
+                // Id = 11,
                 Name = "Shuaa",
                 Description = "",
                 Email = "shuaa@gmail.com",
@@ -24,7 +25,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Artist
             {
-                Id = 22,
+                // Id = 22,
                 Name = "Ahmed",
                 Description = "",
                 Email = "Ahmed33@gmail.com",
@@ -33,7 +34,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Artist
             {
-                Id = 33,
+                // Id = 33,
                 Name = "Maha",
                 Description = "",
                 Email = "maha4@gmail.com",
@@ -54,7 +55,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // get  by id
         [HttpGet("{id}")]
-        public ActionResult GetrtistById(int id)
+        public ActionResult GetrtistById(Guid id)
         {
             Artist? foundArtist = artists.FirstOrDefault(p => p.Id == id);
             if (foundArtist == null)
@@ -74,36 +75,25 @@ namespace Backend_Teamwork.src.Controllers
                 return BadRequest("Email already in use.");
             }
 
-            Artist? foundArtistByPhone = artists.FirstOrDefault(c =>
-                c.PhoneNumber == newArtist.PhoneNumber
-            );
+            Artist? foundArtistByPhone = artists.FirstOrDefault(c => c.PhoneNumber == newArtist.PhoneNumber);
             if (foundArtistByPhone != null)
             {
                 return BadRequest("Phone number already in use.");
-
             }
-            // plain password: 123
-            // hashed =>
-            // HashPassword(string originalPassword, out string hashedPassword, out byte[] salt)
-            PasswordUtils.HashPassword(
-                newArtist.Password,
-                out string hashedPassword,
-                out byte[] salt
-            );
 
-            //update
-            // 123 = 12u37595uf3ht3484hf
+            PasswordUtils.HashPassword(newArtist.Password, out string hashedPassword, out byte[] salt);
+
             newArtist.Password = hashedPassword;
-
-            // null = hmac.Key
             newArtist.Salt = salt;
-            // update id to 5
+
+            // تعيين Id جديد
+            newArtist.Id = Guid.NewGuid();
 
             artists.Add(newArtist);
 
-            return Created("", "Artist created successfully");
-            // return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
+            return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
         }
+
 
         // login
         [HttpPost("login")]
@@ -139,7 +129,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // delete
         [HttpDelete("{id}")]
-        public ActionResult DeleteArtist(int id)
+        public ActionResult DeleteArtist(Guid id)
         {
             Artist? foundArtist = artists.FirstOrDefault(p => p.Id == id);
             if (foundArtist == null)
@@ -152,7 +142,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // update
         [HttpPut("{id}")]
-        public ActionResult UpdateArtist(int id, Artist updateArtist)
+        public ActionResult UpdateArtist(Guid id, Artist updateArtist)
         {
             Artist? currentArtist = artists.FirstOrDefault(p => p.Id == id);
             if (currentArtist == null)
