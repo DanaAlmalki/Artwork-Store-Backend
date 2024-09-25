@@ -1,4 +1,4 @@
-namespace Backend_Teamwork.src.Controllers
+namespace Backend_Teamwork.src.Entities
 {
     public class Order
     {

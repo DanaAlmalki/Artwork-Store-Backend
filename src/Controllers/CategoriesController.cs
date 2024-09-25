@@ -1,8 +1,8 @@
 using System.Text.Json;
-using Backend.src.Entities;
+using Backend_Teamwork.src.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Backend.src.Controllers
+namespace Backend_Teamwork.src.Controllers
 {
     [ApiController]
     [Route("/api/v1/[controller]")]

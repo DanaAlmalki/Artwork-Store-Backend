@@ -1,3 +1,4 @@
+using Backend_Teamwork.src.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Teamwork.src.Controllers
