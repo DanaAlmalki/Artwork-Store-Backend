@@ -6,24 +6,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Teamwork.src.Controllers
 {
-
     [ApiController]
     [Route("api/v1/[controller]")]
-    // base endpoint: api/v1/
-
     public class ArtistsController : ControllerBase
     {
-
         public static List<Artist> artists = new List<Artist>
         {
-            new Artist { Id = 11, Name = "Shuaa" ,Description = "",Email= "shuaa@gmail.com"
-            ,PhoneNumber = "0512069567",Password = "123"},
-             new Artist { Id = 22, Name = "Ahmed" ,Description = "",Email= "Ahmed33@gmail.com"
-             ,PhoneNumber = "0582749384",Password = "321"},
-              new Artist { Id = 33, Name = "Maha" ,Description = "",Email= "maha4@gmail.com"
-              ,PhoneNumber = "0593749283",Password = "987"}
+            new Artist
+            {
+                Id = 11,
+                Name = "Shuaa",
+                Description = "",
+                Email = "shuaa@gmail.com",
+                PhoneNumber = "0512069567",
+                Password = "123",
+            },
+            new Artist
+            {
+                Id = 22,
+                Name = "Ahmed",
+                Description = "",
+                Email = "Ahmed33@gmail.com",
+                PhoneNumber = "0582749384",
+                Password = "321",
+            },
+            new Artist
+            {
+                Id = 33,
+                Name = "Maha",
+                Description = "",
+                Email = "maha4@gmail.com",
+                PhoneNumber = "0593749283",
+                Password = "987",
+            },
+        };
 
-               };
         [HttpGet]
         public ActionResult GetArtists()
         {
@@ -32,7 +49,6 @@ namespace Backend_Teamwork.src.Controllers
                 return NotFound();
             }
             return Ok(artists);
-
         }
 
         // get  by id
@@ -43,13 +59,11 @@ namespace Backend_Teamwork.src.Controllers
             if (foundArtist == null)
             {
                 return NotFound($"Artist with ID {id} not found.");
-
             }
             return Ok(foundArtist);
         }
 
         // post
-
         [HttpPost]
         public ActionResult SignUpArtist(Artist newArtist)
         {
@@ -59,16 +73,22 @@ namespace Backend_Teamwork.src.Controllers
                 return BadRequest("Email already in use.");
             }
 
-            Artist? foundArtistByPhone = artists.FirstOrDefault(c => c.PhoneNumber == newArtist.PhoneNumber);
+            Artist? foundArtistByPhone = artists.FirstOrDefault(c =>
+                c.PhoneNumber == newArtist.PhoneNumber
+            );
             if (foundArtistByPhone != null)
             {
                 return BadRequest("Phone number already in use.");
 
             }
             // plain password: 123
-            // hashed => 
+            // hashed =>
             // HashPassword(string originalPassword, out string hashedPassword, out byte[] salt)
-            PasswordUtils.HashPassword(newArtist.Password, out string hashedPassword, out byte[] salt);
+            PasswordUtils.HashPassword(
+                newArtist.Password,
+                out string hashedPassword,
+                out byte[] salt
+            );
 
             //update
             // 123 = 12u37595uf3ht3484hf
@@ -83,6 +103,7 @@ namespace Backend_Teamwork.src.Controllers
             return Created("", "Artist created successfully");
             // return CreatedAtAction(nameof(GetrtistById), new { id = newArtist.Id }, newArtist);
         }
+
         // login
         [HttpPost("login")]
         public ActionResult LogInArtist(Artist artist)
@@ -94,14 +115,17 @@ namespace Backend_Teamwork.src.Controllers
             {
                 return NotFound();
                 // 404
-
             }
             // hash == plain
             // if (found.Password == user.Password)
 
             // check if password is match
-            // plain password, 
-            bool isMatched = PasswordUtils.VerifyPassword(artist.Password, foundArtist.Password, foundArtist.Salt);
+            // plain password,
+            bool isMatched = PasswordUtils.VerifyPassword(
+                artist.Password,
+                foundArtist.Password,
+                foundArtist.Salt
+            );
 
             if (!isMatched)
             {
@@ -111,6 +135,7 @@ namespace Backend_Teamwork.src.Controllers
 
             return Ok(foundArtist);
         }
+
         // delete
         [HttpDelete("{id}")]
         public ActionResult DeleteArtist(int id)
@@ -122,8 +147,8 @@ namespace Backend_Teamwork.src.Controllers
             }
             artists.Remove(foundArtist);
             return NoContent();
-
         }
+
         // update
         [HttpPut("{id}")]
         public ActionResult UpdateArtist(int id, Artist updateArtist)
@@ -140,7 +165,6 @@ namespace Backend_Teamwork.src.Controllers
             currentArtist.Description = updateArtist.Description;
             currentArtist.Password = updateArtist.Password;
             return NoContent();
-
         }
 
         //custom Get Method
@@ -207,6 +231,6 @@ namespace Backend_Teamwork.src.Controllers
             }
             return Ok(foundArtist);
         }
-    }
 
+    }
 }

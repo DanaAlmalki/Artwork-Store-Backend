@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using Backend_Teamwork.src.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Teamwork.src.Controllers
@@ -58,6 +55,10 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetCustomers()
         {
+            if (customers.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(customers);
         }
 
