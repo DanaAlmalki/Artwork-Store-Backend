@@ -7,9 +7,9 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class CustomersController : ControllerBase
     {
-        public static List<Customers> customers = new List<Customers>
+        public static List<Customer> customers = new List<Customer>
         {
-            new Customers
+            new Customer
             {
                 Id = 1,
                 Name = "Abeer",
@@ -17,7 +17,7 @@ namespace Backend_Teamwork.src.Controllers
                 Email = "abeeralialjohani@gmail.com",
                 Password = "1234",
             },
-            new Customers
+            new Customer
             {
                 Id = 2,
                 Name = "Shuaa",
@@ -25,7 +25,7 @@ namespace Backend_Teamwork.src.Controllers
                 Email = "Shuaa@gmail.com",
                 Password = "1212",
             },
-            new Customers
+            new Customer
             {
                 Id = 3,
                 Name = "Manar",
@@ -33,7 +33,7 @@ namespace Backend_Teamwork.src.Controllers
                 Email = "Manar@gmail.com",
                 Password = "1111",
             },
-            new Customers
+            new Customer
             {
                 Id = 4,
                 Name = "Danah",
@@ -41,7 +41,7 @@ namespace Backend_Teamwork.src.Controllers
                 Email = "Danah@gmail.com",
                 Password = "2323",
             },
-            new Customers
+            new Customer
             {
                 Id = 5,
                 Name = "Bashaer",
@@ -110,7 +110,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/customers
         [HttpPost]
-        public ActionResult SignUp(Customers newCustomer)
+        public ActionResult SignUp(Customer newCustomer)
         {
             if (
                 customers.Any(c =>
@@ -134,9 +134,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/customers/login
         [HttpPost("login")]
-        public ActionResult Login(Customers customer)
+        public ActionResult Login(Customer customer)
         {
-            Customers? foundCustomer = customers.FirstOrDefault(p => p.Email == customer.Email);
+            Customer? foundCustomer = customers.FirstOrDefault(p => p.Email == customer.Email);
             if (foundCustomer == null)
             {
                 return NotFound();
@@ -156,7 +156,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/customers/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCustomer(int id, Customers updateCustomer)
+        public ActionResult UpdateCustomer(int id, Customer updateCustomer)
         {
             var customer = customers.FirstOrDefault(c => c.Id == id);
             if (customer == null)

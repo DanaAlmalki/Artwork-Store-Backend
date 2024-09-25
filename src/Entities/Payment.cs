@@ -1,4 +1,4 @@
-namespace sda_3_online_Backend_Teamwork.src.Entities
+namespace Backend_Teamwork.src.Entities
 {
     public class Payment
     {

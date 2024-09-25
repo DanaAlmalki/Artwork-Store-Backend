@@ -1,6 +1,6 @@
 namespace Backend_Teamwork.src.Entities
 {
-    public class Customers
+    public class Customer
     {
         public int Id { get; set; }
         public string Name { get; set; }
