@@ -41,6 +41,10 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         [HttpGet]
         public ActionResult GetWorkshops()
         {
+            if (workshops.Count == 0)
+            {
+                return NotFound();
+            }
             return Ok(workshops);
         }
 
@@ -100,6 +104,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             existingWorkshop.StartTime = updatedWorkshop.StartTime;
             existingWorkshop.Price = updatedWorkshop.Price;
             existingWorkshop.Availability = updatedWorkshop.Availability;
+            existingWorkshop.Capacity = updatedWorkshop.Capacity;
 
             return NoContent();
         }

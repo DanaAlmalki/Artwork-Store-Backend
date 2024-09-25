@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Teamwork.src.Controllers
@@ -62,7 +58,7 @@ namespace Backend_Teamwork.src.Controllers
             artworks.Add(artwork);
             return Created("", artwork);
         }
-        
+
         // PUT: api/v1/artworks/{id}
         [HttpPut("{id}")]
         public ActionResult UpdateArtwork(int id, Artwork newArtwork)
@@ -92,6 +88,5 @@ namespace Backend_Teamwork.src.Controllers
             artworks.Remove(artwork);
             return NoContent();
         }
-
     }
 }
