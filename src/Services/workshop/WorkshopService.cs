@@ -18,22 +18,22 @@ namespace Backend_Teamwork.src.Services.workshop
 
         public async Task<WorkshopReadDTO> CreateOneAsync(WorkshopCreateDTO createworkshopDto)
         {
-            var workshop = _mapper.Map<WorkshopCreateDTO, Payment>(createworkshopDto);
+            var workshop = _mapper.Map<WorkshopCreateDTO, Workshop>(createworkshopDto);
             var workshopCreated = await _workshopRepo.CreateOneAsync(workshop);
-            return _mapper.Map<Payment, WorkshopReadDTO>(workshopCreated);
+            return _mapper.Map<Workshop, WorkshopReadDTO>(workshopCreated);
 
         }
 
         public async Task<List<WorkshopReadDTO>> GetAllAsync()
         {
             var workshopList = await _workshopRepo.GetAllAsync();
-            return _mapper.Map<List<Payment>, List<WorkshopReadDTO>>(workshopList);
+            return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
         }
 
         public async Task<WorkshopReadDTO> GetByIdAsync(Guid id)
         {
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
-            return _mapper.Map<Payment, WorkshopReadDTO>(foundworkshop);
+            return _mapper.Map<Workshop, WorkshopReadDTO>(foundworkshop);
 
         }
         public async Task<bool> DeleteOneAsync(Guid id)
