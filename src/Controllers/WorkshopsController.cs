@@ -12,7 +12,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         {
             new Workshop
             {
-                Id = 1,
+                // Id = 1,
                 Name = "Artify-Art Workshop",
                 Location = "Jeddah",
                 StartTime = new DateTime(2024, 9, 20, 10, 0, 0),
@@ -21,7 +21,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             },
             new Workshop
             {
-                Id = 2,
+                // Id = 2,
                 Name = "Artify-Photography Workshop",
                 Location = "Riyadh",
                 StartTime = new DateTime(2024, 10, 1, 14, 0, 0),
@@ -30,7 +30,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             },
             new Workshop
             {
-                Id = 3,
+                // Id = 3,
                 Name = "Artify-Painting Workshop",
                 Location = "Dammam",
                 StartTime = new DateTime(2024, 9, 25, 9, 0, 0),
@@ -50,7 +50,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetWorkshopById(int id)
+        public ActionResult GetWorkshopById(Guid id)
         {
             Workshop? foundWorkshop = workshops.FirstOrDefault(p => p.Id == id);
             if (foundWorkshop == null)
@@ -79,7 +79,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteWorkshop(int id)
+        public ActionResult DeleteWorkshop(Guid id)
         {
             Workshop? foundworkshop = workshops.FirstOrDefault(p => p.Id == id);
             if (foundworkshop == null)
@@ -91,7 +91,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateWorkshop(int id, Workshop updatedWorkshop)
+        public ActionResult UpdateWorkshop(Guid id, Workshop updatedWorkshop)
         {
             Workshop? existingWorkshop = workshops.FirstOrDefault(p => p.Id == id);
 
