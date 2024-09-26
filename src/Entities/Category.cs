@@ -7,7 +7,7 @@ namespace Backend_Teamwork.src.Entities
 {
     public class Category
     {
-        public int Id { set; get; }
+        public Guid Id { set; get; }
         public string Name { set; get; }
     }
 }

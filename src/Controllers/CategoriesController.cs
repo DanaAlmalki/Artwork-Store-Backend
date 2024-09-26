@@ -10,9 +10,9 @@ namespace Backend_Teamwork.src.Controllers
     {
         private static readonly List<Category> _categories = new List<Category>()
         {
-            new Category { Id = 1, Name = "Paintings" },
-            new Category { Id = 2, Name = "Sculptures" },
-            new Category { Id = 3, Name = "Digital arts" },
+            new Category { Id = Guid.NewGuid(), Name = "Paintings" },
+            new Category { Id = Guid.NewGuid(), Name = "Sculptures" },
+            new Category { Id = Guid.NewGuid(), Name = "Digital arts" },
         };
 
         [HttpGet]
@@ -25,18 +25,8 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(_categories);
         }
 
-        [HttpGet("sort-by-name")]
-        public ActionResult SortCategoriesByName()
-        {
-            if (_categories.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(_categories.OrderBy(c => c.Name).ToList());
-        }
-
         [HttpGet("{id}")]
-        public ActionResult GetCategoryById(int id)
+        public ActionResult GetCategoryById(Guid id)
         {
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
@@ -73,6 +63,16 @@ namespace Backend_Teamwork.src.Controllers
             );
         }
 
+        [HttpGet("sort-by-name")]
+        public ActionResult SortCategoriesByName()
+        {
+            if (_categories.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(_categories.OrderBy(c => c.Name).ToList());
+        }
+
         [HttpPost]
         public ActionResult AddCategory(Category category)
         {
@@ -86,7 +86,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpPatch("{id}")]
-        public ActionResult UpdateCategory(int id, JsonElement category)
+        public ActionResult UpdateCategory(Guid id, JsonElement category)
         {
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
@@ -105,7 +105,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteCategory(int id)
+        public ActionResult DeleteCategory(Guid id)
         {
             Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
             if (foundCategory == null)
