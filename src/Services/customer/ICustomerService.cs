@@ -1,6 +1,6 @@
 using static Backend_Teamwork.src.DTO.CustomerDTO;
 
-namespace Backend_Teamwork.src.Services.Customer
+namespace Backend_Teamwork.src.Services.customer
 {
     public interface ICustomerService
     {
