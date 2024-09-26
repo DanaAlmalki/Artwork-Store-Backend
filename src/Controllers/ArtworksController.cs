@@ -11,7 +11,6 @@ namespace Backend_Teamwork.src.Controllers
         {
             new Artwork
             {
-                Id = 1,
                 Title = "first art work",
                 Description = "first art work description",
                 Quantity = 3,
@@ -20,7 +19,6 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Artwork
             {
-                Id = 2,
                 Title = "second art work",
                 Description = "second art work description",
                 Quantity = 7,
@@ -42,7 +40,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/artworks/{id}
         [HttpGet("{id}")]
-        public ActionResult GetArtwork(int id)
+        public ActionResult GetArtwork(Guid id)
         {
             Artwork? artwork = artworks.FirstOrDefault(a => a.Id == id);
             if (artwork == null)
@@ -62,7 +60,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/artworks/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateArtwork(int id, Artwork newArtwork)
+        public ActionResult UpdateArtwork(Guid id, Artwork newArtwork)
         {
             var artwork = artworks.FirstOrDefault(a => a.Id == id);
             if (artwork == null)
@@ -79,7 +77,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Delete: api/v1/artworks/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteArtwork(int id)
+        public ActionResult DeleteArtwork(Guid id)
         {
             var artwork = artworks.FirstOrDefault(a => a.Id == id);
             if (artwork == null)

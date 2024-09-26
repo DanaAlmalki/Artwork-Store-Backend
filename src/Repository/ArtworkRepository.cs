@@ -6,8 +6,8 @@ namespace Backend_Teamwork.src.Repository
 {
     public class ArtworkRepository
     {
-        protected DbSet<Artwork> _artwork;
-        protected DatabaseContext _databaseContext; // for dependency injection
+        private readonly DbSet<Artwork> _artwork;
+        private readonly DatabaseContext _databaseContext; // for dependency injection
 
         // Dependency Injection
         public ArtworkRepository(DatabaseContext databaseContext){
@@ -25,7 +25,7 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // get artwork by id
-        public async Task<Artwork?> GetByIdAsync(int id){
+        public async Task<Artwork?> GetByIdAsync(Guid id){
             return await _artwork.FindAsync(id);
         }
 
