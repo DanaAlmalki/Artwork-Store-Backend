@@ -11,21 +11,21 @@ namespace Backend_Teamwork.src.Controllers
         {
             new Order
             {
-                OrderId = 1,
+                //OrderId = 1,
                 TotalAmount = 150.50m,
                 ShippingAddress = "123 Main St",
                 CreatedAt = DateTime.Now.AddDays(-5),
             },
             new Order
             {
-                OrderId = 2,
+                //OrderId = 2,
                 TotalAmount = 250.75m,
                 ShippingAddress = "456 Elm St",
                 CreatedAt = DateTime.Now.AddDays(-3),
             },
             new Order
             {
-                OrderId = 3,
+                //OrderId = 3,
                 TotalAmount = 500.00m,
                 ShippingAddress = "789 Oak St",
                 CreatedAt = DateTime.Now.AddDays(-1),
@@ -55,7 +55,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders/{id}
         [HttpGet("{id}")]
-        public ActionResult GetOrderById(int id)
+        public ActionResult GetOrderById(Guid id)
         {
             var order = orders.FirstOrDefault(o => o.OrderId == id);
             if (order == null)
@@ -75,7 +75,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/orders/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateOrder(int id, Order updatedOrder)
+        public ActionResult UpdateOrder(Guid id, Order updatedOrder)
         {
             var order = orders.FirstOrDefault(o => o.OrderId == id);
             if (order == null)
@@ -92,7 +92,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // DELETE: api/v1/orders/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteOrder(int id)
+        public ActionResult DeleteOrder(Guid id)
         {
             var order = orders.FirstOrDefault(o => o.OrderId == id);
             if (order == null)

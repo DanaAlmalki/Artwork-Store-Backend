@@ -11,7 +11,7 @@ namespace Backend_Teamwork.src.Controllers
         {
             new Customer
             {
-                Id = 1,
+                //Id = 1,
                 Name = "Abeer",
                 PhoneNumber = "0563034777",
                 Email = "abeeralialjohani@gmail.com",
@@ -19,7 +19,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Customer
             {
-                Id = 2,
+                //Id = 2,
                 Name = "Shuaa",
                 PhoneNumber = "0563456565",
                 Email = "Shuaa@gmail.com",
@@ -27,7 +27,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Customer
             {
-                Id = 3,
+                //Id = 3,
                 Name = "Manar",
                 PhoneNumber = "0563434323",
                 Email = "Manar@gmail.com",
@@ -35,7 +35,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Customer
             {
-                Id = 4,
+                //Id = 4,
                 Name = "Danah",
                 PhoneNumber = "0573434223",
                 Email = "Danah@gmail.com",
@@ -43,7 +43,7 @@ namespace Backend_Teamwork.src.Controllers
             },
             new Customer
             {
-                Id = 5,
+                //Id = 5,
                 Name = "Bashaer",
                 PhoneNumber = "0573567223",
                 Email = "Bashaer@gmail.com",
@@ -64,7 +64,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/customers/{id}
         [HttpGet("{id}")]
-        public ActionResult GetCustomerById(int id)
+        public ActionResult GetCustomerById(Guid id)
         {
             var customer = customers.FirstOrDefault(c => c.Id == id);
             if (customer == null)
@@ -156,7 +156,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/customers/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCustomer(int id, Customer updateCustomer)
+        public ActionResult UpdateCustomer(Guid id, Customer updateCustomer)
         {
             var customer = customers.FirstOrDefault(c => c.Id == id);
             if (customer == null)
@@ -174,7 +174,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // DELETE: api/v1/customers/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteCustomer(int id)
+        public ActionResult DeleteCustomer(Guid id)
         {
             var customer = customers.FirstOrDefault(c => c.Id == id);
             if (customer == null)

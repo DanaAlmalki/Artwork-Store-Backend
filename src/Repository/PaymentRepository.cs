@@ -1,7 +1,7 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Microsoft.EntityFrameworkCore;
-namespace sda_3_online_Backend_Teamwork.src.Repository
+namespace Backend_Teamwork.src.Repository
 {
     public class PaymentRepository
     {
