@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 
-namespace Backend_Teamwork.src.Services.Artwork
+namespace Backend_Teamwork.src.Services.artwork
 {
     public interface IArtworkService
     {
