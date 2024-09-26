@@ -15,7 +15,7 @@ namespace Backend_Teamwork.src.Repository
             _customer = databaseContext.Set<Customer>();
         }
 
-        public async Task<List<Customer>> GetAll()
+        public async Task<List<Customer>> GetAllAsync()
         {
             return await _customer.ToListAsync();
         }
