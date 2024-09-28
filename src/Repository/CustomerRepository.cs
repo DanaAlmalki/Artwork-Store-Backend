@@ -49,5 +49,10 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Customer?> GetByEmailAsync(string email)
+        {
+            return await _customer.FirstOrDefaultAsync(c => c.Email == email);
+        }
     }
 }

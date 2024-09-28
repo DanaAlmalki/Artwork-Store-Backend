@@ -1,4 +1,5 @@
 using AutoMapper;
+using Backend_Teamwork.src.Controllers;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using static Backend_Teamwork.src.DTO.CustomerDTO;
@@ -26,6 +27,16 @@ namespace Backend_Teamwork.src.Services.customer
         // Create
         public async Task<CustomerReadDto> CreateOneAsync(CustomerCreateDto createDto)
         {
+            // Hash password before saving to the database
+            PasswordUtils.HashPassword(
+                createDto.Password,
+                out string hashedPassword,
+                out byte[] salt
+            );
+            var customer = _mapper.Map<CustomerCreateDto, Customer>(createDto);
+            customer.Password = hashedPassword;
+            customer.Salt = salt;
+
             var customerCreated = await _customerRepository.CreateOneAsync(
                 _mapper.Map<CustomerCreateDto, Customer>(createDto)
             );
@@ -60,6 +71,13 @@ namespace Backend_Teamwork.src.Services.customer
 
             return await _customerRepository.UpdateOneAsync(foundCustomer);
             ;
+        }
+
+        // Get by email
+        public async Task<CustomerReadDto> GetByEmailAsync(string email)
+        {
+            var customer = await _customerRepository.GetByEmailAsync(email);
+            return _mapper.Map<Customer, CustomerReadDto>(customer);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Backend_Teamwork.src.DTO
             public string? PhoneNumber { get; set; }
             public string? Email { get; set; }
             public string? Password { get; set; }
+            public byte[]? Salt { get; set; }
         }
 
         // DTO for reading customer data

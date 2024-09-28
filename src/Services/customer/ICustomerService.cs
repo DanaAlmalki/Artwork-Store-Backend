@@ -17,5 +17,7 @@ namespace Backend_Teamwork.src.Services.customer
         Task<bool> DeleteOneAsync(Guid id);
 
         Task<bool> UpdateOneAsync(Guid id, CustomerUpdateDto updateDto);
+
+        Task<CustomerReadDto> GetByEmailAsync(string email);
     }
 }
