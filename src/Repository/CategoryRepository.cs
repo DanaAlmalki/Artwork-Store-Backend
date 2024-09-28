@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
@@ -17,7 +18,7 @@ namespace Backend_Teamwork.src.Repository
         public CategoryRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
-            _category = _databaseContext.Set<Category>();
+            _category = databaseContext.Set<Category>();
         }
 
         public async Task<List<Category>> GetAllAsync()
@@ -32,41 +33,45 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<Category?> GetByNameAsync(string name)
         {
-            return await _category.FirstOrDefaultAsync(c => c.Name == name);
+            return await _category.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<List<Category>> GetByPageAsync(int pageNumber, int pageSize)
+        public async Task<List<Category>> GetByNameWithPaginationAsync(
+            PaginationOptions paginationOptions
+        )
         {
-            return await _category
-                .Skip(pageNumber - 1)
-                .Take(pageSize)
+            var foundCategories = _category.Where(c =>
+                c.Name.ToLower().Contains(paginationOptions.Search.ToLower())
+            );
+            return await foundCategories
+                .Skip((paginationOptions.Offset - 1) * paginationOptions.Limit)
+                .Take(paginationOptions.Limit)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }
 
-        public async Task<List<Category>> SortAllAsync()
+        public async Task<List<Category>> SortByNameAsync()
         {
             return await _category.OrderBy(c => c.Name).ToListAsync();
         }
 
-        public async Task<Category> AddAsync(Category category)
+        public async Task<Category> CreateAsync(Category category)
         {
             await _category.AddAsync(category);
             await _databaseContext.SaveChangesAsync();
             return category;
         }
 
-        public async Task<Category> UpdateAsync(Guid id, Category category)
+        public async Task<Category> UpdateAsync(Category category)
         {
             _category.Update(category);
             await _databaseContext.SaveChangesAsync();
             return category;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Category category)
         {
-            var foundcCategory = await _category.FirstOrDefaultAsync(c => c.Id == id);
-            _category.Remove(foundcCategory);
+            _category.Remove(category);
             await _databaseContext.SaveChangesAsync();
         }
     }
