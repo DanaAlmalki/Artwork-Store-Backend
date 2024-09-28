@@ -5,7 +5,7 @@ namespace Backend_Teamwork.src.Services.customer
     public interface ICustomerService
     {
         // Get all
-        Task<List<CustomerReadDto>> CreateAllAsync();
+        Task<List<CustomerReadDto>> GetAllAsync();
 
         // create
         Task<CustomerReadDto> CreateOneAsync(CustomerCreateDto createDto);
