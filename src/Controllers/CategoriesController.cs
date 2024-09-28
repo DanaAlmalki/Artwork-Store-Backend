@@ -1,6 +1,9 @@
 using System.Text.Json;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.category;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.CategoryDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -8,111 +11,105 @@ namespace Backend_Teamwork.src.Controllers
     [Route("/api/v1/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private static readonly List<Category> _categories = new List<Category>()
+        private readonly ICategoryService _categoryService;
+
+        public CategoriesController(ICategoryService categoryService)
         {
-            new Category { Id = Guid.NewGuid(), Name = "Paintings" },
-            new Category { Id = Guid.NewGuid(), Name = "Sculptures" },
-            new Category { Id = Guid.NewGuid(), Name = "Digital arts" },
-        };
+            _categoryService = categoryService;
+        }
 
         [HttpGet]
-        public ActionResult GetCategories()
+        public async Task<ActionResult<List<CategoryReadDto>>> GetCategories()
         {
-            if (_categories.Count == 0)
+            var categories = await _categoryService.GetAllAsync();
+            if (categories == null)
             {
                 return NotFound();
             }
-            return Ok(_categories);
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetCategoryById(Guid id)
+        public async Task<ActionResult<CategoryReadDto>> GetCategoryById([FromRoute] Guid id)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return Ok(foundCategory);
+            return Ok(category);
         }
 
-        [HttpGet("search-by-name/{name}")]
-        public ActionResult GetCategoryByName(string name)
+        [HttpGet("search/{name}")]
+        public async Task<ActionResult<CategoryReadDto>> GetCategoryByName([FromRoute] string name)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Name == name);
-            if (foundCategory == null)
+            var category = await _categoryService.GetByNameAsync(name);
+            if (category == null)
             {
                 return NotFound();
             }
-            return Ok(foundCategory);
+            return Ok(category);
         }
 
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public ActionResult GetCategoriesByBage(int pageNumber, int pageSize)
+        [HttpGet("page")]
+        public async Task<ActionResult<List<CategoryReadDto>>> GetByNameWithPaginationAsync(
+            [FromQuery] PaginationOptions paginationOptions
+        )
         {
-            if (_categories.Count == 0)
+            var categories = await _categoryService.GetByNameWithPaginationAsync(paginationOptions);
+            if (categories == null)
             {
                 return NotFound();
             }
-            return Ok(
-                _categories
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .OrderBy(c => c.Name)
-                    .ToList()
-            );
+            return Ok(categories);
         }
 
-        [HttpGet("sort-by-name")]
-        public ActionResult SortCategoriesByName()
+        [HttpGet("sort")]
+        public async Task<ActionResult<List<CategoryReadDto>>> SortCategoriesByName()
         {
-            if (_categories.Count == 0)
+            var categories = await _categoryService.SortByNameAsync();
+            if (categories == null)
             {
                 return NotFound();
             }
-            return Ok(_categories.OrderBy(c => c.Name).ToList());
+            return Ok(categories);
         }
 
         [HttpPost]
-        public ActionResult AddCategory(Category category)
+        public async Task<ActionResult<CategoryReadDto>> CreateCategory(
+            [FromBody] CategoryCreateDto categoryDTO
+        )
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Name == category.Name);
-            if (foundCategory != null)
+            var category = await _categoryService.CreateAsync(categoryDTO);
+            if (category == null)
             {
                 return BadRequest();
             }
-            _categories.Add(category);
-            return CreatedAtAction(nameof(AddCategory), new { id = category.Id }, category);
+            return CreatedAtAction(nameof(CreateCategory), new { id = category.Id }, category);
         }
 
-        [HttpPatch("{id}")]
-        public ActionResult UpdateCategory(Guid id, JsonElement category)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<CategoryReadDto>> UpdateCategory(
+            [FromRoute] Guid id,
+            [FromBody] CategoryUpdateDto categoryDTO
+        )
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
+            var category = await _categoryService.UpdateAsync(id, categoryDTO);
+            if (category == null)
             {
-                return NotFound();
+                return NotFound(); // or BadRequest();
             }
-            if (category.TryGetProperty("Name", out var name))
-            {
-                foundCategory.Name = name.GetString();
-            }
-            else
-            {
-                return BadRequest();
-            }
-            return Ok(foundCategory);
+            return Ok(category);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteCategory(Guid id)
+        public async Task<ActionResult> DeleteCategory([FromRoute] Guid id)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
+            var isDeleted = await _categoryService.DeleteAsync(id);
+            if (!isDeleted)
             {
                 return NotFound();
             }
-            _categories.Remove(foundCategory);
             return NoContent();
         }
     }
