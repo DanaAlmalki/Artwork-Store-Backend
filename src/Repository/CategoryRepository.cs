@@ -40,14 +40,6 @@ namespace Backend_Teamwork.src.Repository
             PaginationOptions paginationOptions
         )
         {
-            /*if (paginationOptions.Search == string.Empty || paginationOptions.Search == null)
-            {
-                return await _category
-                    .Skip(paginationOptions.PageNumber - 1)
-                    .Take(paginationOptions.PageSize)
-                    .OrderBy(c => c.Name)
-                    .ToListAsync();
-            }*/
             var foundCategories = _category.Where(c =>
                 c.Name.ToLower().Contains(paginationOptions.Search.ToLower())
             );
