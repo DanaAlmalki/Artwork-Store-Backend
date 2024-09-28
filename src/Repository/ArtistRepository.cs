@@ -6,7 +6,7 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend_Teamwork.src.Repositorys
+namespace Backend_Teamwork.src.Repository
 {
     public class ArtistRepository
     {
