@@ -25,6 +25,11 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // get artwork by id
+        public async Task<List<Artwork>> GetAllAsync(){
+            return await _artwork.ToListAsync();
+        }
+
+        // get artwork by id
         public async Task<Artwork?> GetByIdAsync(Guid id){
             return await _artwork.FindAsync(id);
         }
