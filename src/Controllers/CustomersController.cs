@@ -1,5 +1,7 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.customer;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.CustomerDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -7,6 +9,14 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class CustomersController : ControllerBase
     {
+        private readonly ICustomerService _customerService;
+
+        // DI
+        public CustomersController(ICustomerService service)
+        {
+            _customerService = service;
+        }
+
         public static List<Customer> customers = new List<Customer>
         {
             new Customer
@@ -110,26 +120,21 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/customers
         [HttpPost]
-        public ActionResult SignUp(Customer newCustomer)
+        public async Task<ActionResult<CustomerReadDto>> SignUp(CustomerCreateDto createDto)
         {
-            if (
-                customers.Any(c =>
-                    c.Email == newCustomer.Email || c.PhoneNumber == newCustomer.PhoneNumber
-                )
-            )
-            {
-                return BadRequest("A customer with the same email or phone number already exists.");
-            }
-            PasswordUtils.HashPassword(
-                newCustomer.Password,
-                out string hashedPassword,
-                out byte[] salt
-            );
-            newCustomer.Password = hashedPassword;
-            newCustomer.Salt = salt;
+            var customerCreated = await _customerService.CreateOneAsync(createDto);
+            return Ok(customerCreated);
 
-            customers.Add(newCustomer);
-            return Created($"/api/users/{newCustomer.Id}", newCustomer);
+            // PasswordUtils.HashPassword(
+            //     newCustomer.Password,
+            //     out string hashedPassword,
+            //     out byte[] salt
+            // );
+            // newCustomer.Password = hashedPassword;
+            // newCustomer.Salt = salt;
+
+            // customers.Add(newCustomer);
+            // return Created($"/api/users/{newCustomer.Id}", newCustomer);
         }
 
         // POST: api/v1/customers/login
