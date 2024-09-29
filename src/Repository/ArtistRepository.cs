@@ -37,6 +37,10 @@ namespace Backend_Teamwork.src.Repository
 
         }
 
+        public async Task<List<Artist>> GetAllAsync()
+        {
+            return await _artist.ToListAsync();
+        }
 
         // get id
         public async Task<Artist?> GetByIdAsync(Guid id)
@@ -60,6 +64,10 @@ namespace Backend_Teamwork.src.Repository
             _artist.Update(updateArtist);
             await _databaseContext.SaveChangesAsync();
             return true;
+        }
+        public async Task<Artist?> GetByEmailAsync(string email)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.Email == email);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Backend_Teamwork.src.DTO
             public string Email { set; get; }
             public string PhoneNumber { get; set; }
             public string Password { get; set; }
+            public byte[]? Salt { get; set; }
 
 
         }
