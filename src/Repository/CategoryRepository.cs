@@ -36,16 +36,11 @@ namespace Backend_Teamwork.src.Repository
             return await _category.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<List<Category>> GetByNameWithPaginationAsync(
-            PaginationOptions paginationOptions
-        )
+        public async Task<List<Category>> GetWithPaginationAsync(int pageNumber, int pageSize)
         {
-            var foundCategories = _category.Where(c =>
-                c.Name.ToLower().Contains(paginationOptions.Search.ToLower())
-            );
-            return await foundCategories
-                .Skip((paginationOptions.Offset - 1) * paginationOptions.Limit)
-                .Take(paginationOptions.Limit)
+            return await _category
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }
@@ -69,10 +64,11 @@ namespace Backend_Teamwork.src.Repository
             return category;
         }
 
-        public async Task DeleteAsync(Category category)
+        public async Task<bool> DeleteAsync(Category category)
         {
             _category.Remove(category);
             await _databaseContext.SaveChangesAsync();
+            return true;
         }
     }
 }
