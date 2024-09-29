@@ -1,11 +1,11 @@
 using static Backend_Teamwork.src.DTO.CustomerDTO;
 
-namespace Backend_Teamwork.src.Services.Customer
+namespace Backend_Teamwork.src.Services.customer
 {
     public interface ICustomerService
     {
         // Get all
-        Task<List<CustomerReadDto>> CreateAllAsync();
+        Task<List<CustomerReadDto>> GetAllAsync();
 
         // create
         Task<CustomerReadDto> CreateOneAsync(CustomerCreateDto createDto);
@@ -17,5 +17,7 @@ namespace Backend_Teamwork.src.Services.Customer
         Task<bool> DeleteOneAsync(Guid id);
 
         Task<bool> UpdateOneAsync(Guid id, CustomerUpdateDto updateDto);
+
+        Task<CustomerReadDto> GetByEmailAsync(string email);
     }
 }

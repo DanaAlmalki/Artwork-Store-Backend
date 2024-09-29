@@ -2,12 +2,14 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.category;
+using Backend_Teamwork.src.Services.customer;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// connect to database
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("Local")
 );
@@ -16,12 +18,13 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(dataSourceBuilder.Build());
 });
 
-// add DI
+// add auto-mapper
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+
+// add DI services
 builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<CategoryRepository>();
-builder.Services
-     .AddScoped<IArtworkService, ArtworkService>()
-     .AddScoped<ArtworkRepository, ArtworkRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>().AddScoped<CustomerRepository>();
+builder.Services.AddScoped<IArtworkService, ArtworkService>().AddScoped<ArtworkRepository>();
 
 
 // add controllers

@@ -1,5 +1,7 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.customer;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.CustomerDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -7,55 +9,20 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class CustomersController : ControllerBase
     {
-        public static List<Customer> customers = new List<Customer>
+        private readonly ICustomerService _customerService;
+
+        // DI
+        public CustomersController(ICustomerService service)
         {
-            new Customer
-            {
-                //Id = 1,
-                Name = "Abeer",
-                PhoneNumber = "0563034777",
-                Email = "abeeralialjohani@gmail.com",
-                Password = "1234",
-            },
-            new Customer
-            {
-                //Id = 2,
-                Name = "Shuaa",
-                PhoneNumber = "0563456565",
-                Email = "Shuaa@gmail.com",
-                Password = "1212",
-            },
-            new Customer
-            {
-                //Id = 3,
-                Name = "Manar",
-                PhoneNumber = "0563434323",
-                Email = "Manar@gmail.com",
-                Password = "1111",
-            },
-            new Customer
-            {
-                //Id = 4,
-                Name = "Danah",
-                PhoneNumber = "0573434223",
-                Email = "Danah@gmail.com",
-                Password = "2323",
-            },
-            new Customer
-            {
-                //Id = 5,
-                Name = "Bashaer",
-                PhoneNumber = "0573567223",
-                Email = "Bashaer@gmail.com",
-                Password = "4567",
-            },
-        };
+            _customerService = service;
+        }
 
         // GET: api/v1/customers
         [HttpGet]
-        public ActionResult GetCustomers()
+        public async Task<ActionResult<List<CustomerReadDto>>> GetCustomers()
         {
-            if (customers.Count == 0)
+            var customers = await _customerService.GetAllAsync();
+            if (customers == null || !customers.Any())
             {
                 return NotFound();
             }
@@ -64,9 +31,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/customers/{id}
         [HttpGet("{id}")]
-        public ActionResult GetCustomerById(Guid id)
+        public async Task<ActionResult<CustomerReadDto>> GetCustomerById(Guid id)
         {
-            var customer = customers.FirstOrDefault(c => c.Id == id);
+            var customer = await _customerService.GetByIdAsync(id);
             if (customer == null)
             {
                 return NotFound($"Customer with ID {id} not found.");
@@ -74,116 +41,126 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(customer);
         }
 
-        // GET: api/v1/customers/search/{name}
-        [HttpGet("search/{name}")]
-        public ActionResult SearchCustomers(string name)
-        {
-            var matchedCustomers = customers
-                .Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            if (matchedCustomers == null)
-            {
-                return NotFound("No customer found with the specified name.");
-            }
-            return Ok(matchedCustomers);
-        }
-
-        // GET: api/v1/customers/page/{pageNumber}/{pageSize}
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public ActionResult GetCustomersByPage(int pageNumber, int pageSize)
-        {
-            var pagedCustomers = customers
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-            return Ok(pagedCustomers);
-        }
-
-        // GET: api/v1/customers/count
-        [HttpGet("count")]
-        public ActionResult GetTotalCustomersCount()
-        {
-            var count = customers.Count();
-            return Ok(count);
-        }
+        // Extra Features
+        /*
+                // GET: api/v1/customers/search/{name}
+                [HttpGet("search/{name}")]
+                public ActionResult SearchCustomers(string name)
+                {
+                    var matchedCustomers = customers
+                        .Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+        
+                    if (matchedCustomers == null)
+                    {
+                        return NotFound("No customer found with the specified name.");
+                    }
+                    return Ok(matchedCustomers);
+                }
+        
+                // GET: api/v1/customers/page/{pageNumber}/{pageSize}
+                [HttpGet("page/{pageNumber}/{pageSize}")]
+                public ActionResult GetCustomersByPage(int pageNumber, int pageSize)
+                {
+                    var pagedCustomers = customers
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+                    return Ok(pagedCustomers);
+                }
+        
+                // GET: api/v1/customers/count
+                [HttpGet("count")]
+                public ActionResult GetTotalCustomersCount()
+                {
+                    var count = customers.Count();
+                    return Ok(count);
+                }
+        */
 
         // POST: api/v1/customers
         [HttpPost]
-        public ActionResult SignUp(Customer newCustomer)
+        public async Task<ActionResult<CustomerReadDto>> SignUp(CustomerCreateDto createDto)
         {
-            if (
-                customers.Any(c =>
-                    c.Email == newCustomer.Email || c.PhoneNumber == newCustomer.PhoneNumber
-                )
-            )
-            {
-                return BadRequest("A customer with the same email or phone number already exists.");
-            }
             PasswordUtils.HashPassword(
-                newCustomer.Password,
+                createDto.Password,
                 out string hashedPassword,
                 out byte[] salt
             );
-            newCustomer.Password = hashedPassword;
-            newCustomer.Salt = salt;
 
-            customers.Add(newCustomer);
-            return Created($"/api/users/{newCustomer.Id}", newCustomer);
+            createDto.Password = hashedPassword;
+            createDto.Salt = salt;
+
+            var customerCreated = await _customerService.CreateOneAsync(createDto);
+            return CreatedAtAction(
+                nameof(GetCustomerById),
+                new { id = customerCreated.Id },
+                customerCreated
+            );
         }
 
         // POST: api/v1/customers/login
         [HttpPost("login")]
-        public ActionResult Login(Customer customer)
+        public async Task<ActionResult<CustomerReadDto>> Login(CustomerCreateDto createDto)
         {
-            Customer? foundCustomer = customers.FirstOrDefault(p => p.Email == customer.Email);
+            var foundCustomer = await _customerService.GetByEmailAsync(createDto.Email);
             if (foundCustomer == null)
             {
-                return NotFound();
+                return NotFound("Customer with the provided email not found.");
             }
 
-            bool isMatched = PasswordUtils.VerifyPassword(
-                customer.Password,
-                foundCustomer.Password,
-                foundCustomer.Salt
-            );
-            if (!isMatched)
-            {
-                return Unauthorized();
-            }
+            // // Verify the password
+            // bool isMatched = PasswordUtils.VerifyPassword(
+            //     createDto.Password,
+            //     foundCustomer.Password,
+            //     foundCustomer.Salt
+            // );
+
+            // if (!isMatched)
+            // {
+            //     return Unauthorized("Incorrect password.");
+            // }
+
             return Ok(foundCustomer);
         }
 
         // PUT: api/v1/customers/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCustomer(Guid id, Customer updateCustomer)
+        public async Task<ActionResult<bool>> UpdateCustomer(Guid id, CustomerUpdateDto updateDto)
         {
-            var customer = customers.FirstOrDefault(c => c.Id == id);
-            if (customer == null)
+            var updateCustomer = await _customerService.UpdateOneAsync(id, updateDto);
+
+            if (!updateCustomer)
             {
                 return NotFound($"Customer with ID {id} not found.");
             }
-
-            customer.Name = updateCustomer.Name;
-            customer.PhoneNumber = updateCustomer.PhoneNumber;
-            customer.Email = updateCustomer.Email;
-            customer.Password = updateCustomer.Password;
-
             return NoContent();
         }
 
         // DELETE: api/v1/customers/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteCustomer(Guid id)
+        public async Task<ActionResult<bool>> DeleteCustomer(Guid id)
         {
-            var customer = customers.FirstOrDefault(c => c.Id == id);
-            if (customer == null)
+            var isDeleted = await _customerService.DeleteOneAsync(id);
+
+            if (!isDeleted)
             {
                 return NotFound($"Customer with ID {id} not found.");
             }
-
-            customers.Remove(customer);
             return NoContent();
+        }
+
+        // GET: api/customer/email/{email}
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<CustomerReadDto>> GetCustomerByEmail(string email)
+        {
+            var customer = await _customerService.GetByEmailAsync(email);
+            if (customer == null)
+            {
+                return NotFound($"Customer with email {email} not found.");
+            }
+
+            return Ok(customer);
         }
     }
 }
