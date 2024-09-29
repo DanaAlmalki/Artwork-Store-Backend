@@ -21,7 +21,7 @@ namespace Backend_Teamwork.src.Services.category
             _mapper = mapper;
         }
 
-        public async Task<List<CategoryReadDto>> GetAllAsync()
+        public async Task<List<CategoryReadDto?>> GetAllAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
             if (categories.Count == 0)
@@ -31,7 +31,7 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(categories);
         }
 
-        public async Task<CategoryReadDto> GetByIdAsync(Guid id)
+        public async Task<CategoryReadDto?> GetByIdAsync(Guid id)
         {
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             if (foundCategory == null)
@@ -41,7 +41,7 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<Category, CategoryReadDto>(foundCategory);
         }
 
-        public async Task<CategoryReadDto> GetByNameAsync(string name)
+        public async Task<CategoryReadDto?> GetByNameAsync(string name)
         {
             var foundCategory = await _categoryRepository.GetByNameAsync(name);
             if (foundCategory == null)
@@ -51,12 +51,14 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<Category, CategoryReadDto>(foundCategory);
         }
 
-        public async Task<List<CategoryReadDto>> GetByNameWithPaginationAsync(
-            PaginationOptions paginationOptions
+        public async Task<List<CategoryReadDto?>> GetWithPaginationAsync(
+            int pageNumber,
+            int pageSize
         )
         {
-            var foundCategories = await _categoryRepository.GetByNameWithPaginationAsync(
-                paginationOptions
+            var foundCategories = await _categoryRepository.GetWithPaginationAsync(
+                pageNumber,
+                pageSize
             );
             if (foundCategories.Count == 0)
             {
@@ -65,7 +67,7 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(foundCategories);
         }
 
-        public async Task<List<CategoryReadDto>> SortByNameAsync()
+        public async Task<List<CategoryReadDto?>> SortByNameAsync()
         {
             var categories = await _categoryRepository.SortByNameAsync();
             if (categories.Count == 0)
@@ -75,7 +77,7 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(categories);
         }
 
-        public async Task<CategoryReadDto> CreateAsync(CategoryCreateDto category)
+        public async Task<CategoryReadDto?> CreateAsync(CategoryCreateDto category)
         {
             var foundName = await _categoryRepository.GetByNameAsync(category.Name);
             if (foundName != null)
@@ -87,7 +89,7 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<Category, CategoryReadDto>(createdCategory);
         }
 
-        public async Task<CategoryReadDto> UpdateAsync(Guid id, CategoryUpdateDto category)
+        public async Task<CategoryReadDto?> UpdateAsync(Guid id, CategoryUpdateDto category)
         {
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             var foundName = await _categoryRepository.GetByNameAsync(category.Name);
@@ -107,8 +109,8 @@ namespace Backend_Teamwork.src.Services.category
             {
                 return false;
             }
-            await _categoryRepository.DeleteAsync(foundCategory);
-            return true;
+            return await _categoryRepository.DeleteAsync(foundCategory);
+            ;
         }
     }
 }
