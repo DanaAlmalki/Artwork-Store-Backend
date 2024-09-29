@@ -74,7 +74,7 @@ namespace Backend_Teamwork.src.Controllers
                 [HttpGet("count")]
                 public ActionResult GetTotalCustomersCount()
                 {
-                    var count = customers.Count();
+                    var count = customers.Count;
                     return Ok(count);
                 }
         */
