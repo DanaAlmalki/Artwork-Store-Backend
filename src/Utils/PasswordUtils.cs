@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Backend_Teamwork.src.Controllers
+namespace Backend_Teamwork.src.Utils
 {
     public class PasswordUtils
     {

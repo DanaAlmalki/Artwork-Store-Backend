@@ -4,6 +4,7 @@ using Backend_Teamwork.src.Services.artist;
 using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.customer;
+using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -27,7 +28,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<Catego
 builder.Services.AddScoped<ICustomerService, CustomerService>().AddScoped<CustomerRepository>();
 builder.Services.AddScoped<IArtistService, ArtistService>().AddScoped<ArtistRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>().AddScoped<ArtworkRepository>();
-
+builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository>();
 
 // add controllers
 builder.Services.AddControllers();

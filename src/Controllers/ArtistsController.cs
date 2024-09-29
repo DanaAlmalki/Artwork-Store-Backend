@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.artist;
+using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.ArtistDTO;
 
 namespace Backend_Teamwork.src.Controllers
@@ -13,7 +10,6 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class ArtistsController : ControllerBase
     {
-
         private readonly IArtistService _artistService;
 
         public ArtistsController(IArtistService artistService)
@@ -94,6 +90,29 @@ namespace Backend_Teamwork.src.Controllers
             //     return BadRequest("Phone number already in use.");
             // }
 
+            PasswordUtils.HashPassword(
+                artistDTO.Password,
+                out string hashedPassword,
+                out byte[] salt
+            );
+
+            artistDTO.Password = hashedPassword;
+            artistDTO.Salt = salt;
+
+            // artists.Add(newArtist);
+            var artist = await _artistService.CreateOneAsync(artistDTO);
+            if (artist == null)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtAction(nameof(CreateArtist), new { id = artist.Id }, artist);
+            // Artist? foundArtistByPhone = artists.FirstOrDefault(c => c.PhoneNumber == newArtist.PhoneNumber);
+            // if (foundArtistByPhone != null)
+            // {
+            //     return BadRequest("Phone number already in use.");
+            // }
+
             PasswordUtils.HashPassword(artistDTO.Password, out string hashedPassword, out byte[] salt);
 
             artistDTO.Password = hashedPassword;
@@ -112,7 +131,6 @@ namespace Backend_Teamwork.src.Controllers
                 nameof(CreateArtist),
                  new { id = artist.Id }, artist);
         }
-
 
         // login
         [HttpPost("login")]
@@ -242,7 +260,6 @@ namespace Backend_Teamwork.src.Controllers
         //     }
         //     return Ok(foundArtist);
         // }
-
     }
 
 }

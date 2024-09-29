@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.customer;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.CustomerDTO;
 
@@ -73,7 +74,7 @@ namespace Backend_Teamwork.src.Controllers
                 [HttpGet("count")]
                 public ActionResult GetTotalCustomersCount()
                 {
-                    var count = customers.Count();
+                    var count = customers.Count;
                     return Ok(count);
                 }
         */
