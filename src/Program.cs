@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Repository;
+using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,16 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(dataSourceBuilder.Build());
 });
+
+// add DI
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<CategoryRepository>();
+builder.Services
+     .AddScoped<IArtworkService, ArtworkService>()
+     .AddScoped<ArtworkRepository, ArtworkRepository>();
+
+
+// add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
