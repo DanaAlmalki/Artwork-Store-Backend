@@ -52,11 +52,12 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("page")]
-        public async Task<ActionResult<List<CategoryReadDto>>> GetByNameWithPaginationAsync(
-            [FromQuery] PaginationOptions paginationOptions
+        public async Task<ActionResult<List<CategoryReadDto>>> GetCategoriesWithPaginationAsync(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
         )
         {
-            var categories = await _categoryService.GetByNameWithPaginationAsync(paginationOptions);
+            var categories = await _categoryService.GetWithPaginationAsync(pageNumber, pageSize);
             if (categories == null)
             {
                 return NotFound();
