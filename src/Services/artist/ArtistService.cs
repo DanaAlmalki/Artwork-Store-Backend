@@ -26,7 +26,8 @@ namespace Backend_Teamwork.src.Services.artist
 
         public async Task<ArtistReadDto> CreateOneAsync(ArtistCreateDto createDto)
         {
-            var artist = _mapper.Map<AartistCreateDto, Artist>(createDto);
+            var artist = _mapper.Map<ArtistCreateDto, Artist>(createDto);
+
 
             var artistCreated = await _artistRepo.CreateOneAsync(artist);
 
@@ -41,13 +42,14 @@ namespace Backend_Teamwork.src.Services.artist
         {
             var foundArtist = await _artistRepo.GetByIdAsync(id);
 
-            return _mapper.Map<Artist, ArtistCreateDto>(foundArtist);
+            return _mapper.Map<Artist, ArtistReadDto>(foundArtist);
         }
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundArtist = await _artistRepo.GetByIdAsync(id);
-            bool isDeleted = await _artistRepo.DeleteOneAsync(foundArtist);
+            if (foundArtist == null) return false; // Check if artist exists
 
+            bool isDeleted = await _artistRepo.DeleteOneAsync(foundArtist);
             if (isDeleted)
             {
                 return true;
@@ -66,6 +68,11 @@ namespace Backend_Teamwork.src.Services.artist
             // keep old one - update a part of it
             _mapper.Map(updateDto, foundArtist);
             return await _artistRepo.UpdateOneAsync(foundArtist);
+        }
+        public async Task<ArtistReadDto> GetByEmailAsync(string email)
+        {
+            var artist = await _artistRepo.GetByEmailAsync(email);
+            return _mapper.Map<Artist, ArtistReadDto>(artist);
         }
 
     }
