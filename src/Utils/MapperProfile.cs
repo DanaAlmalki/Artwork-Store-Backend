@@ -4,6 +4,7 @@ using static Backend_Teamwork.src.DTO.ArtistDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 using static Backend_Teamwork.src.DTO.CustomerDTO;
+using static Backend_Teamwork.src.DTO.UserDTO;
 
 namespace Backend_Teamwork.src.Utils
 {
@@ -11,6 +12,13 @@ namespace Backend_Teamwork.src.Utils
     {
         public MapperProfile()
         {
+            CreateMap<User, UserReadDto>();
+            CreateMap<UserCreateDto, User>();
+            CreateMap<UserUpdateDto, User>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
+                );
+
             CreateMap<Artwork, ArtworkReadDto>();
             CreateMap<ArtworkCreateDto, Artwork>();
             CreateMap<ArtworkUpdateDTO, Artwork>()

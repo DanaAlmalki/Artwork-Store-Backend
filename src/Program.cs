@@ -2,6 +2,7 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.customer;
+using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -23,6 +24,7 @@ builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 // add DI services
 builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<CategoryRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>().AddScoped<CustomerRepository>();
+builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
