@@ -34,6 +34,13 @@ namespace Backend_Teamwork.src.Services.user
         // Create
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
+            var foundUserByEmail = await _userRepository.GetByEmailAsync(createDto.Email);
+            var foundUserByPhoneNumber = await _userRepository.GetByPhoneNumberAsync(createDto.PhoneNumber);
+
+            if (foundUserByEmail != null || foundUserByPhoneNumber != null)
+            {
+                return null;
+            }
             // Hash password before saving to the database
             PasswordUtils.HashPassword(
                 createDto.Password,
@@ -90,6 +97,10 @@ namespace Backend_Teamwork.src.Services.user
         public async Task<string> SignInAsync(UserCreateDto createDto)
         {
             var foundUser = await _userRepository.GetByEmailAsync(createDto.Email);
+            if (foundUser == null)
+            {
+                return "NotFound";
+            }
 
             // Verify the password
             bool isMatched = PasswordUtils.VerifyPassword(
@@ -98,13 +109,13 @@ namespace Backend_Teamwork.src.Services.user
                 foundUser.Salt
             );
 
-            if (isMatched)
+            if (!isMatched)
             {
-                var TokenUtil = new TokenUtils(_configuration);
-                return TokenUtil.GenerateToken(foundUser);
+                return "Unauthorized";
             }
 
-            return null;
+            var TokenUtil = new TokenUtils(_configuration);
+            return TokenUtil.GenerateToken(foundUser);
         }
     }
 }
