@@ -6,6 +6,7 @@ using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Services.artwork;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 
@@ -29,8 +30,8 @@ namespace Backend_Teamwork.src.Services.artwork
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
 
-        public async Task<List<ArtworkReadDto>> GetAllAsync(){
-            var artworkList = await _artworkRepo.GetAllAsync();
+        public async Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions){
+            var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworkList);
         } 
 
