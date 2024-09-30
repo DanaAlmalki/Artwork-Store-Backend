@@ -1,3 +1,5 @@
+using static Backend_Teamwork.src.Entities.User;
+
 namespace Backend_Teamwork.src.DTO
 {
     public class UserDTO
@@ -9,6 +11,7 @@ namespace Backend_Teamwork.src.DTO
             public string? PhoneNumber { get; set; }
             public string? Email { get; set; }
             public string? Password { get; set; }
+            public UserRole Role { get; set; } = UserRole.Customer;
             public byte[]? Salt { get; set; }
         }
 
@@ -19,6 +22,7 @@ namespace Backend_Teamwork.src.DTO
             public string? Name { get; set; }
             public string? PhoneNumber { get; set; }
             public string? Email { get; set; }
+            public UserRole Role { get; set; }
         }
 
         // DTO for updating an existing User
