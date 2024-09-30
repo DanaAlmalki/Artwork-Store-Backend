@@ -1,5 +1,8 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.workshop;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.WorkshopDTO;
 
 
 namespace sda_3_online_Backend_Teamwork.src.Controllers
@@ -8,6 +11,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class WorkshopController : ControllerBase
     {
+        private readonly IWorkshopService _workshopService;
         public static List<Workshop> workshops = new List<Workshop>()
         {
             new Workshop
@@ -38,11 +42,16 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
                 Availability = false,
             },
         };
-
-        [HttpGet]
-        public ActionResult GetWorkshops()
+        public WorkshopController(IWorkshopService service)
         {
-            if (workshops.Count == 0)
+            _workshopService = service;
+        }
+        
+        [HttpGet]
+         public async Task<ActionResult<List<WorkshopReadDTO>>> GetWorkshop()
+        {
+            var workshops = await _workshopService.GetAllAsync();
+            if (workshops == null || !workshops.Any())
             {
                 return NotFound();
             }
@@ -50,14 +59,15 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetWorkshopById(Guid id)
+
+        public async Task<ActionResult<WorkshopReadDTO>> GetWorkshopById(Guid id)
         {
-            Workshop? foundWorkshop = workshops.FirstOrDefault(p => p.Id == id);
-            if (foundWorkshop == null)
+            var workshop = await _workshopService.GetByIdAsync(id);
+            if (workshop == null)
             {
-                return NotFound();
+                return NotFound($"Workshop with ID {id} not found.");
             }
-            return Ok(foundWorkshop);
+            return Ok(workshop);
         }
 
         [HttpGet("page/{pageNumber}/{pageSize}")]
@@ -68,46 +78,48 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateWorkshop(Workshop newWorkshop)
+        public async Task<ActionResult<WorkshopReadDTO>> SignUp(WorkshopCreateDTO createDto)
         {
-            workshops.Add(newWorkshop);
+            PasswordUtils.HashPassword(
+                createDto.Password,
+                out string hashedPassword,
+                out byte[] salt
+            );
+
+            createDto.Password = hashedPassword;
+            createDto.Salt = salt;
+
+            var workshopCreated = await _workshopService.CreateOneAsync(createDto);
             return CreatedAtAction(
                 nameof(GetWorkshopById),
-                new { id = newWorkshop.Id },
-                newWorkshop
+                new { id = workshopCreated.Id },
+               workshopCreated
             );
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteWorkshop(Guid id)
+        public async Task<ActionResult<bool>> DeleteWorkshop(Guid id)
         {
-            Workshop? foundworkshop = workshops.FirstOrDefault(p => p.Id == id);
-            if (foundworkshop == null)
+            var isDeleted = await _workshopService.DeleteOneAsync(id);
+
+            if (!isDeleted)
             {
-                return NotFound();
+                return NotFound($"Workshop with ID {id} not found.");
             }
-            workshops.Remove(foundworkshop);
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateWorkshop(Guid id, Workshop updatedWorkshop)
+        public async Task<ActionResult<bool>> UpdateWorkshop(Guid id, WorkshopUpdateDTO updateDto)
         {
-            Workshop? existingWorkshop = workshops.FirstOrDefault(p => p.Id == id);
+            var updateWorkshop = await _workshopService.UpdateOneAsync(id, updateDto);
 
-            if (existingWorkshop == null)
+            if (!updateWorkshop)
             {
-                return NotFound();
+                return NotFound($"Workshop with ID {id} not found.");
             }
-
-            existingWorkshop.Name = updatedWorkshop.Name;
-            existingWorkshop.Location = updatedWorkshop.Location;
-            existingWorkshop.StartTime = updatedWorkshop.StartTime;
-            existingWorkshop.Price = updatedWorkshop.Price;
-            existingWorkshop.Availability = updatedWorkshop.Availability;
-            existingWorkshop.Capacity = updatedWorkshop.Capacity;
-
             return NoContent();
         }
+  
     }
 }
