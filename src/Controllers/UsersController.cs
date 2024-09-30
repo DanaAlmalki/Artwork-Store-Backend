@@ -78,7 +78,7 @@ namespace Backend_Teamwork.src.Controllers
             var UserCreated = await _userService.CreateOneAsync(createDto);
             if (UserCreated == null)
             {
-                return BadRequest("Failed to create user");
+                return BadRequest("Failed to create user. Phone number and Email should be unique");
             }
             return CreatedAtAction(nameof(GetUserById), new { id = UserCreated.Id }, UserCreated);
         }
@@ -118,6 +118,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/users/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> UpdateUser(
             [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
