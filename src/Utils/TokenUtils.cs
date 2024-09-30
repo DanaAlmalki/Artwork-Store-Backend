@@ -34,7 +34,7 @@ namespace Backend_Teamwork.src.Utils
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
             };
             // use _config to access value in appsetting
-            var issure = _configuration.GetSection("Jwt:Issurer").Value;
+            var issure = _configuration.GetSection("Jwt:Issuer").Value;
             var audience = _configuration.GetSection("Jwt:Audience").Value;
             var descriptor = new SecurityTokenDescriptor
             {
