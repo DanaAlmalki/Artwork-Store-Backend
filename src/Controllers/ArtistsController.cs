@@ -112,24 +112,6 @@ namespace Backend_Teamwork.src.Controllers
             // {
             //     return BadRequest("Phone number already in use.");
             // }
-
-            PasswordUtils.HashPassword(artistDTO.Password, out string hashedPassword, out byte[] salt);
-
-            artistDTO.Password = hashedPassword;
-            artistDTO.Salt = salt;
-
-
-
-            // artists.Add(newArtist);
-            var artist = await _artistService.CreateOneAsync(artistDTO);
-            if (artist == null)
-            {
-                return BadRequest();
-            }
-
-            return CreatedAtAction(
-                nameof(CreateArtist),
-                 new { id = artist.Id }, artist);
         }
 
         // login
@@ -261,5 +243,4 @@ namespace Backend_Teamwork.src.Controllers
         //     return Ok(foundArtist);
         // }
     }
-
 }

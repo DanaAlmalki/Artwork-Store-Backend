@@ -8,6 +8,7 @@ using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using static Backend_Teamwork.src.Entities.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("Local")
 );
+dataSourceBuilder.MapEnum<UserRole>();
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(dataSourceBuilder.Build());
