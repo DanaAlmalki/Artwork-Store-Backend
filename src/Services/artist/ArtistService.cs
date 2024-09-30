@@ -69,9 +69,22 @@ namespace Backend_Teamwork.src.Services.artist
             _mapper.Map(updateDto, foundArtist);
             return await _artistRepo.UpdateOneAsync(foundArtist);
         }
+
+
+        public async Task<ArtistReadDto> GetByNameAsync(string name)
+        {
+            var artist = await _artistRepo.GetByNameAsync(name);
+            return _mapper.Map<Artist, ArtistReadDto>(artist);
+        }
         public async Task<ArtistReadDto> GetByEmailAsync(string email)
         {
             var artist = await _artistRepo.GetByEmailAsync(email);
+            return _mapper.Map<Artist, ArtistReadDto>(artist);
+        }
+
+        public async Task<ArtistReadDto> GetByPhoneNumberAsync(string phoneNum)
+        {
+            var artist = await _artistRepo.GetByPhoneNumberAsync(phoneNum);
             return _mapper.Map<Artist, ArtistReadDto>(artist);
         }
 

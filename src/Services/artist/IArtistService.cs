@@ -14,6 +14,14 @@ namespace Backend_Teamwork.src.Services.artist
         Task<bool> DeleteOneAsync(Guid id);
         Task<bool> UpdateOneAsync(Guid id, ArtistUpdateDto updateDto);
         // Task CreateAsync(ArtistCreateDto artistDTO);
+        Task<ArtistReadDto> GetByNameAsync(string name);
         Task<ArtistReadDto> GetByEmailAsync(string email);
+        Task<ArtistReadDto> GetByPhoneNumberAsync(string phoneNum);
+
+
+
+
+
+
     }
 }
