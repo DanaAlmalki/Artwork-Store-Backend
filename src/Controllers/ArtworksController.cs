@@ -40,7 +40,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Create 
         [HttpPost]
-        public async Task<ActionResult<ArtworkReadDto>> createOne(ArtworkCreateDto createDto)
+        public async Task<ActionResult<ArtworkReadDto>> CreateOne([FromBody] ArtworkCreateDto createDto)
         {
             var createdArtwork = await _artworkService.CreateOneAsync(createDto);
             //return Created(url, createdArtwork);
@@ -49,15 +49,15 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> getAll()
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
         {
-            var artworkList = await _artworkService.GetAllAsync();
+            var artworkList = await _artworkService.GetAllAsync(paginationOptions);
             return Ok(artworkList);
         }
 
         // Get by id
         [HttpGet("{id}")]
-        public async Task<ActionResult<ArtworkReadDto>> getById(Guid id)
+        public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
         {
             var artwork = await _artworkService.GetByIdAsync(id);
             return Ok(artwork);
@@ -65,7 +65,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Update
         [HttpPut("{id}")]
-        public async Task<ActionResult> updateOne(Guid id, ArtworkUpdateDTO updateDTO)
+        public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
         {
             await _artworkService.UpdateOneAsync(id, updateDTO);
             return NoContent();
@@ -73,7 +73,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Delete
         [HttpDelete("{id}")]
-        public async Task<ActionResult> deleteOne(Guid id)
+        public async Task<ActionResult> DeleteOne(Guid id)
         {
             await _artworkService.DeleteOneAsync(id);
             return NoContent();
