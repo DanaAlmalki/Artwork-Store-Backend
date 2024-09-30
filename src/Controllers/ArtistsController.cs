@@ -1,6 +1,7 @@
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.artist;
 using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.ArtistDTO;
 
@@ -16,38 +17,6 @@ namespace Backend_Teamwork.src.Controllers
         {
             _artistService = artistService;
         }
-
-        // public static List<Artist> artists = new List<Artist>
-        // {
-        //     new Artist
-        //     {
-
-        //         // Id = 11,
-        //         Name = "Shuaa",
-        //         Description = "",
-        //         Email = "shuaa@gmail.com",
-        //         PhoneNumber = "0512069567",
-        //         Password = "123",
-        //     },
-        //     new Artist
-        //     {
-        //         // Id = 22,
-        //         Name = "Ahmed",
-        //         Description = "",
-        //         Email = "Ahmed33@gmail.com",
-        //         PhoneNumber = "0582749384",
-        //         Password = "321",
-        //     },
-        //     new Artist
-        //     {
-        //         // Id = 33,
-        //         Name = "Maha",
-        //         Description = "",
-        //         Email = "maha4@gmail.com",
-        //         PhoneNumber = "0593749283",
-        //         Password = "987",
-        //     },
-        // };
 
         [HttpGet]
         public async Task<ActionResult<List<ArtistReadDto>>> GetArtists()
@@ -78,17 +47,17 @@ namespace Backend_Teamwork.src.Controllers
             [FromBody] ArtistCreateDto artistDTO
         )
         {
-            // Artist? foundArtistByEmail = artistDTO.FirstOrDefault(c => c.Email == newArtist.Email);
-            // if (foundArtistByEmail != null)
-            // {
-            //     return BadRequest("Email already in use.");
-            // }
+            var existingArtistByEmail = await _artistService.GetByEmailAsync(artistDTO.Email);
+            if (existingArtistByEmail != null)
+            {
+                return BadRequest("Email already in use.");
+            }
 
-            // Artist? foundArtistByPhone = artists.FirstOrDefault(c => c.PhoneNumber == newArtist.PhoneNumber);
-            // if (foundArtistByPhone != null)
-            // {
-            //     return BadRequest("Phone number already in use.");
-            // }
+            var existingArtistByPhone = await _artistService.GetByPhoneNumberAsync(artistDTO.PhoneNumber);
+            if (existingArtistByPhone != null)
+            {
+                return BadRequest("Phone number already in use.");
+            }
 
             PasswordUtils.HashPassword(
                 artistDTO.Password,
@@ -113,23 +82,6 @@ namespace Backend_Teamwork.src.Controllers
             //     return BadRequest("Phone number already in use.");
             // }
 
-            PasswordUtils.HashPassword(artistDTO.Password, out string hashedPassword, out byte[] salt);
-
-            artistDTO.Password = hashedPassword;
-            artistDTO.Salt = salt;
-
-
-
-            // artists.Add(newArtist);
-            var artist = await _artistService.CreateOneAsync(artistDTO);
-            if (artist == null)
-            {
-                return BadRequest();
-            }
-
-            return CreatedAtAction(
-                nameof(CreateArtist),
-                 new { id = artist.Id }, artist);
         }
 
         // login
@@ -144,24 +96,16 @@ namespace Backend_Teamwork.src.Controllers
                 return NotFound();
                 // 404
             }
-            // hash == plain
-            // if (found.Password == user.Password)
+            // تحقق من تطابق كلمة المرور
+            bool isMatched = PasswordUtils.VerifyPassword(createDto.Password, foundArtist.Password, foundArtist.Salt);
 
-            // check if password is match
-            // plain password,
-            // bool isMatched = PasswordUtils.VerifyPassword(
-            //     artist.Password,
-            //     foundArtist.Password,
-            //     foundArtist.Salt
-            // );
-
-            // if (!isMatched)
-            // {
-            //     return Unauthorized();
-            //     // 401
-            // }
+            if (!isMatched)
+            {
+                return Unauthorized("Invalid password.");
+            }
 
             return Ok(foundArtist);
+
         }
 
         // delete
@@ -173,7 +117,6 @@ namespace Backend_Teamwork.src.Controllers
             {
                 return NotFound($"Artist with ID {id} not found.");
             }
-            // artists.Remove(foundArtist);
             return NoContent();
         }
 
@@ -187,79 +130,82 @@ namespace Backend_Teamwork.src.Controllers
             {
                 return NotFound($"Artist with ID {id} not found.");
             }
-
-            // currentArtist.Name = updateArtist.Name;
-            // currentArtist.Email = updateArtist.Email;
-            // currentArtist.PhoneNumber = updateArtist.PhoneNumber;
-            // currentArtist.Description = updateArtist.Description;
-            // currentArtist.Password = updateArtist.Password;
             return NoContent();
         }
 
         //custom Get Method
-        //sort-by-name
-        // [HttpGet("sort-by-name")]
-        // public ActionResult SortArtistByName()
-        // {
-        //     if (artists.Count == 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(artists.OrderBy(c => c.Name).ToList());
-        // }
-        //sort-by-email
-        // [HttpGet("sort-by-email")]
-        // public ActionResult SortArtistByEmail()
-        // {
-        //     if (artists.Count == 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(artists.OrderBy(c => c.Email).ToList());
-        // }
-        // //sort-by-phoneNumber
-        // [HttpGet("sort-by-phone-num")]
-        // public ActionResult SortArtistByPhoneNum()
-        // {
-        //     if (artists.Count == 0)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(artists.OrderBy(c => c.PhoneNumber).ToList());
-        // }
-        // //search-by-name
-        // [HttpGet("search-by-name/{name}")]
-        // public ActionResult GetArtistByName(string name)
-        // {
-        //     Artist? foundArtist = artists.FirstOrDefault(c => c.Name == name);
-        //     if (foundArtist == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(foundArtist);
-        // }
-        // //search-by-email
-        // [HttpGet("search-by-email/{email}")]
-        // public ActionResult GetArtistByEmail(string email)
-        // {
-        //     Artist? foundArtist = artists.FirstOrDefault(c => c.Email == email);
-        //     if (foundArtist == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(foundArtist);
-        // }
-        // //search-by-phone-num
-        // [HttpGet("search-by-phoneNum/{phoneNum}")]
-        // public ActionResult GetArtistByPhoneNum(string phoneNum)
-        // {
-        //     Artist? foundArtist = artists.FirstOrDefault(c => c.PhoneNumber == phoneNum);
-        //     if (foundArtist == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(foundArtist);
-        // }
+        // sort-by-name
+        [HttpGet("sort-by-name")]
+        public async Task<ActionResult<List<ArtistReadDto>>> SortArtistByName()
+        {
+            var artists = await _artistService.GetAllAsync();
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.Name).ToList());
+        }
+
+        // sort-by-email
+        [HttpGet("sort-by-email")]
+        public async Task<ActionResult<List<ArtistReadDto>>> SortArtistByEmail()
+        {
+            var artists = await _artistService.GetAllAsync();
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.Email).ToList());
+        }
+
+        // sort-by-phoneNumber
+        [HttpGet("sort-by-phone-num")]
+        public async Task<ActionResult<List<ArtistReadDto>>> SortArtistByPhoneNum()
+        {
+            var artists = await _artistService.GetAllAsync();
+            if (artists.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(artists.OrderBy(c => c.PhoneNumber).ToList());
+        }
+
+        // search-by-name
+        [HttpGet("search-by-name/{name}")]
+        public async Task<ActionResult<ArtistReadDto>> GetArtistByName(string name)
+        {
+            var foundArtist = await _artistService.GetByNameAsync(name);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
+
+        // search-by-email
+        [HttpGet("search-by-email/{email}")]
+        public async Task<ActionResult<ArtistReadDto>> GetArtistByEmail(string email)
+        {
+            var foundArtist = await _artistService.GetByEmailAsync(email);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
+
+        // search-by-phone-num
+        [HttpGet("search-by-phoneNum/{phoneNum}")]
+        public async Task<ActionResult<ArtistReadDto>> GetArtistByPhoneNum(string phoneNum)
+        {
+            var foundArtist = await _artistService.GetByPhoneNumberAsync(phoneNum);
+            if (foundArtist == null)
+            {
+                return NotFound();
+            }
+            return Ok(foundArtist);
+        }
+
     }
 
 }

@@ -65,9 +65,20 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
+
+          public async Task<Artist?> GetByNameAsync(string name)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.Name == name);
+        }
         public async Task<Artist?> GetByEmailAsync(string email)
         {
             return await _artist.FirstOrDefaultAsync(c => c.Email == email);
         }
+          public async Task<Artist?> GetByPhoneNumberAsync(string phoneNum)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNum);
+        }
+        
+        
     }
 }
