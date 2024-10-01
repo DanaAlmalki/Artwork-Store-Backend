@@ -1,5 +1,6 @@
 using System.Text;
 using Backend_Teamwork.src.Database;
+using Backend_Teamwork.src.Middleware;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Services.artist;
 using Backend_Teamwork.src.Services.artwork;
@@ -92,14 +93,16 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Database connection failed: {ex.Message}");
     }
 }
-
 app.MapControllers();
+//use middleware
+app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 app.Run();
