@@ -4,7 +4,10 @@ using static Backend_Teamwork.src.DTO.ArtistDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 using static Backend_Teamwork.src.DTO.CustomerDTO;
+using static Backend_Teamwork.src.DTO.OrderDTO;
+using static Backend_Teamwork.src.DTO.PaymentDTO;
 using static Backend_Teamwork.src.DTO.UserDTO;
+using static Backend_Teamwork.src.DTO.WorkshopDTO;
 
 namespace Backend_Teamwork.src.Utils
 {
@@ -44,6 +47,27 @@ namespace Backend_Teamwork.src.Utils
             CreateMap<Category, CategoryReadDto>();
             CreateMap<CategoryCreateDto, Category>();
             CreateMap<CategoryUpdateDto, Category>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
+                );
+
+            CreateMap<Order, OrderReadDto>();
+            CreateMap<OrderCreateDto, Order>();
+            CreateMap<OrderUpdateDto, Order>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
+                );
+
+            CreateMap<Payment, PaymentReadDTO>();
+            CreateMap<PaymentCreateDTO, Payment>();
+            CreateMap<PaymentReadDTO, Payment>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
+                );
+
+            CreateMap<Workshop, WorkshopReadDto>();
+            CreateMap<WorkshopCreateDTO, Workshop>();
+            CreateMap<WorkshopUpdateDTO, Workshop>()
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
