@@ -10,7 +10,7 @@ namespace Backend_Teamwork.src.DTO
             public decimal TotalAmount { get; set; }
             public string? ShippingAddress { get; set; }
             public DateTime CreatedAt { get; set; }
-            public Guid CustomerId { get; set; }
+            public Guid UserId { get; set; }
         }
 
         // DTO for reading order data
@@ -20,7 +20,7 @@ namespace Backend_Teamwork.src.DTO
             public decimal TotalAmount { get; set; }
             public string? ShippingAddress { get; set; }
             public DateTime CreatedAt { get; set; }
-            public Customer CustomerId { get; set; }
+            public User User { get; set; }
         }
 
         // DTO for updating an existing order

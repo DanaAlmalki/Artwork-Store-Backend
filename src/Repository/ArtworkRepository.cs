@@ -28,34 +28,39 @@ namespace Backend_Teamwork.src.Repository
             return newArtwork;
         }
 
-        // get all artworks
-        public async Task<List<Artwork>> GetAllAsync(PaginationOptions paginationOptions)
+        // // get all artworks
+        // public async Task<List<Artwork>> GetAllAsync(PaginationOptions paginationOptions)
+        // {
+        //     // search by title
+        //     var artworkSearch = _artwork.Where(a => a.Title.Contains(paginationOptions.Search));
+
+        //     // price range
+        //     artworkSearch = artworkSearch.Where(a => a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice);
+
+        //     // date range
+        //     artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
+
+        //     // pagination
+        //     artworkSearch = artworkSearch.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+
+        //     // sort
+        //     artworkSearch = paginationOptions.SortOrder switch
+        //     {
+        //         "name_desc" => artworkSearch.OrderByDescending(a => a.Title),
+        //         "date" => artworkSearch.OrderBy(a => a.CreatedAt),
+        //         "date_desc" => artworkSearch.OrderByDescending(a => a.CreatedAt),
+        //         "price" => artworkSearch.OrderBy(a => a.Price),
+        //         "price_desc" => artworkSearch.OrderByDescending(a => a.Price),
+        //         // name ascending
+        //         _ => artworkSearch.OrderBy(a => a.Title),
+        //     };
+
+        //     return await artworkSearch.ToListAsync();
+        // }
+
+        public async Task<List<Artwork>> GetAllAsync()
         {
-            // search by title
-            var artworkSearch = _artwork.Where(a => a.Title.Contains(paginationOptions.Search));
-
-            // price range
-            artworkSearch = artworkSearch.Where(a => a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice);
-
-            // date range
-            artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
-
-            // pagination
-            artworkSearch = artworkSearch.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
-
-            // sort
-            artworkSearch = paginationOptions.SortOrder switch
-            {
-                "name_desc" => artworkSearch.OrderByDescending(a => a.Title),
-                "date" => artworkSearch.OrderBy(a => a.CreatedAt),
-                "date_desc" => artworkSearch.OrderByDescending(a => a.CreatedAt),
-                "price" => artworkSearch.OrderBy(a => a.Price),
-                "price_desc" => artworkSearch.OrderByDescending(a => a.Price),
-                // name ascending
-                _ => artworkSearch.OrderBy(a => a.Title),
-            };
-
-            return await artworkSearch.ToListAsync();
+            return await _artwork.ToListAsync();
         }
 
         // get artwork by id
@@ -79,6 +84,5 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
-
     }
 }

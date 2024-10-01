@@ -66,7 +66,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderReadDto>> GetOrderById(Guid id)
+        public async Task<ActionResult<OrderReadDto>> GetOrderById([FromRoute] Guid id)
         {
             var order = await _orderService.GetByIdAsync(id);
             if (order == null)

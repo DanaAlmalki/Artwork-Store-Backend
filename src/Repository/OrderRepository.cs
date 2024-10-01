@@ -17,7 +17,7 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<List<Order>> GetAllAsync()
         {
-            return await _order.ToListAsync();
+            return await _order.Include(o => o.User).ToListAsync();
         }
 
         public async Task<Order> CreateOneAsync(Order newOrder)
@@ -29,7 +29,8 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<Order?> GetByIdAsync(Guid id)
         {
-            return await _order.FindAsync(id);
+            // to see the order details
+            return await _order.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<bool> DeleteOneAsync(Order Order)

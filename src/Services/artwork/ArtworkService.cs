@@ -30,10 +30,11 @@ namespace Backend_Teamwork.src.Services.artwork
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
 
-        public async Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions){
-            var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
+        public async Task<List<ArtworkReadDto>> GetAllAsync()
+        {
+            var artworkList = await _artworkRepo.GetAllAsync();
             return _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworkList);
-        } 
+        }
 
         public async Task<ArtworkReadDto> GetByIdAsync(Guid id)
         {
@@ -62,6 +63,5 @@ namespace Backend_Teamwork.src.Services.artwork
             _mapper.Map(updateDto, foundArtwork);
             return await _artworkRepo.UpdateOneAsync(foundArtwork);
         }
-
     }
 }

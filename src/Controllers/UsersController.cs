@@ -34,7 +34,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/{id}
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<UserReadDto>> GetUserById([FromRoute] Guid id)
         {
             var user = await _userService.GetByIdAsync(id);
