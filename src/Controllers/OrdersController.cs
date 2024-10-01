@@ -1,5 +1,7 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.order;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.OrderDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -7,36 +9,44 @@ namespace Backend_Teamwork.src.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        public static List<Order> orders = new List<Order>
+        private readonly IOrderService _orderService;
+
+        public OrdersController(IOrderService service)
         {
-            new Order
-            {
-                //OrderId = 1,
-                TotalAmount = 150.50m,
-                ShippingAddress = "123 Main St",
-                CreatedAt = DateTime.Now.AddDays(-5),
-            },
-            new Order
-            {
-                //OrderId = 2,
-                TotalAmount = 250.75m,
-                ShippingAddress = "456 Elm St",
-                CreatedAt = DateTime.Now.AddDays(-3),
-            },
-            new Order
-            {
-                //OrderId = 3,
-                TotalAmount = 500.00m,
-                ShippingAddress = "789 Oak St",
-                CreatedAt = DateTime.Now.AddDays(-1),
-            },
-        };
+            _orderService = service;
+        }
+
+        // public static List<Order> orders = new List<Order>
+        // {
+        //     new Order
+        //     {
+        //         //OrderId = 1,
+        //         TotalAmount = 150.50m,
+        //         ShippingAddress = "123 Main St",
+        //         CreatedAt = DateTime.Now.AddDays(-5),
+        //     },
+        //     new Order
+        //     {
+        //         //OrderId = 2,
+        //         TotalAmount = 250.75m,
+        //         ShippingAddress = "456 Elm St",
+        //         CreatedAt = DateTime.Now.AddDays(-3),
+        //     },
+        //     new Order
+        //     {
+        //         //OrderId = 3,
+        //         TotalAmount = 500.00m,
+        //         ShippingAddress = "789 Oak St",
+        //         CreatedAt = DateTime.Now.AddDays(-1),
+        //     },
+        // };
 
         // GET: api/v1/orders
         [HttpGet]
-        public ActionResult GetOrders()
+        public async Task<ActionResult<List<OrderReadDto>>> GetOrders()
         {
-            if (orders.Count == 0)
+            var orders = await _orderService.GetAllAsync();
+            if (orders == null || !orders.Any())
             {
                 return NotFound();
             }
@@ -44,8 +54,9 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("sort-by-date")]
-        public ActionResult SortOrdersByDate()
+        public async Task<ActionResult<OrderReadDto>> SortOrdersByDate()
         {
+            var orders = await _orderService.GetAllAsync();
             if (orders.Count == 0)
             {
                 return NotFound();
@@ -55,9 +66,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders/{id}
         [HttpGet("{id}")]
-        public ActionResult GetOrderById(Guid id)
+        public async Task<ActionResult<OrderReadDto>> GetOrderById(Guid id)
         {
-            var order = orders.FirstOrDefault(o => o.OrderId == id);
+            var order = await _orderService.GetByIdAsync(id);
             if (order == null)
             {
                 return NotFound($"Order with ID {id} not found.");
@@ -67,40 +78,38 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/orders
         [HttpPost]
-        public ActionResult AddOrder(Order newOrder)
+        public async Task<ActionResult<OrderReadDto>> AddOrder(OrderCreateDto createDto)
         {
-            orders.Add(newOrder);
-            return Created("", "Order created successfully");
+            var orderCreated = await _orderService.CreateOneAsync(createDto);
+            return CreatedAtAction(
+                nameof(GetOrderById),
+                new { id = orderCreated.Id },
+                orderCreated
+            );
         }
 
         // PUT: api/v1/orders/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateOrder(Guid id, Order updatedOrder)
+        public async Task<ActionResult<bool>> UpdateOrder(Guid id, OrderUpdateDto updateDto)
         {
-            var order = orders.FirstOrDefault(o => o.OrderId == id);
-            if (order == null)
+            var updateOrder = await _orderService.UpdateOneAsync(id, updateDto);
+            if (!updateOrder)
             {
                 return NotFound($"Order with ID {id} not found.");
             }
-
-            order.TotalAmount = updatedOrder.TotalAmount;
-            order.ShippingAddress = updatedOrder.ShippingAddress;
-            order.CreatedAt = updatedOrder.CreatedAt;
-
             return NoContent();
         }
 
         // DELETE: api/v1/orders/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteOrder(Guid id)
+        public async Task<ActionResult<bool>> DeleteOrder(Guid id)
         {
-            var order = orders.FirstOrDefault(o => o.OrderId == id);
-            if (order == null)
+            var isDeleted = await _orderService.DeleteOneAsync(id);
+
+            if (!isDeleted)
             {
                 return NotFound($"Order with ID {id} not found.");
             }
-
-            orders.Remove(order);
             return NoContent();
         }
     }

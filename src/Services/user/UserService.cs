@@ -35,7 +35,9 @@ namespace Backend_Teamwork.src.Services.user
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
             var foundUserByEmail = await _userRepository.GetByEmailAsync(createDto.Email);
-            var foundUserByPhoneNumber = await _userRepository.GetByPhoneNumberAsync(createDto.PhoneNumber);
+            var foundUserByPhoneNumber = await _userRepository.GetByPhoneNumberAsync(
+                createDto.PhoneNumber
+            );
 
             if (foundUserByEmail != null || foundUserByPhoneNumber != null)
             {
@@ -90,8 +92,20 @@ namespace Backend_Teamwork.src.Services.user
         // Get by email
         public async Task<UserReadDto> GetByEmailAsync(string email)
         {
-            var User = await _userRepository.GetByEmailAsync(email);
-            return _mapper.Map<User, UserReadDto>(User);
+            var user = await _userRepository.GetByEmailAsync(email);
+            return _mapper.Map<User, UserReadDto>(user);
+        }
+
+        public async Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            var user = await _userRepository.GetByPhoneNumberAsync(phoneNumber);
+            return _mapper.Map<User, UserReadDto>(user);
+        }
+
+        public async Task<UserReadDto> GetByNameAsync(string name)
+        {
+            var user = await _userRepository.GetByNameAsync(name);
+            return _mapper.Map<User, UserReadDto>(user);
         }
 
         public async Task<string> SignInAsync(UserCreateDto createDto)
