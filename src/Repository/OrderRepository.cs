@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
 {
-    public class OrderRespository
+    public class OrderRepository
     {
         private readonly DbSet<Order> _order;
         private readonly DatabaseContext _databaseContext;
 
-        public OrderRespository(DatabaseContext databaseContext)
+        public OrderRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
             _order = databaseContext.Set<Order>();
         }
 
-        public async Task<List<Order>> GetAll()
+        public async Task<List<Order>> GetAllAsync()
         {
             return await _order.ToListAsync();
         }
