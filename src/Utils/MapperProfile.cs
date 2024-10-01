@@ -4,6 +4,7 @@ using static Backend_Teamwork.src.DTO.ArtistDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 using static Backend_Teamwork.src.DTO.CustomerDTO;
+using static Backend_Teamwork.src.DTO.OrderDetailDTO;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 using static Backend_Teamwork.src.DTO.PaymentDTO;
 using static Backend_Teamwork.src.DTO.UserDTO;
@@ -65,12 +66,17 @@ namespace Backend_Teamwork.src.Utils
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
 
-            CreateMap<Workshop, WorkshopReadDto>();
+            CreateMap<Workshop, WorkshopReadDTO>();
             CreateMap<WorkshopCreateDTO, Workshop>();
             CreateMap<WorkshopUpdateDTO, Workshop>()
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
+
+            CreateMap<OrderDetails, OrderDetailReadDto>();
+            CreateMap<OrderDetailCreateDto, OrderDetails>().
+            ForAllMembers(opts => 
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null));
         }
     }
 }
