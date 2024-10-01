@@ -65,7 +65,7 @@ namespace Backend_Teamwork.src.Utils
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
 
-            CreateMap<Workshop, WorkshopReadDto>();
+            CreateMap<Workshop, WorkshopReadDTO>();
             CreateMap<WorkshopCreateDTO, Workshop>();
             CreateMap<WorkshopUpdateDTO, Workshop>()
                 .ForAllMembers(opts =>
