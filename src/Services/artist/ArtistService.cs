@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Backend_Teamwork.src.Utils;
+
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.DTO;
 using static Backend_Teamwork.src.DTO.ArtistDTO;
@@ -26,8 +28,22 @@ namespace Backend_Teamwork.src.Services.artist
 
         public async Task<ArtistReadDto> CreateOneAsync(ArtistCreateDto createDto)
         {
-            var artist = _mapper.Map<ArtistCreateDto, Artist>(createDto);
+            var foundArtistByEmail = await _artistRepo.GetByEmailAsync(createDto.Email);
+            var foundArtistByPhoneNumber = await _artistRepo.GetByPhoneNumberAsync(createDto.PhoneNumber);
 
+            if (foundArtistByEmail != null || foundArtistByPhoneNumber != null)
+            {
+                throw new InvalidOperationException("Email or phone number already in use.");
+            }
+            PasswordUtils.HashPassword(
+                          createDto.Password,
+                          out string hashedPassword,
+                          out byte[] salt
+                      );
+
+            var artist = _mapper.Map<ArtistCreateDto, Artist>(createDto);
+            artist.Password = hashedPassword;
+            artist.Salt = salt;
 
             var artistCreated = await _artistRepo.CreateOneAsync(artist);
 
@@ -86,6 +102,42 @@ namespace Backend_Teamwork.src.Services.artist
         {
             var artist = await _artistRepo.GetByPhoneNumberAsync(phoneNum);
             return _mapper.Map<Artist, ArtistReadDto>(artist);
+        }
+
+        // public async Task<string> LoginAsync(ArtistCreateDto createDto)
+        // {
+        //     var foundArtist = await _artistRepo.GetByEmailAsync(createDto.Email);
+        //     if (foundArtist == null)
+        //     {
+        //         return "NotFound";
+        //     }
+
+        //     //  تحقق من تطابق كلمة المرور
+        //     bool isMatched = PasswordUtils.VerifyPassword(createDto.Password, foundArtist.Password, foundArtist.Salt);
+
+        //     if (!isMatched)
+        //     {
+        //         return ("Invalid password.");
+        //     }
+        // }
+        public async Task<ArtistReadDto> LoginAsync(ArtistCreateDto createDto)
+        {
+            var foundArtist = await _artistRepo.GetByEmailAsync(createDto.Email);
+
+            if (foundArtist == null)
+            {
+                throw new InvalidOperationException("Artist not found.");
+            }
+
+            // تحقق من تطابق كلمة المرور
+            bool isMatched = PasswordUtils.VerifyPassword(createDto.Password, foundArtist.Password, foundArtist.Salt);
+
+            if (!isMatched)
+            {
+                throw new UnauthorizedAccessException("Invalid password.");
+            }
+            // في حال النجاح، ارجع الفنان
+            return _mapper.Map<Artist, ArtistReadDto>(foundArtist);
         }
 
     }

@@ -17,6 +17,8 @@ namespace Backend_Teamwork.src.Services.artist
         Task<ArtistReadDto> GetByNameAsync(string name);
         Task<ArtistReadDto> GetByEmailAsync(string email);
         Task<ArtistReadDto> GetByPhoneNumberAsync(string phoneNum);
+        Task<ArtistReadDto> LoginAsync(ArtistCreateDto createDto);
+
 
 
 
