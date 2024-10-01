@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 
 namespace Backend_Teamwork.src.Services.order
@@ -21,7 +17,5 @@ namespace Backend_Teamwork.src.Services.order
         Task<bool> DeleteOneAsync(Guid id);
 
         Task<bool> UpdateOneAsync(Guid id, OrderUpdateDto updateDto);
-
-        Task<OrderReadDto> GetByEmailAsync(string email);
     }
 }

@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Backend_Teamwork.src.DTO;
+using AutoMapper;
+using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 
@@ -10,37 +7,59 @@ namespace Backend_Teamwork.src.Services.order
 {
     public class OrderService : IOrderService
     {
-        private readonly OrderRespository _orderRepository;
+        private readonly OrderRepository _orderRepository;
         private readonly IMapper _mapper;
 
-        public Task<OrderReadDto> CreateOneAsync(OrderCreateDto createDto)
+        public OrderService(OrderRepository OrderRepository, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _orderRepository = OrderRepository;
+            _mapper = mapper;
         }
 
-        public Task<bool> DeleteOneAsync(Guid id)
+        // Get all
+        public async Task<List<OrderReadDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var OrderList = await _orderRepository.GetAllAsync();
+            return _mapper.Map<List<Order>, List<OrderReadDto>>(OrderList);
         }
 
-        public Task<List<OrderReadDto>> GetAllAsync()
+        // Create
+        public async Task<OrderReadDto> CreateOneAsync(OrderCreateDto createDto)
         {
-            throw new NotImplementedException();
+            var OrderCreated = await _orderRepository.CreateOneAsync(
+                _mapper.Map<OrderCreateDto, Order>(createDto)
+            );
+            return _mapper.Map<Order, OrderReadDto>(OrderCreated);
         }
 
-        public Task<OrderReadDto> GetByEmailAsync(string email)
+        // Get by id
+        public async Task<OrderReadDto> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var foundOrder = await _orderRepository.GetByIdAsync(id);
+            return _mapper.Map<Order, OrderReadDto>(foundOrder);
         }
 
-        public Task<OrderReadDto> GetByIdAsync(Guid id)
+        // Delete
+        public async Task<bool> DeleteOneAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var foundOrder = await _orderRepository.GetByIdAsync(id);
+            if (foundOrder == null)
+                return false;
+            return await _orderRepository.DeleteOneAsync(foundOrder);
         }
 
-        public Task<bool> UpdateOneAsync(Guid id, OrderUpdateDto updateDto)
+        // Update
+        public async Task<bool> UpdateOneAsync(Guid id, OrderUpdateDto updateDto)
         {
-            throw new NotImplementedException();
+            var foundOrder = await _orderRepository.GetByIdAsync(id);
+            if (foundOrder == null)
+                return false;
+
+            // Map the update DTO to the existing Order entity
+            _mapper.Map(updateDto, foundOrder);
+
+            return await _orderRepository.UpdateOneAsync(foundOrder);
+            ;
         }
     }
 }
