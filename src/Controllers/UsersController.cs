@@ -139,6 +139,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // DELETE: api/v1/users/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> DeleteUser([FromRoute] Guid id)
         {
             var isDeleted = await _userService.DeleteOneAsync(id);
