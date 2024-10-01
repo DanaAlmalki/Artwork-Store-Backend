@@ -26,7 +26,7 @@ namespace Backend_Teamwork.src.Services.category
             var categories = await _categoryRepository.GetAllAsync();
             if (categories.Count == 0)
             {
-                return null;
+                throw CustomException.NotFound($"Categories not found");
             }
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(categories);
         }
@@ -36,7 +36,7 @@ namespace Backend_Teamwork.src.Services.category
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             if (foundCategory == null)
             {
-                return null;
+                throw CustomException.NotFound($"Category with id: {id} not found");
             }
             return _mapper.Map<Category, CategoryReadDto>(foundCategory);
         }
@@ -46,7 +46,7 @@ namespace Backend_Teamwork.src.Services.category
             var foundCategory = await _categoryRepository.GetByNameAsync(name);
             if (foundCategory == null)
             {
-                return null;
+                throw CustomException.NotFound($"Category with name: {name} not found");
             }
             return _mapper.Map<Category, CategoryReadDto>(foundCategory);
         }
@@ -62,7 +62,7 @@ namespace Backend_Teamwork.src.Services.category
             );
             if (foundCategories.Count == 0)
             {
-                return null;
+                throw CustomException.NotFound($"Categories not found");
             }
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(foundCategories);
         }
@@ -72,7 +72,7 @@ namespace Backend_Teamwork.src.Services.category
             var categories = await _categoryRepository.SortByNameAsync();
             if (categories.Count == 0)
             {
-                return null;
+                throw CustomException.NotFound($"Categories not found");
             }
             return _mapper.Map<List<Category>, List<CategoryReadDto>>(categories);
         }
@@ -82,7 +82,7 @@ namespace Backend_Teamwork.src.Services.category
             var foundName = await _categoryRepository.GetByNameAsync(category.Name);
             if (foundName != null)
             {
-                return null;
+                throw CustomException.BadRequest($"Invalid category name");
             }
             var mappedCategory = _mapper.Map<CategoryCreateDto, Category>(category);
             var createdCategory = await _categoryRepository.CreateAsync(mappedCategory);
@@ -93,9 +93,13 @@ namespace Backend_Teamwork.src.Services.category
         {
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             var foundName = await _categoryRepository.GetByNameAsync(category.Name);
-            if (foundName != null || foundCategory == null)
+            if (foundCategory == null)
             {
-                return null;
+                throw CustomException.NotFound($"Category with id: {id} not found");
+            }
+            if (foundName != null)
+            {
+                throw CustomException.BadRequest($"Invalid category name");
             }
             _mapper.Map(category, foundCategory);
             var updatedCategory = await _categoryRepository.UpdateAsync(foundCategory);
@@ -107,7 +111,7 @@ namespace Backend_Teamwork.src.Services.category
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             if (foundCategory == null)
             {
-                return false;
+                throw CustomException.NotFound($"Category with id: {id} not found");
             }
             return await _categoryRepository.DeleteAsync(foundCategory);
         }
