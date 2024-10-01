@@ -138,9 +138,9 @@ namespace Backend_Teamwork.src.Services.artist
 
             if (!isMatched)
             {
-                throw CustomException.BadRequest($"Invalid password.");
+                throw CustomException.UnAuthorized("Invalid password.");
+
             }
-            // في حال النجاح، ارجع الفنان
             return _mapper.Map<Artist, ArtistReadDto>(foundArtist);
         }
 
