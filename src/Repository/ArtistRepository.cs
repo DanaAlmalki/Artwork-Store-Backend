@@ -6,7 +6,7 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend_Teamwork.src.Repositorys
+namespace Backend_Teamwork.src.Repository
 {
     public class ArtistRepository
     {
@@ -37,6 +37,10 @@ namespace Backend_Teamwork.src.Repositorys
 
         }
 
+        public async Task<List<Artist>> GetAllAsync()
+        {
+            return await _artist.ToListAsync();
+        }
 
         // get id
         public async Task<Artist?> GetByIdAsync(Guid id)
@@ -61,5 +65,20 @@ namespace Backend_Teamwork.src.Repositorys
             await _databaseContext.SaveChangesAsync();
             return true;
         }
+
+          public async Task<Artist?> GetByNameAsync(string name)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.Name == name);
+        }
+        public async Task<Artist?> GetByEmailAsync(string email)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.Email == email);
+        }
+          public async Task<Artist?> GetByPhoneNumberAsync(string phoneNum)
+        {
+            return await _artist.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNum);
+        }
+        
+        
     }
 }

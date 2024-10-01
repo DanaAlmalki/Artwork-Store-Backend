@@ -1,5 +1,8 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.artwork;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.ArtworkDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -7,7 +10,7 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class ArtworksController : ControllerBase
     {
-        public static List<Artwork> artworks = new List<Artwork>
+        /* public static List<Artwork> artworks = new List<Artwork>
         {
             new Artwork
             {
@@ -25,66 +28,54 @@ namespace Backend_Teamwork.src.Controllers
                 Price = 80.5,
                 CreatedAt = DateTime.Now,
             },
-        };
+        }; */
 
-        // GET: api/v1/artworks
-        [HttpGet]
-        public ActionResult GetArtworks()
+        private readonly IArtworkService _artworkService;
+
+        // Constructor
+        public ArtworksController(IArtworkService service)
         {
-            if (artworks.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(artworks);
+            _artworkService = service;
         }
 
-        // GET: api/v1/artworks/{id}
-        [HttpGet("{id}")]
-        public ActionResult GetArtwork(Guid id)
+        // Create 
+        [HttpPost]
+        public async Task<ActionResult<ArtworkReadDto>> CreateOne([FromBody] ArtworkCreateDto createDto)
         {
-            Artwork? artwork = artworks.FirstOrDefault(a => a.Id == id);
-            if (artwork == null)
-            {
-                return NotFound($"Artwork with ID {id} not found.");
-            }
+            var createdArtwork = await _artworkService.CreateOneAsync(createDto);
+            //return Created(url, createdArtwork);
+            return Ok(createdArtwork);
+        }
+
+        // Get all
+        [HttpGet]
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
+        {
+            var artworkList = await _artworkService.GetAllAsync(paginationOptions);
+            return Ok(artworkList);
+        }
+
+        // Get by id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
+        {
+            var artwork = await _artworkService.GetByIdAsync(id);
             return Ok(artwork);
         }
 
-        // POST: api/v1/artworks
-        [HttpPost]
-        public ActionResult AddArtwork(Artwork artwork)
-        {
-            artworks.Add(artwork);
-            return Created("", artwork);
-        }
-
-        // PUT: api/v1/artworks/{id}
+        // Update
         [HttpPut("{id}")]
-        public ActionResult UpdateArtwork(Guid id, Artwork newArtwork)
+        public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
         {
-            var artwork = artworks.FirstOrDefault(a => a.Id == id);
-            if (artwork == null)
-            {
-                return NotFound($"Artwork with ID {id} not found.");
-            }
-            artwork.Title = newArtwork.Title;
-            artwork.Description = newArtwork.Description;
-            artwork.Quantity = newArtwork.Quantity;
-            artwork.Price = newArtwork.Price;
-            artwork.CreatedAt = newArtwork.CreatedAt;
+            await _artworkService.UpdateOneAsync(id, updateDTO);
             return NoContent();
         }
 
-        // Delete: api/v1/artworks/{id}
+        // Delete
         [HttpDelete("{id}")]
-        public ActionResult DeleteArtwork(Guid id)
+        public async Task<ActionResult> DeleteOne(Guid id)
         {
-            var artwork = artworks.FirstOrDefault(a => a.Id == id);
-            if (artwork == null)
-            {
-                return NotFound($"Artwork with ID {id} not found.");
-            }
-            artworks.Remove(artwork);
+            await _artworkService.DeleteOneAsync(id);
             return NoContent();
         }
     }
