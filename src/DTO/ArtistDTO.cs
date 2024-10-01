@@ -28,7 +28,6 @@ namespace Backend_Teamwork.src.DTO
             public string Description { set; get; }
             public string Email { set; get; }
             public string PhoneNumber { get; set; }
-            public string Password { get; set; }
 
         }
 
@@ -39,7 +38,6 @@ namespace Backend_Teamwork.src.DTO
             public string Description { set; get; }
             public string Email { set; get; }
             public string PhoneNumber { get; set; }
-            public string Password { get; set; }
 
         }
     }
