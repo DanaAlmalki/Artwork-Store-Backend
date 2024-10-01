@@ -1,3 +1,5 @@
+using static Backend_Teamwork.src.DTO.OrderDetailDTO;
+
 namespace Backend_Teamwork.src.DTO
 {
     public class OrderDTO
@@ -9,6 +11,7 @@ namespace Backend_Teamwork.src.DTO
             public string? ShippingAddress { get; set; }
             public DateTime CreatedAt { get; set; }
             public Guid CustomerId { get; set; }
+            public List<OrderDetailReadDto> OrderDetails { get; set; }
         }
 
         // DTO for reading order data
@@ -18,6 +21,7 @@ namespace Backend_Teamwork.src.DTO
             public decimal TotalAmount { get; set; }
             public string? ShippingAddress { get; set; }
             public DateTime CreatedAt { get; set; }
+            public List<OrderDetailReadDto> OrderDetails { get; set; }
         }
 
         // DTO for updating an existing order
