@@ -63,7 +63,9 @@ namespace Backend_Teamwork.src.Services.artist
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundArtist = await _artistRepo.GetByIdAsync(id);
-            if (foundArtist == null) return false; // Check if artist exists
+            if (foundArtist == null)
+                throw CustomException.BadRequest($"artist not found.");
+            // Check if artist exists
 
             bool isDeleted = await _artistRepo.DeleteOneAsync(foundArtist);
             if (isDeleted)
@@ -78,7 +80,9 @@ namespace Backend_Teamwork.src.Services.artist
 
             if (foundArtist == null)
             {
-                return false;
+
+                throw CustomException.BadRequest($"artist not found.");
+
             }
 
             // keep old one - update a part of it
@@ -126,7 +130,7 @@ namespace Backend_Teamwork.src.Services.artist
 
             if (foundArtist == null)
             {
-                throw new InvalidOperationException("Artist not found.");
+                throw CustomException.NotFound($"Artist not found.");
             }
 
             // تحقق من تطابق كلمة المرور
@@ -134,9 +138,9 @@ namespace Backend_Teamwork.src.Services.artist
 
             if (!isMatched)
             {
-                throw new UnauthorizedAccessException("Invalid password.");
+                throw CustomException.UnAuthorized("Invalid password.");
+
             }
-            // في حال النجاح، ارجع الفنان
             return _mapper.Map<Artist, ArtistReadDto>(foundArtist);
         }
 
