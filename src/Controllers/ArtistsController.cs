@@ -88,25 +88,21 @@ namespace Backend_Teamwork.src.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ArtistReadDto>> Login(ArtistCreateDto createDto)
         {
-            // find with email
-            var foundArtist = await _artistService.GetByEmailAsync(createDto.Email);
-
-            if (foundArtist == null)
+            try
             {
-                return NotFound();
-                // 404
+                var artist = await _artistService.LoginAsync(createDto);
+                return Ok(artist);
             }
-            // تحقق من تطابق كلمة المرور
-            bool isMatched = PasswordUtils.VerifyPassword(createDto.Password, foundArtist.Password, foundArtist.Salt);
-
-            if (!isMatched)
+            catch (InvalidOperationException ex)
             {
-                return Unauthorized("Invalid password.");
+                return NotFound(ex.Message); // 404
             }
-
-            return Ok(foundArtist);
-
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message); // 401
+            }
         }
+
 
         // delete
         [HttpDelete("{id}")]
@@ -207,4 +203,5 @@ namespace Backend_Teamwork.src.Controllers
         }
 
     }
+
 }
