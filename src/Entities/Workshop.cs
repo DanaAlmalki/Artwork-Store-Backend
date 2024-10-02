@@ -9,8 +9,10 @@ namespace Backend_Teamwork.src.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public decimal Price { get; set; }
-        public int Capacity { get; set; } 
+        public int Capacity { get; set; }
         public bool Availability { get; set; }
         public DateTime CreatedAt { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
     }
 }

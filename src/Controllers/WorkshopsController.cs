@@ -4,12 +4,11 @@ using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.WorkshopDTO;
 
-
 namespace sda_3_online_Backend_Teamwork.src.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class WorkshopController : ControllerBase
+    public class WorkshopsController : ControllerBase
     {
         private readonly IWorkshopService _workshopService;
         public static List<Workshop> workshops = new List<Workshop>()
@@ -42,13 +41,14 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
                 Availability = false,
             },
         };
-        public WorkshopController(IWorkshopService service)
+
+        public WorkshopsController(IWorkshopService service)
         {
             _workshopService = service;
         }
-        
+
         [HttpGet]
-         public async Task<ActionResult<List<WorkshopReadDTO>>> GetWorkshop()
+        public async Task<ActionResult<List<WorkshopReadDTO>>> GetWorkshop()
         {
             var workshops = await _workshopService.GetAllAsync();
             if (workshops == null || !workshops.Any())
@@ -59,7 +59,6 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<ActionResult<WorkshopReadDTO>> GetWorkshopById(Guid id)
         {
             var workshop = await _workshopService.GetByIdAsync(id);
@@ -80,20 +79,11 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         [HttpPost]
         public async Task<ActionResult<WorkshopReadDTO>> SignUp(WorkshopCreateDTO createDto)
         {
-            PasswordUtils.HashPassword(
-                createDto.Password,
-                out string hashedPassword,
-                out byte[] salt
-            );
-
-            createDto.Password = hashedPassword;
-            createDto.Salt = salt;
-
             var workshopCreated = await _workshopService.CreateOneAsync(createDto);
             return CreatedAtAction(
                 nameof(GetWorkshopById),
                 new { id = workshopCreated.Id },
-               workshopCreated
+                workshopCreated
             );
         }
 
@@ -120,6 +110,5 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             }
             return NoContent();
         }
-  
     }
 }
