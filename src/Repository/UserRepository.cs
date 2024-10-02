@@ -59,5 +59,10 @@ namespace Backend_Teamwork.src.Repository
         {
             return await _user.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
+
+        public async Task<User?> GetByNameAsync(string name)
+        {
+            return await _user.FirstOrDefaultAsync(c => c.Name == name);
+        }
     }
 }

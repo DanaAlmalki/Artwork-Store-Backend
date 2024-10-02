@@ -34,7 +34,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/{id}
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<UserReadDto>> GetUserById([FromRoute] Guid id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -48,7 +48,7 @@ namespace Backend_Teamwork.src.Controllers
         // GET: api/v1/users/email
         [HttpGet("email")]
         [Authorize]
-        public async Task<ActionResult<UserReadDto>> GetEmail([FromRoute] string email)
+        public async Task<ActionResult<UserReadDto>> GetByEmail([FromRoute] string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -152,5 +152,102 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Extra Feat
+
+        // sort-by-name
+        [HttpGet("sort-by-name")]
+        public async Task<ActionResult<List<UserReadDto>>> SortByName()
+        {
+            var users = await _userService.GetAllAsync();
+            if (users.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(users.OrderBy(c => c.Name).ToList());
+        }
+
+        // sort-by-email
+        [HttpGet("sort-by-email")]
+        public async Task<ActionResult<List<UserReadDto>>> SortByEmail()
+        {
+            var users = await _userService.GetAllAsync();
+            if (users.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(users.OrderBy(c => c.Email).ToList());
+        }
+
+        // sort-by-phoneNumber
+        [HttpGet("sort-by-phone")]
+        public async Task<ActionResult<List<UserReadDto>>> SortByPhone()
+        {
+            var users = await _userService.GetAllAsync();
+            if (users.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(users.OrderBy(c => c.PhoneNumber).ToList());
+        }
+
+        // search-by-name
+        [HttpGet("search-by-name/{name}")]
+        public async Task<ActionResult<UserReadDto>> GetByName([FromRoute] string name)
+        {
+            var user = await _userService.GetByNameAsync(name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        // search-by-phone-num
+        [HttpGet("search-by-phone/{phoneNumber}")]
+        public async Task<ActionResult<UserReadDto>> GetByPhone([FromRoute] string phoneNumber)
+        {
+            var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        // Extra Features
+        /*
+                // GET: api/v1/customers/search/{name}
+                [HttpGet("search/{name}")]
+                public ActionResult SearchCustomers(string name)
+                {
+                    var matchedCustomers = customers
+                        .Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+        
+                    if (matchedCustomers == null)
+                    {
+                        return NotFound("No customer found with the specified name.");
+                    }
+                    return Ok(matchedCustomers);
+                }
+        
+                // GET: api/v1/customers/page/{pageNumber}/{pageSize}
+                [HttpGet("page/{pageNumber}/{pageSize}")]
+                public ActionResult GetCustomersByPage(int pageNumber, int pageSize)
+                {
+                    var pagedCustomers = customers
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+                    return Ok(pagedCustomers);
+                }
+        
+                // GET: api/v1/customers/count
+                [HttpGet("count")]
+                public ActionResult GetTotalCustomersCount()
+                {
+                    var count = customers.Count;
+                    return Ok(count);
+                }
+        */
     }
 }

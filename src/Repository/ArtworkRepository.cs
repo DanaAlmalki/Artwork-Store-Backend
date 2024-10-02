@@ -2,7 +2,6 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Services;
 
 namespace Backend_Teamwork.src.Repository
 {
@@ -79,6 +78,5 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             return true;
         }
-
     }
 }

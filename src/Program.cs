@@ -2,10 +2,9 @@ using System.Text;
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Middleware;
 using Backend_Teamwork.src.Repository;
-using Backend_Teamwork.src.Services.artist;
 using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.category;
-using Backend_Teamwork.src.Services.customer;
+using Backend_Teamwork.src.Services.order;
 using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,10 +32,9 @@ builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 // add DI services
 builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<CategoryRepository>();
-builder.Services.AddScoped<ICustomerService, CustomerService>().AddScoped<CustomerRepository>();
-builder.Services.AddScoped<IArtistService, ArtistService>().AddScoped<ArtistRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>().AddScoped<ArtworkRepository>();
 builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>().AddScoped<OrderRepository>();
 
 // add logic for authentication
 builder
@@ -94,6 +92,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 app.MapControllers();
+
 //use middleware
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
