@@ -17,7 +17,7 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public double Price { get; set; }
             public DateTime CreatedAt { get; set; }
-            public List<ArtworkCategoryReadDto>? ArtworkCategories { get; set; }
+            public List<ArtworkCategoryCreateDto>? ArtworkCategories { get; set; }
         }
 
         // read data (get data)
@@ -41,7 +41,6 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public double Price { get; set; }
             public DateTime CreatedAt { get; set; }
-            public List<ArtworkCategoryReadDto>? ArtworkCategories { get; set; }
         }
     }
 }

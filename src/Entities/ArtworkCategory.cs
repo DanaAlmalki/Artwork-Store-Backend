@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backend_Teamwork.src.Entities;
 
-namespace Backend_Teamwork.src.Repository
+namespace Backend_Teamwork.src.Entities
 {
     public class ArtworkCategory
     {
-        public Guid ArtworkCategoryId {get; set;}
+        public Guid Id {get; set;}
         public Guid ArtworkId {get; set;}
         public Guid CategoryId {get; set;}
         public Artwork Artwork {get; set;} = null!;
