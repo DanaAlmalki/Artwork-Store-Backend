@@ -63,6 +63,10 @@ namespace Backend_Teamwork.src.Repository
             return await _artwork.FindAsync(id);
         }
 
+        public async Task<List<Artwork>> GetByArtistIdAsync(Guid id){
+            return await _artwork.Include(a => a.ArtworkCategories).Where(a => a.ArtistId == id).ToListAsync();
+        }
+
         // delete artwork
         public async Task<bool> DeleteOneAsync(Artwork artwork)
         {
