@@ -3,6 +3,7 @@ using Backend_Teamwork.src.DTO;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 
@@ -42,6 +43,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Create
         [HttpPost]
+        [Authorize(Roles = "Artist")]
         public async Task<ActionResult<ArtworkReadDto>> CreateOne(
             [FromBody] ArtworkCreateDto createDto
         )
@@ -86,6 +88,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Update
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
         {
             await _artworkService.UpdateOneAsync(id, updateDTO);
@@ -94,6 +97,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Delete
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult> DeleteOne(Guid id)
         {
             await _artworkService.DeleteOneAsync(id);
