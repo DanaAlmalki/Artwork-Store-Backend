@@ -1,13 +1,14 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Microsoft.EntityFrameworkCore;
+
 namespace Backend_Teamwork.src.Repository
 {
-
     public class WorkshopRepository
     {
         private readonly DbSet<Workshop> _workshops;
         private readonly DatabaseContext _databaseContext;
+
         public WorkshopRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
@@ -21,12 +22,14 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             return newWorkshop;
         }
+
         // get by id
         public async Task<Workshop?> GetByIdAsync(Guid id)
         {
-            return await _workshops.FindAsync(id);
+            return await _workshops.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
         }
-        // delete 
+
+        // delete
         public async Task<bool> DeleteOneAsync(Workshop deleteWorkshop)
         {
             _workshops.Remove(deleteWorkshop);
@@ -34,20 +37,20 @@ namespace Backend_Teamwork.src.Repository
             return true;
         }
 
-        // update 
+        // update
         public async Task<bool> UpdateOneAsync(Workshop updateWorkshop)
         {
+            if (updateWorkshop == null)
+                return false;
             _workshops.Update(updateWorkshop);
             await _databaseContext.SaveChangesAsync();
             return true;
         }
-        // get all 
+
+        // get all
         public async Task<List<Workshop>> GetAllAsync()
         {
-            return await _workshops.ToListAsync();
+            return await _workshops.Include(o => o.User).ToListAsync();
         }
-
-
-
     }
 }

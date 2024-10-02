@@ -6,6 +6,7 @@ using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.order;
 using Backend_Teamwork.src.Services.user;
+using Backend_Teamwork.src.Services.workshop;
 using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<Catego
 builder.Services.AddScoped<IArtworkService, ArtworkService>().AddScoped<ArtworkRepository>();
 builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>().AddScoped<OrderRepository>();
+builder.Services.AddScoped<IWorkshopService, WorkshopService>().AddScoped<WorkshopRepository>();
 
 // add logic for authentication
 builder

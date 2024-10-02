@@ -62,9 +62,11 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll()
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll(
+            PaginationOptions pationationOption
+        )
         {
-            var artworkList = await _artworkService.GetAllAsync();
+            var artworkList = await _artworkService.GetAllAsync(pationationOption);
             return Ok(artworkList);
         }
 

@@ -31,9 +31,9 @@ namespace Backend_Teamwork.src.Services.artwork
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
 
-        public async Task<List<ArtworkReadDto>> GetAllAsync()
+        public async Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions)
         {
-            var artworkList = await _artworkRepo.GetAllAsync();
+            var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworkList);
         }
 
