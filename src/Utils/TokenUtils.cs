@@ -41,7 +41,7 @@ namespace Backend_Teamwork.src.Utils
                 // header
                 Issuer = issure,
                 Audience = audience,
-                Expires = DateTime.Now.AddMinutes(60), // handle date here
+                Expires = DateTime.Now.AddMinutes(1), // handle date here
 
                 // payload
                 Subject = new ClaimsIdentity(claims),
