@@ -62,9 +62,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll()
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
         {
-            var artworkList = await _artworkService.GetAllAsync();
+            var artworkList = await _artworkService.GetAllAsync(paginationOptions);
             return Ok(artworkList);
         }
 
@@ -73,6 +73,14 @@ namespace Backend_Teamwork.src.Controllers
         public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
         {
             var artwork = await _artworkService.GetByIdAsync(id);
+            return Ok(artwork);
+        }
+
+        // Get by artist Id
+        [HttpGet("artist/{artistId}")]
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId([FromRoute] Guid artistId)
+        {
+            var artwork = await _artworkService.GetByArtistIdAsync(artistId);
             return Ok(artwork);
         }
 
