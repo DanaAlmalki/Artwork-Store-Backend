@@ -1,107 +1,88 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Backend.src.Entities;
+using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.category;
+using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Backend_Teamwork.src.DTO.CategoryDTO;
 
-namespace Backend.src.Controllers
+namespace Backend_Teamwork.src.Controllers
 {
     [ApiController]
     [Route("/api/v1/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private static readonly List<Category> _categories = new List<Category>()
+        private readonly ICategoryService _categoryService;
+
+        public CategoriesController(ICategoryService categoryService)
         {
-            new Category { Id = 1, Name = "Paintings" },
-            new Category { Id = 2, Name = "Sculptures" },
-            new Category { Id = 3, Name = "Digital arts" },
-        };
+            _categoryService = categoryService;
+        }
 
         [HttpGet]
-        public ActionResult GetCategories()
+        public async Task<ActionResult<List<CategoryReadDto>>> GetCategories()
         {
-            if (_categories.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(_categories.OrderBy(c => c.Name).ToList());
+            var categories = await _categoryService.GetAllAsync();
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetCategoryById(int id)
+        public async Task<ActionResult<CategoryReadDto>> GetCategoryById([FromRoute] Guid id)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
-            {
-                return NotFound();
-            }
-            return Ok(foundCategory);
+            var category = await _categoryService.GetByIdAsync(id);
+            return Ok(category);
         }
 
         [HttpGet("search/{name}")]
-        public ActionResult GetCategoryByName(string name)
+        public async Task<ActionResult<CategoryReadDto>> GetCategoryByName([FromRoute] string name)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Name == name);
-            if (foundCategory == null)
-            {
-                return NotFound();
-            }
-            return Ok(foundCategory);
+            var category = await _categoryService.GetByNameAsync(name);
+            return Ok(category);
         }
 
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public ActionResult GetCategoriesByBage(int pageNumber, int pageSize)
+        [HttpGet("page")]
+        public async Task<ActionResult<List<CategoryReadDto>>> GetCategoriesWithPaginationAsync(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
+        )
         {
-            if (_categories.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(
-                _categories
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .OrderBy(c => c.Name)
-                    .ToList()
-            );
+            var categories = await _categoryService.GetWithPaginationAsync(pageNumber, pageSize);
+            return Ok(categories);
+        }
+
+        [HttpGet("sort")]
+        public async Task<ActionResult<List<CategoryReadDto>>> SortCategoriesByName()
+        {
+            var categories = await _categoryService.SortByNameAsync();
+            return Ok(categories);
         }
 
         [HttpPost]
-        public ActionResult AddCategory(Category category)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<CategoryReadDto>> CreateCategory(
+            [FromBody] CategoryCreateDto categoryDTO
+        )
         {
-            _categories.Add(category);
-            return Created("Category has been added successfully", category);
+            var category = await _categoryService.CreateAsync(categoryDTO);
+            return CreatedAtAction(nameof(CreateCategory), new { id = category.Id }, category);
         }
 
-        [HttpPatch("{id}")]
-        public ActionResult UpdateCategory(int id, JsonElement category)
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<CategoryReadDto>> UpdateCategory(
+            [FromRoute] Guid id,
+            [FromBody] CategoryUpdateDto categoryDTO
+        )
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
-            {
-                return NotFound();
-            }
-            if (category.TryGetProperty("Name", out var name))
-            {
-                foundCategory.Name = name.GetString();
-            }
-            else
-            {
-                return BadRequest();
-            }
-            return Ok(foundCategory);
+            var category = await _categoryService.UpdateAsync(id, categoryDTO);
+            return Ok(category);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteCategory(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteCategory([FromRoute] Guid id)
         {
-            Category? foundCategory = _categories.FirstOrDefault(c => c.Id == id);
-            if (foundCategory == null)
-            {
-                return NotFound();
-            }
-            _categories.Remove(foundCategory);
+            await _categoryService.DeleteAsync(id);
             return NoContent();
         }
     }
