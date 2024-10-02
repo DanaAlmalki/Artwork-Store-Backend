@@ -44,6 +44,12 @@ namespace Backend_Teamwork.src.Services.artwork
             return _mapper.Map<Artwork, ArtworkReadDto>(artwork);
         }
 
+        public async Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id){
+            var artworks = await _artworkRepo.GetByArtistIdAsync(id);
+            var artworkList = _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworks);
+            return artworkList;
+        }
+
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundArtwork = await _artworkRepo.GetByIdAsync(id);
