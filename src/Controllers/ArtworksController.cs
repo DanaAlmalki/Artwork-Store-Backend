@@ -40,14 +40,18 @@ namespace Backend_Teamwork.src.Controllers
             _artworkService = service;
         }
 
-        // Create 
+        // Create
         [HttpPost]
-        public async Task<ActionResult<ArtworkReadDto>> CreateOne([FromBody] ArtworkCreateDto createDto)
+        public async Task<ActionResult<ArtworkReadDto>> CreateOne(
+            [FromBody] ArtworkCreateDto createDto
+        )
         {
             // extract user information
             var authenticateClaims = HttpContext.User;
             // get user id from claim
-            var userId = authenticateClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var userId = authenticateClaims
+                .FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!
+                .Value;
             // string => guid
             var userGuid = new Guid(userId);
 
@@ -58,9 +62,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll()
         {
-            var artworkList = await _artworkService.GetAllAsync(paginationOptions);
+            var artworkList = await _artworkService.GetAllAsync();
             return Ok(artworkList);
         }
 

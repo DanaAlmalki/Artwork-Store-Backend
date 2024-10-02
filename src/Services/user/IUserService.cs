@@ -19,6 +19,8 @@ namespace Backend_Teamwork.src.Services.user
         Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
+        Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);
+        Task<UserReadDto> GetByNameAsync(string name);
 
         Task<string> SignInAsync(UserCreateDto createDto);
     }

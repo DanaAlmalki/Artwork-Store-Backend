@@ -26,6 +26,7 @@ namespace Backend_Teamwork.src.Services.order
         // Create
         public async Task<OrderReadDto> CreateOneAsync(OrderCreateDto createDto)
         {
+            createDto.CreatedAt = DateTime.UtcNow; // Set to UTC
             var OrderCreated = await _orderRepository.CreateOneAsync(
                 _mapper.Map<OrderCreateDto, Order>(createDto)
             );

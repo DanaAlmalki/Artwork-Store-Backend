@@ -1,11 +1,9 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
-using static Backend_Teamwork.src.DTO.ArtistDTO;
 using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
-using static Backend_Teamwork.src.DTO.CustomerDTO;
 using static Backend_Teamwork.src.DTO.OrderDetailDTO;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 using static Backend_Teamwork.src.DTO.PaymentDTO;
@@ -28,21 +26,6 @@ namespace Backend_Teamwork.src.Utils
             CreateMap<Artwork, ArtworkReadDto>();
             CreateMap<ArtworkCreateDto, Artwork>();
             CreateMap<ArtworkUpdateDTO, Artwork>()
-                .ForAllMembers(opts =>
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
-                );
-
-            CreateMap<Customer, CustomerReadDto>();
-            CreateMap<CustomerCreateDto, Customer>();
-            CreateMap<CustomerUpdateDto, Customer>()
-                .ForAllMembers(opts =>
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
-                );
-
-            // Artist
-            CreateMap<Artist, ArtistReadDto>();
-            CreateMap<ArtistCreateDto, Artist>();
-            CreateMap<ArtistUpdateDto, Artist>()
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
