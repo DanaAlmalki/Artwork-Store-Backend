@@ -31,9 +31,9 @@ namespace Backend_Teamwork.src.Services.artwork
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
 
-        public async Task<List<ArtworkReadDto>> GetAllAsync()
+        public async Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions)
         {
-            var artworkList = await _artworkRepo.GetAllAsync();
+            var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworkList);
         }
 
@@ -42,6 +42,12 @@ namespace Backend_Teamwork.src.Services.artwork
             var artwork = await _artworkRepo.GetByIdAsync(id);
             //  TO DO: handle error
             return _mapper.Map<Artwork, ArtworkReadDto>(artwork);
+        }
+
+        public async Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id){
+            var artworks = await _artworkRepo.GetByArtistIdAsync(id);
+            var artworkList = _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworks);
+            return artworkList;
         }
 
         public async Task<bool> DeleteOneAsync(Guid id)
