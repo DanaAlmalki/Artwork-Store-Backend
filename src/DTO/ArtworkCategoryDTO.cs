@@ -11,14 +11,14 @@ namespace Backend_Teamwork.src.DTO
     {
         public class ArtworkCategoryCreateDto
         {
-            public Guid ArtworkId { get; set; }
+            // public Guid ArtworkId { get; set; }
             public Guid CategoryId { get; set; }
         }
 
         public class ArtworkCategoryReadDto
         {
             public Guid Id { get; set; }
-            public ArtworkReadDto Artwork { get; set; }
+            //public ArtworkReadDto Artwork { get; set; }
             public CategoryReadDto Category { get; set; }
         }
     }

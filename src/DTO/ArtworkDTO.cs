@@ -16,7 +16,7 @@ namespace Backend_Teamwork.src.DTO
             public string Description { get; set; }
             public int Quantity { get; set; }
             public double Price { get; set; }
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Set to UTC by default
+            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
             public List<ArtworkCategoryReadDto>? ArtworkCategories { get; set; }
         }
 
@@ -41,7 +41,6 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public double Price { get; set; }
             public DateTime CreatedAt { get; set; }
-            public List<ArtworkCategoryReadDto>? ArtworkCategories { get; set; }
         }
     }
 }
