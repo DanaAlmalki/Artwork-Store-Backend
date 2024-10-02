@@ -6,6 +6,7 @@ using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Utils;
+using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 
 namespace Backend_Teamwork.src.Services.category
@@ -115,5 +116,17 @@ namespace Backend_Teamwork.src.Services.category
             }
             return await _categoryRepository.DeleteAsync(foundCategory);
         }
+        public async Task<List<ArtworkCategoryReadDto>> GetArtworkCategoriesByCategoryIdAsync(Guid categoryId)
+        {
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+            if (category == null)
+            {
+                throw CustomException.NotFound($"Category with id: {categoryId} not found");
+            }
+
+            var artworkCategories = category.ArtworkCategories; // ArtworkCategories
+            return _mapper.Map<List<ArtworkCategory>, List<ArtworkCategoryReadDto>>(artworkCategories);
+        }
+        
     }
 }
