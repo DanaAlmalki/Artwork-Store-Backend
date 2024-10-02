@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Backend_Teamwork.src.DTO;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Utils;
@@ -44,7 +46,16 @@ namespace Backend_Teamwork.src.Controllers
             [FromBody] ArtworkCreateDto createDto
         )
         {
-            var createdArtwork = await _artworkService.CreateOneAsync(createDto);
+            // extract user information
+            var authenticateClaims = HttpContext.User;
+            // get user id from claim
+            var userId = authenticateClaims
+                .FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!
+                .Value;
+            // string => guid
+            var userGuid = new Guid(userId);
+
+            var createdArtwork = await _artworkService.CreateOneAsync(userGuid, createDto);
             //return Created(url, createdArtwork);
             return Ok(createdArtwork);
         }

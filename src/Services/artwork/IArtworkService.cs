@@ -9,8 +9,8 @@ namespace Backend_Teamwork.src.Services.artwork
 {
     public interface IArtworkService
     {
-        Task<ArtworkReadDto> CreateOneAsync(ArtworkCreateDto artwork);
-        Task<List<ArtworkReadDto>> GetAllAsync();
+        Task<ArtworkReadDto> CreateOneAsync(Guid userId, ArtworkCreateDto artwork);
+        Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions);
         Task<ArtworkReadDto> GetByIdAsync(Guid id);
         Task<bool> DeleteOneAsync(Guid id);
         Task<bool> UpdateOneAsync(Guid id, ArtworkUpdateDTO updateArtwork);

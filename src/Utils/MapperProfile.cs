@@ -1,7 +1,10 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Repository;
+using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
+using static Backend_Teamwork.src.DTO.OrderDetailDTO;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 using static Backend_Teamwork.src.DTO.PaymentDTO;
 using static Backend_Teamwork.src.DTO.UserDTO;
@@ -54,6 +57,16 @@ namespace Backend_Teamwork.src.Utils
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
+
+            CreateMap<OrderDetails, OrderDetailReadDto>();
+            CreateMap<OrderDetailCreateDto, OrderDetails>().
+            ForAllMembers(opts => 
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null));
+
+            CreateMap<ArtworkCategory, ArtworkCategoryReadDto>();
+            CreateMap<ArtworkCategoryCreateDto, ArtworkCategory>().
+            ForAllMembers(opts => 
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null));
         }
     }
 }

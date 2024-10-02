@@ -8,5 +8,7 @@ namespace Backend_Teamwork.src.Entities
         public DateTime CreatedAt { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
+        public List<OrderDetails> OrderDetails { get; set; }
+
     }
 }

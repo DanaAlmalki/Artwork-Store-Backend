@@ -23,9 +23,10 @@ namespace Backend_Teamwork.src.Services.artwork
             _mapper = mapper;
         }
 
-        public async Task<ArtworkReadDto> CreateOneAsync(ArtworkCreateDto creatDto)
+        public async Task<ArtworkReadDto> CreateOneAsync(Guid artistId, ArtworkCreateDto creatDto)
         {
             var artwork = _mapper.Map<ArtworkCreateDto, Artwork>(creatDto);
+            artwork.ArtistId = artistId;
             var createdArtwork = await _artworkRepo.CreateOneAsync(artwork);
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
