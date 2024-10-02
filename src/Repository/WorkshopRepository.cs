@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
@@ -53,6 +54,34 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Workshop>> GetAllAsync()
         {
             return await _workshops.Include(o => o.User).ToListAsync();
+        }
+
+        public async Task<List<Workshop>> GetAllAsync(PaginationOptions paginationOptions)
+        {
+            // Combined search logic with OR for name, email, or phone number
+            var userQuery = _workshops.Where(a =>
+                a.Name.Contains(paginationOptions.Search)
+                || a.Location.Contains(paginationOptions.Search)
+            );
+
+            // Apply pagination
+            userQuery = userQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+
+            // Apply sorting logic
+            userQuery = paginationOptions.SortOrder switch
+            {
+                "name_desc" => userQuery.OrderByDescending(a => a.Name),
+                "location_asc" => userQuery.OrderBy(a => a.Location),
+                "location_desc" => userQuery.OrderByDescending(a => a.Location),
+                "price_desc" => userQuery.OrderByDescending(a => a.Price),
+                "price_asc" => userQuery.OrderBy(a => a.Price),
+                "date_desc" => userQuery.OrderByDescending(a => a.CreatedAt),
+                "date_asc" => userQuery.OrderBy(a => a.CreatedAt),
+                "capacity_desc" => userQuery.OrderByDescending(a => a.Capacity),
+                _ => userQuery.OrderBy(a => a.Name), // Default to ascending by name
+            };
+
+            return await userQuery.ToListAsync();
         }
     }
 }

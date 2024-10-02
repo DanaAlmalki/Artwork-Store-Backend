@@ -1,6 +1,7 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
+using Backend_Teamwork.src.Utils;
 using static Backend_Teamwork.src.DTO.WorkshopDTO;
 
 namespace Backend_Teamwork.src.Services.workshop
@@ -16,12 +17,15 @@ namespace Backend_Teamwork.src.Services.workshop
             _mapper = mapper;
         }
 
-        public async Task<WorkshopReadDTO> CreateOneAsync(WorkshopCreateDTO createworkshopDto)
+        public async Task<WorkshopReadDTO> CreateOneAsync(
+            Guid artistId,
+            WorkshopCreateDTO createworkshopDto
+        )
         {
             var workshop = _mapper.Map<WorkshopCreateDTO, Workshop>(createworkshopDto);
+            workshop.UserId = artistId;
             var workshopCreated = await _workshopRepo.CreateOneAsync(workshop);
             return _mapper.Map<Workshop, WorkshopReadDTO>(workshopCreated);
-
         }
 
         public async Task<List<WorkshopReadDTO>> GetAllAsync()
@@ -30,12 +34,28 @@ namespace Backend_Teamwork.src.Services.workshop
             return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
         }
 
+        public async Task<List<WorkshopReadDTO>> GetAllAsync(PaginationOptions paginationOptions)
+        {
+            // Validate pagination options
+            if (paginationOptions.Limit <= 0)
+            {
+                throw CustomException.BadRequest("Limit should be greater than 0.");
+            }
+
+            if (paginationOptions.Offset < 0)
+            {
+                throw CustomException.BadRequest("Offset should be 0 or greater.");
+            }
+            var workshopList = await _workshopRepo.GetAllAsync(paginationOptions);
+            return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
+        }
+
         public async Task<WorkshopReadDTO> GetByIdAsync(Guid id)
         {
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
             return _mapper.Map<Workshop, WorkshopReadDTO>(foundworkshop);
-
         }
+
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
@@ -57,9 +77,6 @@ namespace Backend_Teamwork.src.Services.workshop
             }
             _mapper.Map(workshopupdateDto, foundworkshop);
             return await _workshopRepo.UpdateOneAsync(foundworkshop);
-
         }
-
-
     }
 }

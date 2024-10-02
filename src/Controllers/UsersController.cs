@@ -184,13 +184,13 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(user);
         }
 
-        // GET: api/v1/customers/page
+        // GET: api/v1/users/page
         [HttpGet("page")]
-        public async Task<ActionResult<UserReadDto>> GetCustomersByPage(
+        public async Task<ActionResult<UserReadDto>> GetUsersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
-            var users = await _userService.GetCustomersByPage(paginationOptions);
+            var users = await _userService.GetUsersByPage(paginationOptions);
             if (users == null || !users.Any())
             {
                 return NotFound();
@@ -198,11 +198,11 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(users);
         }
 
-        // GET: api/v1/customers/count
+        // GET: api/v1/users/count
         [HttpGet("count")]
-        public async Task<ActionResult<int>> GetTotalCustomersCount()
+        public async Task<ActionResult<int>> GetTotalUsersCount()
         {
-            var count = _userService.GetTotalCustomersCountAsync();
+            var count = _userService.GetTotalUsersCountAsync();
             return Ok(count);
         }
     }

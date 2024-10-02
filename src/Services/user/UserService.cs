@@ -32,14 +32,24 @@ namespace Backend_Teamwork.src.Services.user
         }
 
         // Gets the total count of users
-        public async Task<int> GetTotalCustomersCountAsync()
+        public async Task<int> GetTotalUsersCountAsync()
         {
             return await _userRepository.GetCountAsync();
         }
 
         // Retrieves users with pagination options
-        public async Task<List<UserReadDto>> GetCustomersByPage(PaginationOptions paginationOptions)
+        public async Task<List<UserReadDto>> GetUsersByPage(PaginationOptions paginationOptions)
         {
+            // Validate pagination options
+            if (paginationOptions.Limit <= 0)
+            {
+                throw CustomException.BadRequest("Limit should be greater than 0.");
+            }
+
+            if (paginationOptions.Offset < 0)
+            {
+                throw CustomException.BadRequest("Offset should be 0 or greater.");
+            }
             var UserList = await _userRepository.GetAllAsync(paginationOptions);
             return _mapper.Map<List<User>, List<UserReadDto>>(UserList);
         }
