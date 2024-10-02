@@ -20,7 +20,9 @@ namespace Backend_Teamwork.src.Repository
         {
             await _workshops.AddAsync(newWorkshop);
             await _databaseContext.SaveChangesAsync();
-            return newWorkshop;
+            return await _workshops
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == newWorkshop.Id);
         }
 
         // get by id
