@@ -187,7 +187,7 @@ namespace Backend_Teamwork.src.Controllers
         // GET: api/v1/customers/page
         [HttpGet("page")]
         public async Task<ActionResult<UserReadDto>> GetCustomersByPage(
-            PaginationOptions paginationOptions
+            [FromQuery] PaginationOptions paginationOptions
         )
         {
             var users = await _userService.GetCustomersByPage(paginationOptions);
