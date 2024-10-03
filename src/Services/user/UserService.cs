@@ -57,6 +57,10 @@ namespace Backend_Teamwork.src.Services.user
         // Creates a new user
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
+            if (createDto == null)
+            {
+                throw CustomException.BadRequest("User data cannot be null.");
+            }
             var foundUserByEmail = await _userRepository.GetByEmailAsync(createDto.Email);
             var foundUserByPhoneNumber = await _userRepository.GetByPhoneNumberAsync(
                 createDto.PhoneNumber
@@ -75,11 +79,13 @@ namespace Backend_Teamwork.src.Services.user
             var user = _mapper.Map<UserCreateDto, User>(createDto);
             user.Password = hashedPassword;
             user.Salt = salt;
-            user.Role = UserRole.Customer;
 
-            var UserCreated = await _userRepository.CreateOneAsync(
-                _mapper.Map<UserCreateDto, User>(createDto)
-            );
+            if (user.Email.EndsWith("@artify.io", StringComparison.OrdinalIgnoreCase))
+            {
+                user.Role = UserRole.Admin;
+            }
+
+            var UserCreated = await _userRepository.CreateOneAsync(user);
             return _mapper.Map<User, UserReadDto>(UserCreated);
         }
 
