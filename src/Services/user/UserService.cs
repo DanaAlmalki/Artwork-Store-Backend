@@ -61,15 +61,6 @@ namespace Backend_Teamwork.src.Services.user
             {
                 throw CustomException.BadRequest("User data cannot be null.");
             }
-            var foundUserByEmail = await _userRepository.GetByEmailAsync(createDto.Email);
-            var foundUserByPhoneNumber = await _userRepository.GetByPhoneNumberAsync(
-                createDto.PhoneNumber
-            );
-
-            if (foundUserByEmail != null || foundUserByPhoneNumber != null)
-            {
-                throw CustomException.BadRequest("Email or Phone Number already exists.");
-            }
             // Hash password before saving to the database
             PasswordUtils.HashPassword(
                 createDto.Password,
