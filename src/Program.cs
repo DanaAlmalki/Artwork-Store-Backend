@@ -81,6 +81,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//Convert to Timestamp format
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 //test database connection
 using (var scope = app.Services.CreateScope())
 {
@@ -116,8 +119,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//Convert Timestamp format
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.UseHttpsRedirection();
 app.Run();

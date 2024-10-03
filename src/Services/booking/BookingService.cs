@@ -19,7 +19,11 @@ namespace Backend_Teamwork.src.Services.booking
 
         private readonly IMapper _mapper;
 
-        public BookingService(BookingRepository bookingRepository,WorkshopRepository workshopRepository, IMapper mapper)
+        public BookingService(
+            BookingRepository bookingRepository,
+            WorkshopRepository workshopRepository,
+            IMapper mapper
+        )
         {
             _bookingRepository = bookingRepository;
             _workshopRepository = workshopRepository;
@@ -36,14 +40,14 @@ namespace Backend_Teamwork.src.Services.booking
             return _mapper.Map<List<Booking>, List<BookingReadDto>>(bookings);
         }
 
-        public async Task<BookingReadDto> GetByIdAsync(Guid id,Guid userId,string userRole)
+        public async Task<BookingReadDto> GetByIdAsync(Guid id, Guid userId, string userRole)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
             if (booking == null)
             {
                 throw CustomException.NotFound($"Booking with id: {id} not found");
             }
-            if (userRole != UserRole.Admin.ToString()  &&  booking.UserId != userId)
+            if (userRole != UserRole.Admin.ToString() && booking.UserId != userId)
             {
                 throw CustomException.Fotbidden($"Not allowed to access booking with id: {id}");
             }
@@ -126,7 +130,7 @@ namespace Backend_Teamwork.src.Services.booking
             {
                 throw CustomException.BadRequest($"Invalid booking");
             }
-            //3. check if the user already enrolled in this workshop 
+            //3. check if the user already enrolled in this workshop
             bool isFound = await _bookingRepository.GetByUserIdAndWorkshopIdAsync(
                 userId,
                 booking.WorkshopId
