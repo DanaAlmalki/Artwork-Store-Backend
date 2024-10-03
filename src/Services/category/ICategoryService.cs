@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend_Teamwork.src.Utils;
+using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 
 namespace Backend_Teamwork.src.Services.category
@@ -17,5 +18,7 @@ namespace Backend_Teamwork.src.Services.category
         Task<CategoryReadDto> CreateAsync(CategoryCreateDto category);
         Task<CategoryReadDto> UpdateAsync(Guid id, CategoryUpdateDto category);
         Task<bool> DeleteAsync(Guid id);
+        Task<List<ArtworkCategoryReadDto>> GetArtworkCategoriesByCategoryIdAsync(Guid categoryId);
+        
     }
 }
