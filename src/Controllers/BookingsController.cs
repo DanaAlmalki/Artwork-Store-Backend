@@ -36,8 +36,9 @@ namespace Backend_Teamwork.src.Controllers
         {
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var userRole = authClaims.FindFirst(c => c.Type == ClaimTypes.Role)!.Value;
             var convertedUserId = new Guid(userId);
-            var booking = await _bookingService.GetByIdAsync(id, convertedUserId);
+            var booking = await _bookingService.GetByIdAsync(id, convertedUserId,userRole);
             return Ok(booking);
         }
 
