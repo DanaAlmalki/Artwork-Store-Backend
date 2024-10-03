@@ -49,7 +49,7 @@ namespace Backend_Teamwork.src.Services.booking
             }
             if (userRole != UserRole.Admin.ToString() && booking.UserId != userId)
             {
-                throw CustomException.Fotbidden($"Not allowed to access booking with id: {id}");
+                throw CustomException.Forbidden($"Not allowed to access booking with id: {id}");
             }
             return _mapper.Map<Booking, BookingReadDto>(booking);
         }

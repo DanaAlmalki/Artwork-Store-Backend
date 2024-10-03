@@ -110,7 +110,7 @@ namespace Backend_Teamwork.src.Services.user
         {
             if (id != userId)
             {
-                throw CustomException.Fotbidden("You are not authorized to view this profile.");
+                throw CustomException.Forbidden("You are not authorized to view this profile.");
             }
             var foundUser = await _userRepository.GetByIdAsync(id);
             if (foundUser == null)
@@ -184,7 +184,7 @@ namespace Backend_Teamwork.src.Services.user
             }
             if (id != userId)
             {
-                throw CustomException.Fotbidden("You are not authorized to update this profile.");
+                throw CustomException.Forbidden("You are not authorized to update this profile.");
             }
 
             var foundUser = await _userRepository.GetByIdAsync(userId);
