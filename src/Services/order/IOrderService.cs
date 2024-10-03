@@ -7,12 +7,14 @@ namespace Backend_Teamwork.src.Services.order
     {
         // Get all
         Task<List<OrderReadDto>> GetAllAsync();
+        Task<List<OrderReadDto>> GetAllAsync(Guid id);
 
         // create
-        Task<OrderReadDto> CreateOneAsync(OrderCreateDto createDto);
+        Task<OrderReadDto> CreateOneAsync(Guid id, OrderCreateDto createDto);
 
         // Get by id
         Task<OrderReadDto> GetByIdAsync(Guid id);
+        Task<OrderReadDto> GetByIdAsync(Guid id, Guid userId);
 
         // delete
         Task<bool> DeleteOneAsync(Guid id);

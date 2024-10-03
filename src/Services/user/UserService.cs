@@ -84,11 +84,6 @@ namespace Backend_Teamwork.src.Services.user
             user.Password = hashedPassword;
             user.Salt = salt;
 
-            if (user.Email.EndsWith("@artify.io", StringComparison.OrdinalIgnoreCase))
-            {
-                user.Role = UserRole.Admin;
-            }
-
             var UserCreated = await _userRepository.CreateOneAsync(user);
             if (UserCreated == null)
             {
@@ -97,7 +92,9 @@ namespace Backend_Teamwork.src.Services.user
             return _mapper.Map<User, UserReadDto>(UserCreated);
         }
 
-        // Retrieves a user by their ID
+        //-----------------------------------------------------
+
+        // Retrieves a user by their ID (Only Admin)
         public async Task<UserReadDto> GetByIdAsync(Guid id)
         {
             var foundUser = await _userRepository.GetByIdAsync(id);
@@ -107,6 +104,23 @@ namespace Backend_Teamwork.src.Services.user
             }
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
+
+        // Retrieves a user by their ID
+        public async Task<UserReadDto> GetByIdAsync(Guid id, Guid userId)
+        {
+            if (id != userId)
+            {
+                throw CustomException.Fotbidden("You are not authorized to view this profile.");
+            }
+            var foundUser = await _userRepository.GetByIdAsync(id);
+            if (foundUser == null)
+            {
+                throw CustomException.NotFound($"User with id: {id} not found");
+            }
+            return _mapper.Map<User, UserReadDto>(foundUser);
+        }
+
+        //-----------------------------------------------------
 
         // Deletes a user by their ID
         public async Task<bool> DeleteOneAsync(Guid id)
@@ -131,7 +145,9 @@ namespace Backend_Teamwork.src.Services.user
             return DeletedUser;
         }
 
-        // Updates a user by their ID
+        //-----------------------------------------------------
+
+        // Updates a user by their ID (Only Admin)
         public async Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto)
         {
             if (id == Guid.Empty)
@@ -158,6 +174,40 @@ namespace Backend_Teamwork.src.Services.user
 
             return updatedUser;
         }
+
+        // Updates a user by their ID
+        public async Task<bool> UpdateOneAsync(Guid id, Guid userId, UserUpdateDto updateDto)
+        {
+            if (id == Guid.Empty)
+            {
+                throw CustomException.BadRequest("Invalid user ID");
+            }
+            if (id != userId)
+            {
+                throw CustomException.Fotbidden("You are not authorized to update this profile.");
+            }
+
+            var foundUser = await _userRepository.GetByIdAsync(userId);
+            if (foundUser == null)
+            {
+                throw CustomException.NotFound($"User with ID {userId} not found.");
+            }
+
+            // Map the update DTO to the existing User entity
+            _mapper.Map(updateDto, foundUser);
+
+            var updatedUser = await _userRepository.UpdateOneAsync(foundUser);
+
+            // Check if the update was successful
+            if (!updatedUser)
+            {
+                throw CustomException.BadRequest("Failed to update user.");
+            }
+
+            return updatedUser;
+        }
+
+        //-----------------------------------------------------
 
         // Retrieves a user by their email
         public async Task<UserReadDto> GetByEmailAsync(string email)
