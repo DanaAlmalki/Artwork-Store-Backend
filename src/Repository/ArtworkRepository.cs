@@ -43,8 +43,7 @@ namespace Backend_Teamwork.src.Repository
             // artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
 
             // pagination
-            artworkSearch = artworkSearch.Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
-                .Take(paginationOptions.PageSize);
+            artworkSearch = artworkSearch.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
 
             // sort
             artworkSearch = paginationOptions.SortOrder switch
@@ -58,7 +57,7 @@ namespace Backend_Teamwork.src.Repository
                 _ => artworkSearch.OrderBy(a => a.Title),
             };
 
-            return await _artwork.ToListAsync();
+            return await artworkSearch.ToListAsync();
         }
 
         // get artwork by id
@@ -67,8 +66,7 @@ namespace Backend_Teamwork.src.Repository
             return await _artwork.FindAsync(id);
         }
 
-        public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
-        {
+        public async Task<List<Artwork>> GetByArtistIdAsync(Guid id){
             return await _artwork.Include(a => a.ArtworkCategories).Where(a => a.ArtistId == id).ToListAsync();
         }
 
