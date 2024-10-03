@@ -9,5 +9,6 @@ namespace Backend_Teamwork.src.Entities
     {
         public Guid Id { set; get; }
         public string Name { set; get; }
+
     }
 }

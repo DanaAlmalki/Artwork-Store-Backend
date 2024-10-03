@@ -1,8 +1,8 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
-using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
+using static Backend_Teamwork.src.DTO.BookingDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
 using static Backend_Teamwork.src.DTO.OrderDetailDTO;
 using static Backend_Teamwork.src.DTO.OrderDTO;
@@ -59,14 +59,19 @@ namespace Backend_Teamwork.src.Utils
                 );
 
             CreateMap<OrderDetails, OrderDetailReadDto>();
-            CreateMap<OrderDetailCreateDto, OrderDetails>().
-            ForAllMembers(opts => 
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null));
+            CreateMap<OrderDetailCreateDto, OrderDetails>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
+                );
 
-            CreateMap<ArtworkCategory, ArtworkCategoryReadDto>();
-            CreateMap<ArtworkCategoryCreateDto, ArtworkCategory>().
-            ForAllMembers(opts => 
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null));
+            // CreateMap<ArtworkCategory, ArtworkCategoryReadDto>();
+            // CreateMap<ArtworkCategoryCreateDto, ArtworkCategory>()
+            //     .ForAllMembers(opts =>
+            //         opts.Condition((src, dest, srcProperty) => srcProperty != null)
+            //     );
+
+            CreateMap<Booking, BookingReadDto>();
+            CreateMap<BookingCreateDto, Booking>();
         }
     }
 }
