@@ -23,6 +23,9 @@ namespace Backend_Teamwork.src.Database
         {
             modelBuilder.HasPostgresEnum<UserRole>();
             modelBuilder.HasPostgresEnum<Status>();
+
+            modelBuilder.Entity<User>().HasIndex(x => x.PhoneNumber).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
         }
     }
 }
