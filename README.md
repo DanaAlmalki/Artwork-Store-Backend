@@ -21,7 +21,7 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
   - Update category information
   - Delete categories
   - Associate artworks with specific categories
-  - **🛠️Workshop Management**:
+- **🏷️ Workshop Management**:
   - Create new workshope 
   - Retrieve workshop details
   - Update workshop information
