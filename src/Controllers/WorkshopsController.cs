@@ -93,22 +93,16 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
 
         [HttpPut("{id}")]
         // [Authorize(Roles = "Admin,Artist")]
-        public async Task<ActionResult<bool>> UpdateWorkshop([FromBody] WorkshopUpdateDTO updateDto)
+        public async Task<ActionResult<bool>> UpdateWorkshop(
+            Guid userId,
+            [FromBody] WorkshopUpdateDTO updateDto
+        )
         {
-            // extract user information
-            var authenticateClaims = HttpContext.User;
-            // get user id from claim
-            var userId = authenticateClaims
-                .FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!
-                .Value;
-            // string => guid
-            var userGuid = new Guid(userId);
-
-            var updateWorkshop = await _workshopService.UpdateOneAsync(userGuid, updateDto);
+            var updateWorkshop = await _workshopService.UpdateOneAsync(userId, updateDto);
 
             if (!updateWorkshop)
             {
-                return NotFound($"Workshop with ID {userGuid} not found.");
+                return NotFound($"Workshop with ID {userId} not found.");
             }
             return NoContent();
         }
