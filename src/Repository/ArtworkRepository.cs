@@ -26,7 +26,7 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             // return newArtwork;
             return await _artwork
-               .Include(o => o.ArtworkCategories)
+               .Include(o => o.Category)
                .FirstOrDefaultAsync(o => o.Id == newArtwork.Id);
         }
 
@@ -66,8 +66,9 @@ namespace Backend_Teamwork.src.Repository
             return await _artwork.FindAsync(id);
         }
 
-        public async Task<List<Artwork>> GetByArtistIdAsync(Guid id){
-            return await _artwork.Include(a => a.ArtworkCategories).Where(a => a.ArtistId == id).ToListAsync();
+        public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
+        {
+            return await _artwork.Include(a => a.Category).Where(a => a.ArtistId == id).ToListAsync();
         }
 
         // delete artwork
