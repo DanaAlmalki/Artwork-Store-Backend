@@ -1,53 +1,120 @@
-# E-commerce Application API
+# 🎨 Artify Backend Project
 
-This repository contains ASP.NET Core application with RESTful API endpoints for e-commerce application. The API allows you to interact with products in the store.
+## 🌟 Project Overview
 
-`This is a teamwork assignment where you will work as a team within your group`
+This is a backend solution for an e-commerce platform dedicated to selling paintings and showcasing art galleries, built with **.NET 8**. The project includes core functionalities such as **user authentication**, **product management** (artworks), **category management** (types of artwork ), and **order processing**. The system provides a seamless experience for artists and buyers to exchange artistic works with ease.
 
-**_DEADLINE: 06.10.2024_**
+## Features
 
-## How to work
+- **👤User Management**:
+  - Register new User (Customer/Artist)
+  - User authentication with JWT token
+  - Role-based access control (Artist, Customer)
+- **🖼️Product Management (Artworks)**:
+- Create new artwork listing (title, description, price)
+- Update artwork information
+- Delete artwork listings
+- Search and filter artworks by ArtistId and artist
+- **🏷️category Management**:
+- Create new categories (types of artwork)
+- Retrieve category details
+- Update category information
+- Delete categories
+- Associate artworks with specific categories
 
-1. One team member (admin) should fork the repo and add other members to that admin repo as collaborators.
-2. The other team members should fork then clone the forked repo (the admin repo).
-3. Any change/update made should be submitted to admin repo as pull request.
-4. Each change should be done in a separate pull request.
-5. Pull request must be reviewed by at least 2 members before merged to admin repo.
-6. Admin should open a PR to the original (Integrify) repo.
+## ⚙️ Technologies Used
 
-Please ask your instructor or supporting instructor if you have any questions or need help.
+- **.Net 8**: Web API Framework
+- **Entity Framework Core**: ORM for database interactions
+- **PostgreSQl **: Relational database for storing data
+- **JWT**: For user authentication and authorization
+- **AutoMapper**: For object mapping
+- **Swagger**: API documentation
 
-## Level 1: Basic Requirements
+## Prerequisites
 
-In this level, the application includes the following features:
+- .Net 8 SDK
+- SQL Server
+- VSCode
 
-1. Identify Entities: Identify the main entities that need to be stored in the database. These could include customers, products, categories, orders, etc.
-2. Define Attributes: For each entity, list and define the attributes or properties associated with it. For example, for a "customer" entity, attributes might include "id," "firstName," "lastName," "email" and so on.
-3. Establish Relationships: Determine the relationships between entities. Relationships can be one-to-one, one-to-many, or many-to-many. For instance, in an E-commerce system, a "customer" may have multiple "orders".
-4. Key: When establishing relationships, remember to create a key in your ERD to explain the notation used for relationships.
-5. According to the ERD above, create the entities, and build the database with Entity Framework Core. Add ERD in screenshots folders
-   ![ERD](screenshots/ERD.jpeg)
-6. Create basic CRUD operations for each endpoint.
-7. Use authentication and role-based authorization
+## Getting Started
 
-## Level 2: Additional Requirements
+### 1. Clone the repository:
 
-In addition to the basic requirements, the application enhances its functionality with the following features:
+```bash
+git clone https://github.com/AbeerAljohanii/sda-3-online-Backend_Teamwork
+```
 
-1. Include pagination functionality to the method getting all products.
-2. Implement search functionality to allow users to search for specific products based on keywords or specific fields (e.g., by title).
-3. Add validation checks to ensure the data meets certain criteria before executing the actions.
+### 2. Setup database
 
-## Level 3: Advanced Requirements
+- Make sure PostgreSQL Server is running
+- Create `appsettings.json` file
+- Update the connection string in `appsettings.json`
 
-If you have a higher skill level and finish the previous requirements before the deadline, you can tackle the following bonus tasks:
+```json
+{
+  "ConnectionStrings": {
+    "Local": "Server=localhost;Database=ECommerceDb;User Id=your_username;Password=your_password;"
+  }
+}
+```
 
-1. Refactor method getting all products to also handle query parameters for filtering and sorting products based on specific criteria (e.g., price range, by title, by date, etc). Pagination still need to be integrated.
-2. Use claim-based or resource-based where applicable.
-3. Peer Review:
-   - Review 2 assignments from other teams.
-   - Provide constructive feedback and suggestions for improvement.
+- Run migrations to create database
 
-`Please note that the bonus requirements and reviews are optional and can be completed if you have additional time and advanced skills.`
+```bash
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
 
-Happy coding!
+- Run the application
+
+```bash
+dotnet watch
+```
+
+The API will be available at: `http://localhost:5125`
+
+### Swagger
+
+- Navigate to `http://localhost:5125/swagger/index.html` to explore the API endpoints.
+
+## Project structure
+
+```bash
+|-- Controllers: API controllers with request and response
+|-- Database # DbContext and Database Configurations
+|-- DTOs # Data Transfer Objects
+|-- Entities # Database Entities (User, ArtWorks, Category, Order)
+|-- Middleware # Logging request, response and Error Handler
+|-- Repositories # Repository Layer for database operations
+|-- Services # Business Logic Layer
+|-- Utils # Common logics
+|-- Migrations # Entity Framework Migrations
+|-- Program.cs # Application Entry Point
+```
+
+## API Endpoints
+
+### User
+
+- **POST** `/api/users` – Register a new user.
+- **POST** `/api/users/signin` – Login and get JWT token.
+- **GET** `/api/users/search-by-name/{name}` - search-by-name
+- **GET** `/api/users/search-by-phone/{phoneNumber}` - search-by-phone-num
+- **GET** `/api/users/page` - Pagination
+
+## Deployment
+
+The application is deployed and can be accessed at: [https://your-deploy-link.com](https://your-deploy-link.com)
+
+## 👩‍💻 Team Members
+
+- **Lead** : Abeer Aljohani (@AbeerAljohanii) 👩‍💻
+- Bashaer Alhuthali (bashaer310) 👩‍💻
+- Danah Almalki (DanaAlmalki) 👩‍💻
+- Manar Almalawi (mal-manar) 👩‍💻
+- Shuaa Almarwani (Shuaa-99) 👩‍💻
+
+## License
+
+This project is licensed under the MIT License.

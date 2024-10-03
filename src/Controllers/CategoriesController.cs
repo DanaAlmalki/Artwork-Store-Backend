@@ -58,7 +58,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CategoryReadDto>> CreateCategory(
             [FromBody] CategoryCreateDto categoryDTO
         )
@@ -68,7 +68,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult<CategoryReadDto>> UpdateCategory(
             [FromRoute] Guid id,
             [FromBody] CategoryUpdateDto categoryDTO
@@ -79,11 +79,13 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteCategory([FromRoute] Guid id)
         {
             await _categoryService.DeleteAsync(id);
             return NoContent();
         }
+
+
     }
 }

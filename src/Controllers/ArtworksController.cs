@@ -43,7 +43,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Create
         [HttpPost]
-        [Authorize(Roles = "Artist")]
+        // [Authorize(Roles = "Artist")]
         public async Task<ActionResult<ArtworkReadDto>> CreateOne(
             [FromBody] ArtworkCreateDto createDto
         )
@@ -88,7 +88,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Update
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Artist")]
+        // [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
         {
             await _artworkService.UpdateOneAsync(id, updateDTO);
