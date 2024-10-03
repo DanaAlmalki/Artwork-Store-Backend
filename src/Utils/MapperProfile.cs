@@ -1,7 +1,6 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
-using static Backend_Teamwork.src.DTO.ArtworkCategoryDTO;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.BookingDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;
@@ -65,11 +64,11 @@ namespace Backend_Teamwork.src.Utils
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
 
-            CreateMap<ArtworkCategory, ArtworkCategoryReadDto>();
-            CreateMap<ArtworkCategoryCreateDto, ArtworkCategory>()
-                .ForAllMembers(opts =>
-                    opts.Condition((src, dest, srcProperty) => srcProperty != null)
-                );
+            // CreateMap<ArtworkCategory, ArtworkCategoryReadDto>();
+            // CreateMap<ArtworkCategoryCreateDto, ArtworkCategory>()
+            //     .ForAllMembers(opts =>
+            //         opts.Condition((src, dest, srcProperty) => srcProperty != null)
+            //     );
 
             CreateMap<Booking, BookingReadDto>();
             CreateMap<BookingCreateDto, Booking>();

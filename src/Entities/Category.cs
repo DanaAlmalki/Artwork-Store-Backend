@@ -9,7 +9,6 @@ namespace Backend_Teamwork.src.Entities
     {
         public Guid Id { set; get; }
         public string Name { set; get; }
-        public List<ArtworkCategory> ArtworkCategories { get; set; } = new List<ArtworkCategory>();
 
     }
 }
