@@ -178,6 +178,10 @@ namespace Backend_Teamwork.src.Services.user
         // Updates a user by their ID
         public async Task<bool> UpdateOneAsync(Guid id, Guid userId, UserUpdateDto updateDto)
         {
+            if (id == Guid.Empty)
+            {
+                throw CustomException.BadRequest("Invalid user ID");
+            }
             if (id != userId)
             {
                 throw CustomException.Fotbidden("You are not authorized to update this profile.");
