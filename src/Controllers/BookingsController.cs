@@ -144,7 +144,7 @@ namespace Backend_Teamwork.src.Controllers
             return CreatedAtAction(nameof(CreateBooking), new { id = booking.Id }, booking);
         }
 
-        [HttpPatch("confirm/{id}")]
+        [HttpPut("confirm/{id}")]
         //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<BookingReadDto>> ConfirmBooking([FromRoute] Guid id)
         {
