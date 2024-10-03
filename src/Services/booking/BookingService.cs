@@ -7,6 +7,7 @@ using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Utils;
 using static Backend_Teamwork.src.DTO.BookingDTO;
+using static Backend_Teamwork.src.Entities.User;
 
 namespace Backend_Teamwork.src.Services.booking
 {
@@ -35,14 +36,14 @@ namespace Backend_Teamwork.src.Services.booking
             return _mapper.Map<List<Booking>, List<BookingReadDto>>(bookings);
         }
 
-        public async Task<BookingReadDto> GetByIdAsync(Guid id,Guid userId)
+        public async Task<BookingReadDto> GetByIdAsync(Guid id,Guid userId,string userRole)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
             if (booking == null)
             {
                 throw CustomException.NotFound($"Booking with id: {id} not found");
             }
-            if (booking.User.Role.ToString() != "Admin" && booking.UserId != userId)
+            if (userRole != UserRole.Admin.ToString()  &&  booking.UserId != userId)
             {
                 throw CustomException.Fotbidden($"Not allowed to access booking with id: {id}");
             }
@@ -217,7 +218,7 @@ namespace Backend_Teamwork.src.Services.booking
                 throw CustomException.NotFound($"Booking with id: {id} not found");
             }
             //1. check if the booking belongs to the user
-            if (booking.User.Id != userId)
+            if (booking.UserId != userId)
             {
                 throw CustomException.BadRequest($"Invalid canceling");
             }
