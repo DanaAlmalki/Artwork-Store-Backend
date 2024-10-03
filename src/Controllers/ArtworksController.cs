@@ -13,26 +13,6 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class ArtworksController : ControllerBase
     {
-        /* public static List<Artwork> artworks = new List<Artwork>
-        {
-            new Artwork
-            {
-                Title = "first art work",
-                Description = "first art work description",
-                Quantity = 3,
-                Price = 130,
-                CreatedAt = DateTime.Now,
-            },
-            new Artwork
-            {
-                Title = "second art work",
-                Description = "second art work description",
-                Quantity = 7,
-                Price = 80.5,
-                CreatedAt = DateTime.Now,
-            },
-        }; */
-
         private readonly IArtworkService _artworkService;
 
         // Constructor
