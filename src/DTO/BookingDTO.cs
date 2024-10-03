@@ -19,7 +19,7 @@ namespace Backend_Teamwork.src.DTO
             public Status Status { get; set; }
             public DateTime CreatedAt { get; set; }
             public Workshop Workshop { get; set; }
-            public Guid UserId { get; set; }
+            public User User { get; set; }
         }
     }
 }
