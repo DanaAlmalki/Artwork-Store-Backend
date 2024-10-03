@@ -14,6 +14,7 @@ namespace Backend_Teamwork.src.Database
         public DbSet<Payment> Payment { get; set; }
         public DbSet<Workshop> Workshop { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<Booking> Booking { get; set; }
 
         public DatabaseContext(DbContextOptions option)
             : base(option) { }
@@ -21,6 +22,7 @@ namespace Backend_Teamwork.src.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<UserRole>();
+            modelBuilder.HasPostgresEnum<Status>();
         }
     }
 }
