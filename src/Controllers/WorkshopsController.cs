@@ -27,6 +27,7 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
             {
                 return NotFound();
             }
+
             return Ok(workshops);
         }
 
