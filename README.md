@@ -6,21 +6,29 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
 
 ## Features
 
-- **👤User Management**:
+- **👤 User Management**:
   - Register new User (Customer/Artist)
   - User authentication with JWT token
   - Role-based access control (Artist, Customer)
-- **🖼️Product Management (Artworks)**:
-- Create new artwork listing (title, description, price)
-- Update artwork information
-- Delete artwork listings
-- Search and filter artworks by ArtistId and artist
-- **🏷️category Management**:
-- Create new categories (types of artwork)
-- Retrieve category details
-- Update category information
-- Delete categories
-- Associate artworks with specific categories
+- **🖼️ Product Management (Artworks)**:
+  - Create new artwork listing (title, description, price)
+  - Update artwork information
+  - Delete artwork listings
+  - Search and filter artworks by ArtistId and artist
+- **🏷️ Category Management**:
+  - Create new categories (types of artwork)
+  - Retrieve category details
+  - Update category information
+  - Delete categories
+  - Associate artworks with specific categories
+  **🛠️ Workshop Management**:
+ - Create new workshope 
+  - Retrieve workshop details
+  - Update workshop information
+  - Delete workshop
+- **📅 Booking Management**:
+- **📦 Order Management**:
+- **💳  Payment Management**:
 
 ## ⚙️ Technologies Used
 
@@ -31,13 +39,13 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
 - **AutoMapper**: For object mapping
 - **Swagger**: API documentation
 
-## Prerequisites
+## 📋Prerequisites
 
 - .Net 8 SDK
 - SQL Server
 - VSCode
 
-## Getting Started
+## 🛠️ Getting Started
 
 ### 1. Clone the repository:
 
@@ -45,7 +53,7 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
 git clone https://github.com/AbeerAljohanii/sda-3-online-Backend_Teamwork
 ```
 
-### 2. Setup database
+### 2.🛠️ Setup database
 
 - Make sure PostgreSQL Server is running
 - Create `appsettings.json` file
@@ -74,11 +82,11 @@ dotnet watch
 
 The API will be available at: `http://localhost:5125`
 
-### Swagger
+### 🐍 Swagger
 
 - Navigate to `http://localhost:5125/swagger/index.html` to explore the API endpoints.
 
-## Project structure
+## 📂 Project structure
 
 ```bash
 |-- Controllers: API controllers with request and response
@@ -93,7 +101,7 @@ The API will be available at: `http://localhost:5125`
 |-- Program.cs # Application Entry Point
 ```
 
-## API Endpoints
+## 📡 API Endpoints
 
 ### User
 
@@ -103,7 +111,7 @@ The API will be available at: `http://localhost:5125`
 - **GET** `/api/users/search-by-phone/{phoneNumber}` - search-by-phone-num
 - **GET** `/api/users/page` - Pagination
 
-## Deployment
+## 🌐 Deployment
 
 The application is deployed and can be accessed at: [https://your-deploy-link.com](https://your-deploy-link.com)
 
