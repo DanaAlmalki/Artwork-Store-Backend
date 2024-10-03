@@ -80,11 +80,11 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // update artwork
-        public async Task<bool> UpdateOneAsync(Artwork updateArtwork)
+        public async Task<Artwork?> UpdateOneAsync(Artwork updateArtwork)
         {
             _artwork.Update(updateArtwork);
             await _databaseContext.SaveChangesAsync();
-            return true;
+            return await _artwork.Include(a => a.Category).FirstOrDefaultAsync(a => a.Id == updateArtwork.Id);
         }
     }
 }

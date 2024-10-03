@@ -44,7 +44,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll(
+            [FromQuery] PaginationOptions paginationOptions
+        )
         {
             var artworkList = await _artworkService.GetAllAsync(paginationOptions);
             return Ok(artworkList);
@@ -52,7 +54,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get by artwork id
         [HttpGet("{id}")]
-        public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<ArtworkReadDto>> GetById(
+            [FromRoute] Guid id
+        )
         {
             var artwork = await _artworkService.GetByIdAsync(id);
             return Ok(artwork);
@@ -60,7 +64,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get by artist Id
         [HttpGet("artist/{artistId}")]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId([FromRoute] Guid artistId)
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId(
+            [FromRoute] Guid artistId
+        )
         {
             var artwork = await _artworkService.GetByArtistIdAsync(artistId);
             return Ok(artwork);
@@ -69,16 +75,21 @@ namespace Backend_Teamwork.src.Controllers
         // Update
         [HttpPut("{id}")]
         // [Authorize(Roles = "Admin,Artist")]
-        public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
+        public async Task<ActionResult> UpdateOne(
+            [FromRoute] Guid id, 
+            [FromBody] ArtworkUpdateDTO updateDTO
+        )
         {
-            await _artworkService.UpdateOneAsync(id, updateDTO);
-            return NoContent();
+            var artwork = await _artworkService.UpdateOneAsync(id, updateDTO);
+            return Ok(artwork);
         }
 
         // Delete
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Artist")]
-        public async Task<ActionResult> DeleteOne(Guid id)
+        public async Task<ActionResult> DeleteOne(
+            [FromRoute] Guid id
+        )
         {
             await _artworkService.DeleteOneAsync(id);
             return NoContent();

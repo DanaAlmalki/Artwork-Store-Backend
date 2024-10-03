@@ -49,13 +49,15 @@ namespace Backend_Teamwork.src.Services.artwork
         public async Task<ArtworkReadDto> GetByIdAsync(Guid id)
         {
             var artwork = await _artworkRepo.GetByIdAsync(id);
-            if (artwork == null) {
+            if (artwork == null)
+            {
                 throw CustomException.NotFound($"Artwork with id: {id} not found");
             }
             return _mapper.Map<Artwork, ArtworkReadDto>(artwork);
         }
 
-        public async Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id){
+        public async Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id)
+        {
             // check if user exist
             var user = await _userRepo.GetByIdAsync(id) ?? throw CustomException.NotFound($"User with id: {id} not found");
             // check the role of user
@@ -81,7 +83,7 @@ namespace Backend_Teamwork.src.Services.artwork
             return isDeleted;
         }
 
-        public async Task<bool> UpdateOneAsync(Guid id, ArtworkUpdateDTO updateDto)
+        public async Task<ArtworkReadDto> UpdateOneAsync(Guid id, ArtworkUpdateDTO updateDto)
         {
             var foundArtwork = await _artworkRepo.GetByIdAsync(id);
             if (foundArtwork == null)
@@ -90,7 +92,8 @@ namespace Backend_Teamwork.src.Services.artwork
             }
 
             _mapper.Map(updateDto, foundArtwork);
-            return await _artworkRepo.UpdateOneAsync(foundArtwork);
+            var updatedArtwork = await _artworkRepo.UpdateOneAsync(foundArtwork);
+            return _mapper.Map<Artwork, ArtworkReadDto>(updatedArtwork);
         }
     }
 }
