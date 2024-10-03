@@ -17,7 +17,7 @@ namespace Backend_Teamwork.src.Entities
         public List<ArtworkCategory>? ArtworkCategories { get; set; }
 
         // OrderDetails 
-        public List<OrderDetails>? OrderDetails { get; set; }
+         public List<OrderDetails>? OrderDetails { get; set; }
 
 
     }
