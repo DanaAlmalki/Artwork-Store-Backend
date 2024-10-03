@@ -1,8 +1,10 @@
 using System.Text;
 using Backend_Teamwork.src.Database;
+using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Middleware;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Services.artwork;
+using Backend_Teamwork.src.Services.booking;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.order;
 using Backend_Teamwork.src.Services.user;
@@ -17,28 +19,31 @@ using static Backend_Teamwork.src.Entities.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// connect to database
+//connect to database
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("Local")
 );
 dataSourceBuilder.MapEnum<UserRole>();
+dataSourceBuilder.MapEnum<Status>();
 
+//add database connection
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(dataSourceBuilder.Build());
 });
 
-// add auto-mapper
+//add auto-mapper
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
-// add DI services
+//add DI services
 builder.Services.AddScoped<ICategoryService, CategoryService>().AddScoped<CategoryRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>().AddScoped<ArtworkRepository>();
 builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>().AddScoped<OrderRepository>();
 builder.Services.AddScoped<IWorkshopService, WorkshopService>().AddScoped<WorkshopRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>().AddScoped<BookingRepository>();
 
-// add logic for authentication
+//add logic for authentication
 builder
     .Services.AddAuthentication(options =>
     {
@@ -61,19 +66,22 @@ builder
         };
     });
 
-// Athorization for Admin
+//add logic for athorization
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
 
-// add controllers
+//add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+//add swagger
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//test database connection
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -93,6 +101,8 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Database connection failed: {ex.Message}");
     }
 }
+
+//use controllers
 app.MapControllers();
 
 //use middleware
@@ -100,6 +110,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
+//use swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

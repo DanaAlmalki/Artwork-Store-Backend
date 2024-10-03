@@ -1,19 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Backend.src.Entities
+namespace Backend_Teamwork.src.Entities
 {
     public class Booking
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public Status Status { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Guid WorkshopId { get; set; }
+        public Workshop Workshop { get; set; } = null!;
+        public Guid UserId { get; set; }
+        public User User { get; set; } = null!;
+    }
 
-        //pending, confirmed, canceled, rejected
-        public string Status { get; set; }
-        public DateTime BookingDate { get; set; }
-
-        public int WorkshopId { get; set; }
-        public int CustomerId { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum Status
+    {
+        Pending,
+        Confirmed,
+        Canceled,
+        Rejected,
     }
 }

@@ -1,262 +1,173 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Backend_Teamwork.src.Controllers;
 using Backend_Teamwork.src.Entities;
-using Backend.src.Entities;
+using Backend_Teamwork.src.Services.booking;
 using Microsoft.AspNetCore.Mvc;
-using sda_3_online_Backend_Teamwork.src.Controllers;
-using sda_3_online_Backend_Teamwork.src.Entities;
+using static Backend_Teamwork.src.DTO.BookingDTO;
 
-namespace Backend.src.Controllers
+namespace Backend_Teamwork.src.Controllers
 {
     [ApiController]
     [Route("/api/v1/[controller]")]
     public class BookingsController : ControllerBase
     {
-        private static readonly List<Booking> _bookings = new List<Booking>()
+        private readonly IBookingService _bookingService;
+
+        public BookingsController(IBookingService bookingService)
         {
-            new Booking
-            {
-                Id = 1,
-                CustomerId = 1,
-                WorkshopId = 1,
-                Status = "pending",
-                BookingDate = DateTime.Now,
-            },
-            new Booking
-            {
-                Id = 2,
-                CustomerId = 2,
-                WorkshopId = 1,
-                Status = "pending",
-                BookingDate = DateTime.Now,
-            },
-            new Booking
-            {
-                Id = 3,
-                CustomerId = 3,
-                WorkshopId = 1,
-                Status = "pending",
-                BookingDate = DateTime.Now,
-            },
-        };
-        private readonly WorkshopController? _workshopsController;
-        private readonly CustomersController? _customersController;
-        private readonly PaymentController? _paymentController;
+            _bookingService = bookingService;
+        }
 
         [HttpGet]
-        public ActionResult GetBookings()
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookings()
         {
-            if (_bookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(_bookings);
+            var bookings = await _bookingService.GetAllAsync();
+            return Ok(bookings);
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetBookingById(int id)
+        //[Authorize(Roles = "Admin","Customer")]
+        public async Task<ActionResult<BookingReadDto>> GetBookingById([FromRoute] Guid id)
         {
-            Booking? foundBooking = _bookings.FirstOrDefault(b => b.Id == id);
-            if (foundBooking == null)
-            {
-                return NotFound();
-            }
-            return Ok(foundBooking);
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var booking = await _bookingService.GetByIdAsync(id, convertedUserId);
+            return Ok(booking);
         }
 
-        [HttpGet("customerId/{customerId}")]
-        public ActionResult GetBookingsByCustomerId(int customerId)
-        {
-            List<Booking> foundBookings = _bookings.FindAll(b => b.CustomerId == customerId);
-            if (foundBookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(foundBookings);
-        }
-
-        [HttpGet("status/{status}")]
-        public ActionResult GetBookingsByStatus(string status)
-        {
-            List<Booking> foundBookings = _bookings.FindAll(b => b.Status == status);
-            if (foundBookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(foundBookings);
-        }
-
-        [HttpGet("customerId/{customerId}/status/{status}")]
-        public ActionResult GetBookingsByCustomerIdAndStatus(int customerId, string status)
-        {
-            List<Booking> foundBookings = _bookings.FindAll(b =>
-                b.CustomerId == customerId && b.Status == status
-            );
-            if (foundBookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(foundBookings);
-        }
-
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public ActionResult GetBookingsByPage(int pageNumber, int pageSize)
-        {
-            if (_bookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(_bookings.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
-        }
-
-        [HttpGet("page/{pageNumber}/{pageSize}/customerId/{customerId}")]
-        public ActionResult GetBookingsByPageAndCustomerId(
-            int customerId,
-            int pageNumber,
-            int pageSize
+        [HttpGet("search/{id:int}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetByBookingsUserId(
+            [FromRoute] Guid userId
         )
         {
-            List<Booking> foundBookings = _bookings.FindAll(b => b.CustomerId == customerId);
-            if (foundBookings.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(foundBookings.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
+            var booking = await _bookingService.GetByUserIdAsync(userId);
+            return Ok(booking);
+        }
+
+        [HttpGet("my-bookings")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserId()
+        {
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var booking = await _bookingService.GetByUserIdAsync(convertedUserId);
+            return Ok(booking);
+        }
+
+        [HttpGet("search/{status:alpha}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByStatus(
+            [FromRoute] string status
+        )
+        {
+            var booking = await _bookingService.GetByStatusAsync(status);
+            return Ok(booking);
+        }
+
+        [HttpGet("my-bookings/search/{status}")]
+        //[Authorize(Roles = "customer")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserIdAndStatus(
+            [FromRoute] string status
+        )
+        {
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var booking = await _bookingService.GetByUserIdAndStatusAsync(convertedUserId, status);
+            return Ok(booking);
+        }
+
+        [HttpGet("page")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsWithPagination(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
+        )
+        {
+            var bookings = await _bookingService.GetWithPaginationAsync(pageNumber, pageSize);
+            return Ok(bookings);
+        }
+
+        [HttpGet("page/{userId}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserIdWithPagination(
+            [FromRoute] Guid userId,
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
+        )
+        {
+            var bookings = await _bookingService.GetByUserIdWithPaginationAsync(
+                userId,
+                pageNumber,
+                pageSize
+            );
+            return Ok(bookings);
+        }
+
+        [HttpGet("my-bookings/page")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserIdWithPagination(
+            [FromQuery] int pageNumber,
+            [FromQuery] int pageSize
+        )
+        {
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var bookings = await _bookingService.GetByUserIdWithPaginationAsync(
+                convertedUserId,
+                pageNumber,
+                pageSize
+            );
+            return Ok(bookings);
         }
 
         [HttpPost]
-        public ActionResult AddBooking(Booking booking)
+        //[Authorize(Roles = "Customer")]
+        public async Task<ActionResult<BookingReadDto>> CreateBooking(
+            [FromBody] BookingCreateDto bookingDTO
+        )
         {
-            //1. check the workshop and customer
-            var customerActionResult = _customersController?.GetCustomerById(booking.CustomerId);
-            var workshopActionResult = _workshopsController?.GetWorkshopById(booking.WorkshopId);
-            if (
-                (Int32)
-                    customerActionResult
-                        .GetType()
-                        .GetProperty("StatusCode")
-                        ?.GetValue(customerActionResult) != 200
-                || (Int32)
-                    workshopActionResult
-                        .GetType()
-                        .GetProperty("StatusCode")
-                        ?.GetValue(workshopActionResult) != 200
-            )
-            {
-                return NotFound();
-            }
-
-            //2. check the workshop availability
-            //3. check if the customer enrolled this workshop before
-            //4. check if the customer has a workshop at the same time
-            Workshop? workshop = (Workshop)
-                workshopActionResult.GetType().GetProperty("Value")?.GetValue(workshopActionResult); //DAR
-
-            Booking? foundBooking = _bookings.Find(b =>
-                b.CustomerId == booking.CustomerId && b.WorkshopId == booking.WorkshopId
-            );
-
-            var workshopsActionResult = _workshopsController.GetWorkshops();
-            List<Workshop> workshops =
-                (List<Workshop>)
-                    workshopsActionResult
-                        .GetType()
-                        .GetProperty("Value")
-                        ?.GetValue(workshopsActionResult);
-            Workshop foundWorkshop = workshops.Find(w =>
-                (w.StartTime == workshop.StartTime && w.EndTime == workshop.EndTime)
-                || (w.StartTime < workshop.StartTime && w.EndTime > workshop.StartTime)
-                || (w.StartTime < workshop.EndTime && w.EndTime > workshop.EndTime)
-            );
-            bool isFound = _bookings.Any(b =>
-                b.CustomerId == booking.CustomerId && b.WorkshopId == foundWorkshop.Id
-            );
-
-            if (!workshop.Availability || foundBooking != null || isFound)
-            {
-                return BadRequest();
-            }
-            booking.Status = "pending";
-            booking.BookingDate = DateTime.Now;
-            return Created("Booking has been added successfully", booking);
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var booking = await _bookingService.CreateAsync(bookingDTO, convertedUserId);
+            return CreatedAtAction(nameof(CreateBooking), new { id = booking.Id }, booking);
         }
 
-        //confirm booking (after payment)
         [HttpPatch("confirm/{id}")]
-        public ActionResult ConfirmBooking(int id)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<BookingReadDto>> ConfirmBooking([FromRoute] Guid id)
         {
-            Booking? foundBooking = _bookings.Find(b => b.Id == id);
-            if (foundBooking == null)
-            {
-                return NotFound();
-            }
-            //check the payment and workshop availability
-            var workshopActionResult = _workshopsController?.GetWorkshopById(
-                foundBooking.WorkshopId
-            );
-
-            Workshop workshop = (Workshop)
-                workshopActionResult.GetType().GetProperty("Value")?.GetValue(workshopActionResult); //DAR
-
-            var paymentsActionResult = _paymentController?.GetPayments();
-            List<Payment> payments =
-                (List<Payment>)
-                    paymentsActionResult
-                        .GetType()
-                        .GetProperty("Value")
-                        ?.GetValue(paymentsActionResult);
-            //bool isFound=payments.Any(p=>p.BookingId==foundBooking.Id);
-            bool isFound = true;
-
-            if (!workshop.Availability || isFound)
-            {
-                return BadRequest();
-            }
-            foundBooking.Status = "confirmed";
-            return Ok(foundBooking);
+            var booking = await _bookingService.ConfirmAsync(id);
+            return Ok(booking);
         }
 
-        //cancel booking
-        [HttpPatch("cancel/{id}")]
-        public ActionResult CancelBooking(int id)
+        [HttpPut("reject/{id}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<BookingReadDto>> RejectBooking([FromRoute] Guid id)
         {
-            Booking? foundBooking = _bookings.Find(b => b.Id == id);
-            if (foundBooking == null)
-            {
-                return NotFound();
-            }
-            if (foundBooking.Status != "pending")
-            {
-                return BadRequest();
-            }
-            foundBooking.Status = "canceled";
-            return Ok(foundBooking);
+            var booking = await _bookingService.RejectAsync(id);
+            return Ok(booking);
         }
 
-        //reject bookings
-        [HttpPatch("reject")]
-        public ActionResult RejectBookings()
+        [HttpPut("my-bookings/cancel/{id}")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<ActionResult<BookingReadDto>> CancelBooking([FromRoute] Guid id)
         {
-            if (_bookings.Count == 0)
-            {
-                return NotFound();
-            }
-
-            //check the workshop enddate
-            foreach (Booking booking in _bookings)
-            {
-                if (
-                    booking.Status == "pending" /*&& booking.Workshop.Enddate<Datetime.Now*/ //NR
-                )
-                {
-                    booking.Status = "rejected";
-                }
-            }
-            return Ok();
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var booking = await _bookingService.CancelAsync(id, convertedUserId);
+            return Ok(booking);
         }
     }
 }
