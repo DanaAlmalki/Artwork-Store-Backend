@@ -9,6 +9,7 @@ namespace Backend_Teamwork.src.Entities
         public Guid UserId { get; set; }
         public User? User { get; set; }
         public List<OrderDetails>? OrderDetails { get; set; }
+        public Payment? Payment { get; set; }
 
     }
 }
