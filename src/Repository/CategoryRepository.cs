@@ -64,11 +64,10 @@ namespace Backend_Teamwork.src.Repository
             return category;
         }
 
-        public async Task<bool> DeleteAsync(Category category)
+        public async Task DeleteAsync(Category category)
         {
             _category.Remove(category);
             await _databaseContext.SaveChangesAsync();
-            return true;
         }
     }
 }

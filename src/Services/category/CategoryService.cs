@@ -106,16 +106,14 @@ namespace Backend_Teamwork.src.Services.category
             return _mapper.Map<Category, CategoryReadDto>(updatedCategory);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
             if (foundCategory == null)
             {
                 throw CustomException.NotFound($"Category with id: {id} not found");
             }
-            return await _categoryRepository.DeleteAsync(foundCategory);
+            await _categoryRepository.DeleteAsync(foundCategory);
         }
-       
-        
     }
 }
