@@ -21,6 +21,14 @@ namespace Backend_Teamwork.src.Repository
             return await _order.Include(o => o.User).ToListAsync();
         }
 
+        public async Task<List<Order>> GetOrdersByUserIdAsync(Guid userId)
+        {
+            return await _databaseContext
+                .Order.Include(order => order.User) // Include user data
+                .Where(order => order.UserId == userId) // Filter by UserId
+                .ToListAsync();
+        }
+
         public async Task<Order> CreateOneAsync(Order newOrder)
         {
             await _order.AddAsync(newOrder);

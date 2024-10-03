@@ -15,15 +15,16 @@ namespace Backend_Teamwork.src.Services.user
 
         // Get by id
         Task<UserReadDto> GetByIdAsync(Guid id);
+        Task<UserReadDto> GetByIdAsync(Guid id, Guid userId);
 
         // delete
         Task<bool> DeleteOneAsync(Guid id);
 
         Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
+        Task<bool> UpdateOneAsync(Guid id, Guid userId, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
         Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);
-        Task<UserReadDto> GetByNameAsync(string name);
         Task<int> GetTotalUsersCountAsync();
 
         Task<string> SignInAsync(UserCreateDto createDto);

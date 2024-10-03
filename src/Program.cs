@@ -81,6 +81,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//Convert to Timestamp format
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 //test database connection
 using (var scope = app.Services.CreateScope())
 {
@@ -101,14 +104,17 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Database connection failed: {ex.Message}");
     }
 }
-
-//use controllers
-app.MapControllers();
-
+app.UseHttpsRedirection();
 //use middleware
+
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+
+//use controllers
+app.MapControllers();
 
 //use swagger
 if (app.Environment.IsDevelopment())
@@ -116,8 +122,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//Convert Timestamp format
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-app.UseHttpsRedirection();
 app.Run();

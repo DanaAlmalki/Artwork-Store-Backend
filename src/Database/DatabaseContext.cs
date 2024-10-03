@@ -1,4 +1,5 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 using static Backend_Teamwork.src.Entities.User;
 
@@ -23,6 +24,28 @@ namespace Backend_Teamwork.src.Database
         {
             modelBuilder.HasPostgresEnum<UserRole>();
             modelBuilder.HasPostgresEnum<Status>();
+
+            modelBuilder.Entity<User>().HasIndex(x => x.PhoneNumber).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
+
+            modelBuilder
+                .Entity<User>()
+                .HasData(
+                    new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Abeer",
+                        PhoneNumber = "0563034770",
+                        Email = "abeer@gmail.com",
+                        Password = PasswordUtils.HashPassword(
+                            "123",
+                            out string hashedPassword,
+                            out byte[] salt
+                        ),
+                        Role = UserRole.Admin,
+                        Salt = salt,
+                    }
+                );
         }
     }
 }

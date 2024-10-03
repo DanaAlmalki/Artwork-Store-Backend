@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -25,10 +26,6 @@ namespace Backend_Teamwork.src.Controllers
         public async Task<ActionResult<List<UserReadDto>>> GetUsers()
         {
             var users = await _userService.GetAllAsync();
-            if (users == null || !users.Any())
-            {
-                return NotFound();
-            }
             return Ok(users);
         }
 
@@ -37,10 +34,17 @@ namespace Backend_Teamwork.src.Controllers
         public async Task<ActionResult<UserReadDto>> GetUserById([FromRoute] Guid id)
         {
             var user = await _userService.GetByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound($"User with ID {id} not found.");
-            }
+            return Ok(user);
+        }
+
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult<UserReadDto>> GetInformationById([FromRoute] Guid id)
+        {
+            // Get the user ID from the token claims
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var user = await _userService.GetByIdAsync(id, convertedUserId);
             return Ok(user);
         }
 
@@ -49,15 +53,7 @@ namespace Backend_Teamwork.src.Controllers
         // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetByEmail([FromRoute] string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return BadRequest("Email is required");
-            }
             var user = await _userService.GetByEmailAsync(email);
-            if (user == null)
-            {
-                return NotFound($"User with email {email} not found.");
-            }
             return Ok(user);
         }
 
@@ -66,21 +62,18 @@ namespace Backend_Teamwork.src.Controllers
         // [AllowAnonymous] // No authorization required for signing up new users
         public async Task<ActionResult<UserReadDto>> SignUp([FromBody] UserCreateDto createDto)
         {
-            PasswordUtils.HashPassword(
-                createDto.Password,
-                out string hashedPassword,
-                out byte[] salt
-            );
-
-            createDto.Password = hashedPassword;
-            createDto.Salt = salt;
-
             var UserCreated = await _userService.CreateOneAsync(createDto);
-            if (UserCreated == null)
-            {
-                return BadRequest("Failed to create user. Phone number and Email should be unique");
-            }
             return CreatedAtAction(nameof(GetUserById), new { id = UserCreated.Id }, UserCreated);
+        }
+
+        // POST: api/v1/users/create-admin
+        [HttpPost("create-admin")]
+        // [Authorize(Roles = "Admin")] // Only Admin
+        public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
+        {
+            createDto.Role = UserRole.Admin; // Set role as 'Admin'
+            var adminCreated = await _userService.CreateOneAsync(createDto);
+            return CreatedAtAction(nameof(GetUserById), new { id = adminCreated.Id }, adminCreated);
         }
 
         // POST: api/v1/users/signin
@@ -89,95 +82,71 @@ namespace Backend_Teamwork.src.Controllers
         public async Task<ActionResult<string>> SignIn([FromBody] UserCreateDto createDto)
         {
             var token = await _userService.SignInAsync(createDto);
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Invalid email or password.");
-            }
             return Ok(token);
         }
 
-        // [Authorize(Roles = "Admin")]  // Only Admin
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> UpdateUser(
             [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
         )
         {
-            if (id == Guid.Empty)
-            {
-                return BadRequest("Invalid user ID");
-            }
-
-            var updateUser = await _userService.UpdateOneAsync(id, updateDto);
-            if (!updateUser)
-            {
-                return NotFound($"User with ID {id} not found.");
-            }
+            await _userService.UpdateOneAsync(id, updateDto);
             return NoContent();
-        }
+        } // should ask my teammates
+
+        [HttpPut("profile/{id}")]
+        public async Task<ActionResult<bool>> UpdateProfileInformation(
+            [FromRoute] Guid id,
+            [FromBody] UserUpdateDto updateDto
+        )
+        {
+            // Get the user ID from the token claims
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            await _userService.UpdateOneAsync(id, convertedUserId, updateDto);
+            return NoContent();
+        } // should ask my teammates
 
         // DELETE: api/v1/users/{id}
         [HttpDelete("{id}")]
         // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<bool>> DeleteUser([FromRoute] Guid id)
         {
-            var isDeleted = await _userService.DeleteOneAsync(id);
-
-            if (!isDeleted)
-            {
-                return NotFound($"User with ID {id} not found.");
-            }
+            await _userService.DeleteOneAsync(id);
             return NoContent();
         }
 
         // Extra Features
 
-        // search-by-name
-        [HttpGet("search-by-name/{name}")]
-        // [Authorize(Roles = "Admin")] // Only Admin
-        public async Task<ActionResult<UserReadDto>> GetByName([FromRoute] string name)
-        {
-            var user = await _userService.GetByNameAsync(name);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
-        }
-
-        // search-by-phone-num
+        // search-by-phone-number
         [HttpGet("search-by-phone/{phoneNumber}")]
         // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetByPhone([FromRoute] string phoneNumber)
         {
             var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
-            if (user == null)
-            {
-                return NotFound();
-            }
             return Ok(user);
         }
 
         // GET: api/v1/users/page
         [HttpGet("pagination")]
+        // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetUsersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
             var users = await _userService.GetUsersByPage(paginationOptions);
-            if (users == null || !users.Any())
-            {
-                return NotFound();
-            }
             return Ok(users);
         }
 
         // GET: api/v1/users/count
         [HttpGet("count")]
+        // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<int>> GetTotalUsersCount()
         {
-            var count = _userService.GetTotalUsersCountAsync();
+            var count = await _userService.GetTotalUsersCountAsync();
             return Ok(count);
         }
     }
