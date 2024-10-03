@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
@@ -49,6 +50,32 @@ namespace Backend_Teamwork.src.Repository
             _order.Update(updateOrder);
             await _databaseContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<Order>> GetAllAsync(PaginationOptions paginationOptions)
+        {
+            // Query for orders with optional search
+            var orderQuery = _order
+                .Include(o => o.OrderDetails) // Include order details
+                .Where(o =>
+                    o.ShippingAddress.Contains(paginationOptions.Search)
+                    || o.TotalAmount.ToString().Contains(paginationOptions.Search)
+                );
+
+            // Apply pagination
+            orderQuery = orderQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+
+            // Sorting logic
+            orderQuery = paginationOptions.SortOrder switch
+            {
+                "amount_desc" => orderQuery.OrderByDescending(o => o.TotalAmount),
+                "amount_asc" => orderQuery.OrderBy(o => o.TotalAmount),
+                "date_desc" => orderQuery.OrderByDescending(o => o.CreatedAt),
+                "date_asc" => orderQuery.OrderBy(o => o.CreatedAt),
+                _ => orderQuery.OrderBy(o => o.ShippingAddress), // Default sorting by ShippingAddress
+            };
+
+            return await orderQuery.ToListAsync();
         }
     }
 }

@@ -96,31 +96,6 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(token);
         }
 
-        // // POST: api/v1/users/creat-admin
-        // [HttpPost("create-admin")]
-        // // [Authorize(Roles = "Admin")]  // Only Admin
-        // public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
-        // {
-        //     // Hash the password before saving
-        //     PasswordUtils.HashPassword(
-        //         createDto.Password,
-        //         out string hashedPassword,
-        //         out byte[] salt
-        //     );
-
-        //     createDto.Password = hashedPassword;
-        //     createDto.Salt = salt;
-        //     createDto.Role = UserRole.Admin; // Set role as 'Admin'
-
-        //     var adminCreated = await _userService.CreateOneAsync(createDto);
-        //     if (adminCreated == null)
-        //     {
-        //         return BadRequest("Failed to create admin");
-        //     }
-
-        //     return CreatedAtAction(nameof(GetUserById), new { id = adminCreated.Id }, adminCreated);
-        // }
-
         // [Authorize(Roles = "Admin")]  // Only Admin
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
@@ -185,7 +160,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // GET: api/v1/users/page
-        [HttpGet("page")]
+        [HttpGet("pagination")]
         public async Task<ActionResult<UserReadDto>> GetUsersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
