@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
@@ -18,6 +19,35 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<User>> GetAllAsync()
         {
             return await _user.ToListAsync();
+        }
+
+        public async Task<List<User>> GetAllAsync(PaginationOptions paginationOptions)
+        {
+            // Combined search logic with OR for name, email, or phone number
+            var userQuery = _user.Where(a =>
+                a.Name.Contains(paginationOptions.Search)
+                || a.Email.Contains(paginationOptions.Search)
+                || a.PhoneNumber.Contains(paginationOptions.Search)
+            );
+
+            // Apply pagination
+            userQuery = userQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+
+            // Sorting logic
+            userQuery = paginationOptions.SortOrder switch
+            {
+                "name_desc" => userQuery.OrderByDescending(a => a.Name),
+                "email_desc" => userQuery.OrderByDescending(a => a.Email),
+                "email_asc" => userQuery.OrderBy(a => a.Email),
+                _ => userQuery.OrderBy(a => a.Name), // Default to ascending by name
+            };
+
+            return await userQuery.ToListAsync();
+        }
+
+        public async Task<int> GetCountAsync()
+        {
+            return await _user.CountAsync();
         }
 
         public async Task<User> CreateOneAsync(User newUser)
