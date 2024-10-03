@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 
 namespace Backend_Teamwork.src.DTO
@@ -16,6 +17,9 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public double Price { get; set; }
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public Guid ArtistId { get; set; }
+            public Guid CategoryId { get; set; }
+
         }
 
         // read data (get data)
@@ -28,6 +32,7 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public double Price { get; set; }
             public DateTime CreatedAt { get; set; }
+            public Category Category { get; set; }
         }
 
         // update
