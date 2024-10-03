@@ -113,14 +113,14 @@ namespace Backend_Teamwork.src.Services.user
         // Retrieves a user by their ID
         public async Task<UserReadDto> GetByIdAsync(Guid id, Guid userId)
         {
+            if (id != userId)
+            {
+                throw CustomException.Fotbidden("You are not authorized to view this profile.");
+            }
             var foundUser = await _userRepository.GetByIdAsync(id);
             if (foundUser == null)
             {
                 throw CustomException.NotFound($"User with id: {id} not found");
-            }
-            if (foundUser.Id != userId)
-            {
-                throw CustomException.Fotbidden($"Not allowed to access profile with id: {id}");
             }
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
