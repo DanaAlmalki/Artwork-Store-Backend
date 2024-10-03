@@ -85,12 +85,7 @@ namespace Backend_Teamwork.src.Controllers
             await _categoryService.DeleteAsync(id);
             return NoContent();
         }
-        [HttpGet("{categoryId}/artworks")]
-        public async Task<IActionResult> GetArtworkCategories(Guid categoryId)
-        {
-            var artworkCategories = await _categoryService.GetArtworkCategoriesByCategoryIdAsync(categoryId);
-            return Ok(artworkCategories);
-        }
-        
+
+
     }
 }
