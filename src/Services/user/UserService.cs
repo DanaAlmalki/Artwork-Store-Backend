@@ -75,11 +75,17 @@ namespace Backend_Teamwork.src.Services.user
             var user = _mapper.Map<UserCreateDto, User>(createDto);
             user.Password = hashedPassword;
             user.Salt = salt;
-            user.Role = UserRole.Customer;
 
-            var UserCreated = await _userRepository.CreateOneAsync(
-                _mapper.Map<UserCreateDto, User>(createDto)
-            );
+            if (user.Email.EndsWith("@artify.io", StringComparison.OrdinalIgnoreCase))
+            {
+                user.Role = UserRole.Admin;
+            }
+            else
+            {
+                user.Role = UserRole.Customer;
+            }
+
+            var UserCreated = await _userRepository.CreateOneAsync(user);
             return _mapper.Map<User, UserReadDto>(UserCreated);
         }
 

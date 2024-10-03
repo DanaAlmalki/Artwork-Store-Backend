@@ -86,7 +86,7 @@ namespace Backend_Teamwork.src.Controllers
         // POST: api/v1/users/signin
         [HttpPost("signin")]
         // [AllowAnonymous] // No authorization required for signing in
-        public async Task<ActionResult<string>> Login([FromBody] UserCreateDto createDto)
+        public async Task<ActionResult<string>> SignIn([FromBody] UserCreateDto createDto)
         {
             var token = await _userService.SignInAsync(createDto);
             if (string.IsNullOrEmpty(token))
@@ -96,30 +96,30 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(token);
         }
 
-        // POST: api/v1/users/creat-admin
-        [HttpPost("create-admin")]
-        // [Authorize(Roles = "Admin")]  // Only Admin
-        public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
-        {
-            // Hash the password before saving
-            PasswordUtils.HashPassword(
-                createDto.Password,
-                out string hashedPassword,
-                out byte[] salt
-            );
+        // // POST: api/v1/users/creat-admin
+        // [HttpPost("create-admin")]
+        // // [Authorize(Roles = "Admin")]  // Only Admin
+        // public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
+        // {
+        //     // Hash the password before saving
+        //     PasswordUtils.HashPassword(
+        //         createDto.Password,
+        //         out string hashedPassword,
+        //         out byte[] salt
+        //     );
 
-            createDto.Password = hashedPassword;
-            createDto.Salt = salt;
-            createDto.Role = UserRole.Admin; // Set role as 'Admin'
+        //     createDto.Password = hashedPassword;
+        //     createDto.Salt = salt;
+        //     createDto.Role = UserRole.Admin; // Set role as 'Admin'
 
-            var adminCreated = await _userService.CreateOneAsync(createDto);
-            if (adminCreated == null)
-            {
-                return BadRequest("Failed to create admin");
-            }
+        //     var adminCreated = await _userService.CreateOneAsync(createDto);
+        //     if (adminCreated == null)
+        //     {
+        //         return BadRequest("Failed to create admin");
+        //     }
 
-            return CreatedAtAction(nameof(GetUserById), new { id = adminCreated.Id }, adminCreated);
-        }
+        //     return CreatedAtAction(nameof(GetUserById), new { id = adminCreated.Id }, adminCreated);
+        // }
 
         // [Authorize(Roles = "Admin")]  // Only Admin
         [HttpPut("{id}")]
