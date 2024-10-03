@@ -27,7 +27,17 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
   - Update workshop information
   - Delete workshop
 - **📅 Booking Management**:
+  - Create new bookings for workshops
+  - Retrieve bookings by user or workshop
+  - Update booking status (confirmed, canceled)
+  - Delete bookings
+  - Handle bookings with pagination and filtering
 - **📦 Order Management**:
+  - Create new orders for purchased artworks
+  - Retrieve order details by user or order ID
+  - Update order status (pending, shipped, completed)
+  - Delete orders
+  - View order history for users
 - **💳  Payment Management**:
 
 ## ⚙️ Technologies Used
@@ -107,9 +117,39 @@ The API will be available at: `http://localhost:5125`
 
 - **POST** `/api/users` – Register a new user.
 - **POST** `/api/users/signin` – Login and get JWT token.
-- **GET** `/api/users/search-by-name/{name}` - search-by-name
-- **GET** `/api/users/search-by-phone/{phoneNumber}` - search-by-phone-num
-- **GET** `/api/users/page` - Pagination
+- **GET** `/api/users/search-by-name/{name}` - Search user by name.
+- **GET** `/api/users/search-by-phone/{phoneNumber}` - Search user by phone number.
+- **GET** `/api/users/page` - Pagination for users.
+
+### Artwork
+
+- **POST** `/api/artworks` – Create a new artwork (requires Artist role).
+- **GET** `/api/artworks` – Get all artworks with pagination.
+- **GET** `/api/artworks/{id}` – Get artwork by ID.
+- **GET** `/api/artworks/artist/{artistId}` – Get artworks by artist ID.
+- **PUT** `/api/artworks/{id}` – Update an artwork (requires Admin or Artist role).
+- **DELETE** `/api/artworks/{id}` – Delete an artwork (requires Admin or Artist role).
+
+### Category
+
+- **GET** `/api/categories` – Get all categories.
+- **GET** `/api/categories/{id}` – Get category by ID.
+- **GET** `/api/categories/search/{name}` – Get category by name.
+- **GET** `/api/categories/page` – Get categories with pagination.
+- **POST** `/api/categories` – Create a new category.
+- **PUT** `/api/categories/{id}` – Update a category.
+- **DELETE** `/api/categories/{id}` – Delete a category.
+- **GET** `/api/categories/{categoryId}/artworks` – Get artworks by category ID.
+
+### Order
+
+- **GET** `/api/orders` – Get all orders.
+- **GET** `/api/orders/sort-by-date` – Sort orders by date.
+- **GET** `/api/orders/{id}` – Get order by ID.
+- **POST** `/api/orders` – Create a new order.
+- **PUT** `/api/orders/{id}` – Update an order.
+- **DELETE** `/api/orders/{id}` – Delete an order.
+
 
 ## 🌐 Deployment
 
