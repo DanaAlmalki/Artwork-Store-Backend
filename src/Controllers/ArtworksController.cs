@@ -70,7 +70,7 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(artworkList);
         }
 
-        // Get by id
+        // Get by artwork id
         [HttpGet("{id}")]
         public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
         {
