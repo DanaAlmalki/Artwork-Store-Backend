@@ -35,6 +35,17 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(user);
         }
 
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult<UserReadDto>> GetInformationById([FromRoute] Guid id)
+        {
+            // Get the user ID from the token claims
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            var user = await _userService.GetByIdAsync(id, convertedUserId);
+            return Ok(user);
+        }
+
         // GET: api/v1/users/email
         [HttpGet("email")]
         // [Authorize(Roles = "Admin")] // Only Admin
@@ -70,6 +81,20 @@ namespace Backend_Teamwork.src.Controllers
         )
         {
             await _userService.UpdateOneAsync(id, updateDto);
+            return NoContent();
+        } // should ask my teammates
+
+        [HttpPut("profile/{id}")]
+        public async Task<ActionResult<bool>> UpdateProfileInformation(
+            [FromRoute] Guid id,
+            [FromBody] UserUpdateDto updateDto
+        )
+        {
+            // Get the user ID from the token claims
+            var authClaims = HttpContext.User;
+            var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var convertedUserId = new Guid(userId);
+            await _userService.UpdateOneAsync(id, convertedUserId, updateDto);
             return NoContent();
         } // should ask my teammates
 

@@ -26,7 +26,7 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             // return newArtwork;
             return await _artwork
-               .Include(o => o.ArtworkCategories)
+               .Include(o => o)
                .FirstOrDefaultAsync(o => o.Id == newArtwork.Id);
         }
 
