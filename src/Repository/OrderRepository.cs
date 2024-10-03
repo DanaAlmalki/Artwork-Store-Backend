@@ -76,15 +76,14 @@ namespace Backend_Teamwork.src.Repository
             };
 
             return await orderQuery.ToListAsync();
-
+        }
 
         // with Payment
         public async Task<Order> GetOrdertWithPaymentAsync(Guid orerId)
         {
-            return await _databaseContext.Order
-            .Include(o => o.Payment)
-            .FirstOrDefaultAsync(o => o.Id == orerId);
-
+            return await _databaseContext
+                .Order.Include(o => o.Payment)
+                .FirstOrDefaultAsync(o => o.Id == orerId);
         }
     }
 }
