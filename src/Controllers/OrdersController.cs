@@ -1,5 +1,6 @@
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.order;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 
@@ -16,36 +17,89 @@ namespace Backend_Teamwork.src.Controllers
             _orderService = service;
         }
 
-        // public static List<Order> orders = new List<Order>
-        // {
-        //     new Order
-        //     {
-        //         //OrderId = 1,
-        //         TotalAmount = 150.50m,
-        //         ShippingAddress = "123 Main St",
-        //         CreatedAt = DateTime.Now.AddDays(-5),
-        //     },
-        //     new Order
-        //     {
-        //         //OrderId = 2,
-        //         TotalAmount = 250.75m,
-        //         ShippingAddress = "456 Elm St",
-        //         CreatedAt = DateTime.Now.AddDays(-3),
-        //     },
-        //     new Order
-        //     {
-        //         //OrderId = 3,
-        //         TotalAmount = 500.00m,
-        //         ShippingAddress = "789 Oak St",
-        //         CreatedAt = DateTime.Now.AddDays(-1),
-        //     },
-        // };
-
         // GET: api/v1/orders
         [HttpGet]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
         public async Task<ActionResult<List<OrderReadDto>>> GetOrders()
         {
             var orders = await _orderService.GetAllAsync();
+            if (orders == null || !orders.Any())
+            {
+                return NotFound();
+            }
+            return Ok(orders);
+        }
+
+        // GET: api/v1/orders/{id}
+        [HttpGet("{id}")]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        public async Task<ActionResult<OrderReadDto>> GetOrderById([FromRoute] Guid id)
+        {
+            var order = await _orderService.GetByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound($"Order with ID {id} not found.");
+            }
+            return Ok(order);
+        }
+
+        // POST: api/v1/orders
+        [HttpPost]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        public async Task<ActionResult<OrderReadDto>> AddOrder([FromBody] OrderCreateDto createDto)
+        {
+            var orderCreated = await _orderService.CreateOneAsync(createDto);
+            return CreatedAtAction(
+                nameof(GetOrderById),
+                new { id = orderCreated.Id },
+                orderCreated
+            );
+        }
+
+        // PUT: api/v1/orders/{id}
+        [HttpPut("{id}")]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        public async Task<ActionResult<bool>> UpdateOrder(
+            [FromRoute] Guid id,
+            [FromBody] OrderUpdateDto updateDto
+        )
+        {
+            var updateOrder = await _orderService.UpdateOneAsync(id, updateDto);
+            if (!updateOrder)
+            {
+                return NotFound($"Order with ID {id} not found.");
+            }
+            return NoContent();
+        }
+
+        // DELETE: api/v1/orders/{id}
+        [HttpDelete("{id}")]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        public async Task<ActionResult<bool>> DeleteOrder(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid user ID");
+            }
+            var isDeleted = await _orderService.DeleteOneAsync(id);
+
+            if (!isDeleted)
+            {
+                return NotFound($"Order with ID {id} not found.");
+            }
+            return NoContent();
+        }
+
+        // Extra Features
+        // GET: api/v1/users/page
+        [HttpGet("pagination")]
+        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+
+        public async Task<ActionResult<OrderReadDto>> GetOrdersByPage(
+            [FromQuery] PaginationOptions paginationOptions
+        )
+        {
+            var orders = await _orderService.GetOrdersByPage(paginationOptions);
             if (orders == null || !orders.Any())
             {
                 return NotFound();
@@ -62,55 +116,6 @@ namespace Backend_Teamwork.src.Controllers
                 return NotFound();
             }
             return Ok(orders.OrderBy(x => x.CreatedAt).ToList());
-        }
-
-        // GET: api/v1/orders/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<OrderReadDto>> GetOrderById([FromRoute] Guid id)
-        {
-            var order = await _orderService.GetByIdAsync(id);
-            if (order == null)
-            {
-                return NotFound($"Order with ID {id} not found.");
-            }
-            return Ok(order);
-        }
-
-        // POST: api/v1/orders
-        [HttpPost]
-        public async Task<ActionResult<OrderReadDto>> AddOrder(OrderCreateDto createDto)
-        {
-            var orderCreated = await _orderService.CreateOneAsync(createDto);
-            return CreatedAtAction(
-                nameof(GetOrderById),
-                new { id = orderCreated.Id },
-                orderCreated
-            );
-        }
-
-        // PUT: api/v1/orders/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult<bool>> UpdateOrder(Guid id, OrderUpdateDto updateDto)
-        {
-            var updateOrder = await _orderService.UpdateOneAsync(id, updateDto);
-            if (!updateOrder)
-            {
-                return NotFound($"Order with ID {id} not found.");
-            }
-            return NoContent();
-        }
-
-        // DELETE: api/v1/orders/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> DeleteOrder(Guid id)
-        {
-            var isDeleted = await _orderService.DeleteOneAsync(id);
-
-            if (!isDeleted)
-            {
-                return NotFound($"Order with ID {id} not found.");
-            }
-            return NoContent();
         }
     }
 }
