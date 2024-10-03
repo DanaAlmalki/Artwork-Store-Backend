@@ -16,7 +16,7 @@ namespace Backend_Teamwork.src.DTO
             public string Description { get; set; }
             public int Quantity { get; set; }
             public double Price { get; set; }
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
             public Guid ArtistId { get; set; }
             public Guid CategoryId { get; set; }
 
@@ -38,11 +38,10 @@ namespace Backend_Teamwork.src.DTO
         // update
         public class ArtworkUpdateDTO
         {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public int Quantity { get; set; }
-            public double Price { get; set; }
-            public DateTime CreatedAt { get; set; }
+            public string? Title { get; set; }
+            public string? Description { get; set; }
+            public int? Quantity { get; set; }
+            public double? Price { get; set; }
         }
     }
 }
