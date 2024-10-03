@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.UserDTO;
+using static Backend_Teamwork.src.Entities.User;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -64,6 +66,16 @@ namespace Backend_Teamwork.src.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = UserCreated.Id }, UserCreated);
         }
 
+        // POST: api/v1/users/create-admin
+        [HttpPost("create-admin")]
+        // [Authorize(Roles = "Admin")] // Only Admin
+        public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
+        {
+            createDto.Role = UserRole.Admin; // Set role as 'Admin'
+            var adminCreated = await _userService.CreateOneAsync(createDto);
+            return CreatedAtAction(nameof(GetUserById), new { id = adminCreated.Id }, adminCreated);
+        }
+
         // POST: api/v1/users/signin
         [HttpPost("signin")]
         // [AllowAnonymous] // No authorization required for signing in
@@ -120,23 +132,21 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/page
         [HttpGet("pagination")]
+        // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetUsersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
             var users = await _userService.GetUsersByPage(paginationOptions);
-            if (users == null || !users.Any())
-            {
-                return NotFound();
-            }
             return Ok(users);
         }
 
         // GET: api/v1/users/count
         [HttpGet("count")]
+        // [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<int>> GetTotalUsersCount()
         {
-            var count = _userService.GetTotalUsersCountAsync();
+            var count = await _userService.GetTotalUsersCountAsync();
             return Ok(count);
         }
     }

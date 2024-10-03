@@ -84,11 +84,6 @@ namespace Backend_Teamwork.src.Services.user
             user.Password = hashedPassword;
             user.Salt = salt;
 
-            if (user.Email.EndsWith("@artify.io", StringComparison.OrdinalIgnoreCase))
-            {
-                user.Role = UserRole.Admin;
-            }
-
             var UserCreated = await _userRepository.CreateOneAsync(user);
             if (UserCreated == null)
             {

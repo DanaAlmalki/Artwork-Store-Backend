@@ -42,6 +42,7 @@ namespace Backend_Teamwork.src.Database
                             out string hashedPassword,
                             out byte[] salt
                         ),
+                        Role = UserRole.Admin,
                         Salt = salt,
                     }
                 );
