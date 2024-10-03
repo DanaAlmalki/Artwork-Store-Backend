@@ -1,3 +1,4 @@
+using Backend_Teamwork.src.Utils;
 using static Backend_Teamwork.src.DTO.UserDTO;
 
 namespace Backend_Teamwork.src.Services.user
@@ -6,6 +7,8 @@ namespace Backend_Teamwork.src.Services.user
     {
         // Get all
         Task<List<UserReadDto>> GetAllAsync();
+
+        Task<List<UserReadDto>> GetUsersByPage(PaginationOptions paginationOptions);
 
         // create
         Task<UserReadDto> CreateOneAsync(UserCreateDto createDto);
@@ -21,6 +24,7 @@ namespace Backend_Teamwork.src.Services.user
         Task<UserReadDto> GetByEmailAsync(string email);
         Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);
         Task<UserReadDto> GetByNameAsync(string name);
+        Task<int> GetTotalUsersCountAsync();
 
         Task<string> SignInAsync(UserCreateDto createDto);
     }

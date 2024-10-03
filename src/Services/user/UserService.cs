@@ -24,14 +24,37 @@ namespace Backend_Teamwork.src.Services.user
             _mapper = mapper;
         }
 
-        // Get all
+        // Retrieves all users
         public async Task<List<UserReadDto>> GetAllAsync()
         {
             var UserList = await _userRepository.GetAllAsync();
             return _mapper.Map<List<User>, List<UserReadDto>>(UserList);
         }
 
-        // Create
+        // Gets the total count of users
+        public async Task<int> GetTotalUsersCountAsync()
+        {
+            return await _userRepository.GetCountAsync();
+        }
+
+        // Retrieves users with pagination options
+        public async Task<List<UserReadDto>> GetUsersByPage(PaginationOptions paginationOptions)
+        {
+            // Validate pagination options
+            if (paginationOptions.Limit <= 0)
+            {
+                throw CustomException.BadRequest("Limit should be greater than 0.");
+            }
+
+            if (paginationOptions.Offset < 0)
+            {
+                throw CustomException.BadRequest("Offset should be 0 or greater.");
+            }
+            var UserList = await _userRepository.GetAllAsync(paginationOptions);
+            return _mapper.Map<List<User>, List<UserReadDto>>(UserList);
+        }
+
+        // Creates a new user
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
             var foundUserByEmail = await _userRepository.GetByEmailAsync(createDto.Email);
@@ -41,7 +64,7 @@ namespace Backend_Teamwork.src.Services.user
 
             if (foundUserByEmail != null || foundUserByPhoneNumber != null)
             {
-                return null;
+                throw CustomException.BadRequest("Email or Phone Number already exists.");
             }
             // Hash password before saving to the database
             PasswordUtils.HashPassword(
@@ -60,28 +83,36 @@ namespace Backend_Teamwork.src.Services.user
             return _mapper.Map<User, UserReadDto>(UserCreated);
         }
 
-        // Get by id
+        // Retrieves a user by their ID
         public async Task<UserReadDto> GetByIdAsync(Guid id)
         {
             var foundUser = await _userRepository.GetByIdAsync(id);
+            if (foundUser == null)
+            {
+                throw CustomException.NotFound("User not found.");
+            }
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
 
-        // Delete
+        // Deletes a user by their ID
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundUser = await _userRepository.GetByIdAsync(id);
             if (foundUser == null)
-                return false;
+            {
+                throw CustomException.NotFound("User not found.");
+            }
             return await _userRepository.DeleteOneAsync(foundUser);
         }
 
-        // Update
+        // Updates a user by their ID
         public async Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto)
         {
             var foundUser = await _userRepository.GetByIdAsync(id);
             if (foundUser == null)
-                return false;
+            {
+                throw CustomException.NotFound("User not found.");
+            }
 
             // Map the update DTO to the existing User entity
             _mapper.Map(updateDto, foundUser);
@@ -89,31 +120,46 @@ namespace Backend_Teamwork.src.Services.user
             return await _userRepository.UpdateOneAsync(foundUser);
         }
 
-        // Get by email
+        // Retrieves a user by their email
         public async Task<UserReadDto> GetByEmailAsync(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                throw CustomException.NotFound("User not found.");
+            }
             return _mapper.Map<User, UserReadDto>(user);
         }
 
+        // Retrieves a user by their phone number
         public async Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber)
         {
             var user = await _userRepository.GetByPhoneNumberAsync(phoneNumber);
+            if (user == null)
+            {
+                throw CustomException.NotFound("User not found.");
+            }
             return _mapper.Map<User, UserReadDto>(user);
         }
 
+        // Retrieves a user by their name
         public async Task<UserReadDto> GetByNameAsync(string name)
         {
             var user = await _userRepository.GetByNameAsync(name);
+            if (user == null)
+            {
+                throw CustomException.NotFound("User not found.");
+            }
             return _mapper.Map<User, UserReadDto>(user);
         }
 
+        // Signs in a user with their credentials
         public async Task<string> SignInAsync(UserCreateDto createDto)
         {
             var foundUser = await _userRepository.GetByEmailAsync(createDto.Email);
             if (foundUser == null)
             {
-                return "NotFound";
+                throw CustomException.NotFound("User not found.");
             }
 
             // Verify the password
@@ -125,7 +171,7 @@ namespace Backend_Teamwork.src.Services.user
 
             if (!isMatched)
             {
-                return "Unauthorized";
+                throw CustomException.UnAuthorized("Unauthorized access.");
             }
 
             var TokenUtil = new TokenUtils(_configuration);
