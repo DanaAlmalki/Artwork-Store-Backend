@@ -101,14 +101,17 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Database connection failed: {ex.Message}");
     }
 }
-
-//use controllers
-app.MapControllers();
-
+app.UseHttpsRedirection();
 //use middleware
+
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+
+//use controllers
+app.MapControllers();
 
 //use swagger
 if (app.Environment.IsDevelopment())
@@ -119,5 +122,4 @@ if (app.Environment.IsDevelopment())
 //Convert Timestamp format
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-app.UseHttpsRedirection();
 app.Run();
