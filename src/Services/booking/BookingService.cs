@@ -89,9 +89,11 @@ namespace Backend_Teamwork.src.Services.booking
             return _mapper.Map<List<Booking>, List<BookingReadDto>>(bookings);
         }
 
-        public async Task<List<BookingReadDto>> GetWithPaginationAsync(int pageNumber, int pageSize)
+        public async Task<List<BookingReadDto>> GetWithPaginationAsync(
+            PaginationOptions paginationOptions
+        )
         {
-            var bookings = await _bookingRepository.GetWithPaginationAsync(pageNumber, pageSize);
+            var bookings = await _bookingRepository.GetWithPaginationAsync(paginationOptions);
             if (bookings.Count == 0)
             {
                 throw CustomException.NotFound($"Bookings not found");
@@ -100,15 +102,11 @@ namespace Backend_Teamwork.src.Services.booking
         }
 
         public async Task<List<BookingReadDto>> GetByUserIdWithPaginationAsync(
-            Guid userId,
-            int pageNumber,
-            int pageSize
+            PaginationOptions paginationOptions
         )
         {
             var bookings = await _bookingRepository.GetByUserIdWithPaginationAsync(
-                userId,
-                pageNumber,
-                pageSize
+                paginationOptions
             );
             if (bookings.Count == 0)
             {

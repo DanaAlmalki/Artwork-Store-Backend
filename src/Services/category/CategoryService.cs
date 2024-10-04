@@ -16,7 +16,11 @@ namespace Backend_Teamwork.src.Services.category
         private readonly ArtworkRepository _artworkRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(CategoryRepository categoryRepository, IMapper mapper, ArtworkRepository artworkRepository)
+        public CategoryService(
+            CategoryRepository categoryRepository,
+            IMapper mapper,
+            ArtworkRepository artworkRepository
+        )
         {
             _categoryRepository = categoryRepository;
             _artworkRepository = artworkRepository;
@@ -54,13 +58,11 @@ namespace Backend_Teamwork.src.Services.category
         }
 
         public async Task<List<CategoryReadDto>> GetWithPaginationAsync(
-            int pageNumber,
-            int pageSize
+            PaginationOptions paginationOptions
         )
         {
             var foundCategories = await _categoryRepository.GetWithPaginationAsync(
-                pageNumber,
-                pageSize
+                paginationOptions
             );
             if (foundCategories.Count == 0)
             {

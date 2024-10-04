@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.booking;
+using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.BookingDTO;
@@ -90,45 +91,23 @@ namespace Backend_Teamwork.src.Controllers
         [HttpGet("page")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<BookingReadDto>>> GetBookingsWithPagination(
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize
+            [FromQuery] PaginationOptions paginationOptions
         )
         {
-            var bookings = await _bookingService.GetWithPaginationAsync(pageNumber, pageSize);
-            return Ok(bookings);
-        }
-
-        [HttpGet("page/{userId}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserIdWithPagination(
-            [FromRoute] Guid userId,
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize
-        )
-        {
-            var bookings = await _bookingService.GetByUserIdWithPaginationAsync(
-                userId,
-                pageNumber,
-                pageSize
-            );
+            var bookings = await _bookingService.GetWithPaginationAsync(paginationOptions);
             return Ok(bookings);
         }
 
         [HttpGet("my-bookings/page")]
         [Authorize(Roles = "Customer")]
         public async Task<ActionResult<List<BookingReadDto>>> GetBookingsByUserIdWithPagination(
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize
+            [FromQuery] PaginationOptions paginationOptions
         )
         {
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
-            var convertedUserId = new Guid(userId);
-            var bookings = await _bookingService.GetByUserIdWithPaginationAsync(
-                convertedUserId,
-                pageNumber,
-                pageSize
-            );
+            paginationOptions.Search=userId;
+            var bookings = await _bookingService.GetByUserIdWithPaginationAsync(paginationOptions);
             return Ok(bookings);
         }
 
