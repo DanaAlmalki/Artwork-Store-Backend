@@ -43,7 +43,7 @@ namespace Backend_Teamwork.src.Services.artwork
 
             if (paginationOptions.PageNumber <= 0)
             {
-                throw CustomException.BadRequest("Offset should be greater than 0.");
+                throw CustomException.BadRequest("PageNumber should be greater than 0.");
             }
 
             var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
