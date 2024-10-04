@@ -47,7 +47,7 @@ namespace Backend_Teamwork.src.Repository
             return await _booking
                 .Include(b => b.Workshop)
                 .Include(b=>b.User)
-                .Where(b => b.Status.ToString() == status.ToString())
+                .Where(b => b.Status.ToString().ToLower() == status.ToLower())
                 .ToListAsync();
         }
 

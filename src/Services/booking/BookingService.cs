@@ -139,7 +139,7 @@ namespace Backend_Teamwork.src.Services.booking
             {
                 throw CustomException.BadRequest($"Invalid booking");
             }
-            //4. check if the customer enrolled in other workshop at the same time
+            //4. check if the user enrolled in other workshop at the same time
             var workshops = await _workshopRepository.GetAllAsync();
             var foundWorkshop = workshops.FirstOrDefault(w =>
                 (w.StartTime == workshop.StartTime && w.EndTime == workshop.EndTime)

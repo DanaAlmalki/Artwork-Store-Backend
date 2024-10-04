@@ -13,11 +13,13 @@ namespace Backend_Teamwork.src.Services.category
     public class CategoryService : ICategoryService
     {
         private readonly CategoryRepository _categoryRepository;
+        private readonly ArtworkRepository _artworkRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(CategoryRepository categoryRepository, IMapper mapper)
+        public CategoryService(CategoryRepository categoryRepository, IMapper mapper, ArtworkRepository artworkRepository)
         {
             _categoryRepository = categoryRepository;
+            _artworkRepository = artworkRepository;
             _mapper = mapper;
         }
 
@@ -109,10 +111,15 @@ namespace Backend_Teamwork.src.Services.category
         public async Task DeleteAsync(Guid id)
         {
             var foundCategory = await _categoryRepository.GetByIdAsync(id);
+            //var foundArtwork = await _artworkRepository.GetByCategoryIdAsync(foundCategory.Id);
             if (foundCategory == null)
             {
                 throw CustomException.NotFound($"Category with id: {id} not found");
             }
+            /*if (foundArtwork != null)
+            {
+                throw CustomException.NotFound($"Invalid deleting");
+            }*/
             await _categoryRepository.DeleteAsync(foundCategory);
         }
     }
