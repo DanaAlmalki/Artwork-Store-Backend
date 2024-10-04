@@ -65,20 +65,15 @@ namespace Backend_Teamwork.src.Controllers
         // [Authorize(Roles = "Customer")]  // Uncomment if authorization is required
         public async Task<ActionResult<OrderReadDto>> AddOrder([FromBody] OrderCreateDto createDto)
         {
-            // Extract user ID from the authenticated user's claims
             // extract user information
             var authenticateClaims = HttpContext.User;
-            // get user id from claim
             var userId = authenticateClaims
                 .FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!
                 .Value;
-            // string => guid
             var userGuid = new Guid(userId);
 
-            // Call the service method to create the order
             var orderCreated = await _orderService.CreateOneAsync(userGuid, createDto);
 
-            // Return 201 Created with the new order
             return CreatedAtAction(
                 nameof(GetOrderById),
                 new { id = orderCreated.Id },
