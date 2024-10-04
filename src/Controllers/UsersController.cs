@@ -22,7 +22,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users
         [HttpGet]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<List<UserReadDto>>> GetUsers()
         {
             var users = await _userService.GetAllAsync();
@@ -30,7 +30,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Admin")]  // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetUserById([FromRoute] Guid id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -50,7 +50,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/email
         [HttpGet("email")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetByEmail([FromRoute] string email)
         {
             var user = await _userService.GetByEmailAsync(email);
@@ -59,7 +59,6 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/users
         [HttpPost]
-        // [AllowAnonymous] // No authorization required for signing up new users
         public async Task<ActionResult<UserReadDto>> SignUp([FromBody] UserCreateDto createDto)
         {
             var UserCreated = await _userService.CreateOneAsync(createDto);
@@ -68,7 +67,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/users/create-admin
         [HttpPost("create-admin")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> CreateAdmin([FromBody] UserCreateDto createDto)
         {
             createDto.Role = UserRole.Admin; // Set role as 'Admin'
@@ -78,7 +77,6 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/users/signin
         [HttpPost("signin")]
-        // [AllowAnonymous] // No authorization required for signing in
         public async Task<ActionResult<string>> SignIn([FromBody] UserCreateDto createDto)
         {
             var token = await _userService.SignInAsync(createDto);
@@ -86,7 +84,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> UpdateUser(
             [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
@@ -112,7 +110,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // DELETE: api/v1/users/{id}
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<bool>> DeleteUser([FromRoute] Guid id)
         {
             await _userService.DeleteOneAsync(id);
@@ -123,7 +121,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // search-by-phone-number
         [HttpGet("search-by-phone/{phoneNumber}")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetByPhone([FromRoute] string phoneNumber)
         {
             var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
@@ -132,7 +130,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/page
         [HttpGet("pagination")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetUsersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
@@ -143,7 +141,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users/count
         [HttpGet("count")]
-        // [Authorize(Roles = "Admin")] // Only Admin
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<int>> GetTotalUsersCount()
         {
             var count = await _userService.GetTotalUsersCountAsync();

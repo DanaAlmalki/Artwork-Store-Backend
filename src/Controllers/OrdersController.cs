@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Services.order;
 using Backend_Teamwork.src.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Backend_Teamwork.src.DTO.OrderDTO;
 
@@ -20,7 +21,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders
         [HttpGet]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<List<OrderReadDto>>> GetOrders()
         {
             var orders = await _orderService.GetAllAsync();
@@ -29,7 +30,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders
         [HttpGet("my-orders")]
-        // [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<List<OrderReadDto>>> GetMyOrders()
         {
             var authClaims = HttpContext.User;
@@ -41,7 +42,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders/{id}
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<OrderReadDto>> GetOrderById([FromRoute] Guid id)
         {
             var order = await _orderService.GetByIdAsync(id);
@@ -50,7 +51,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/orders/{id}
         [HttpGet("my-orders/{id}")]
-        // [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<OrderReadDto>> GetMyOrderById([FromRoute] Guid id)
         {
             var authClaims = HttpContext.User;
@@ -62,7 +63,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/orders
         [HttpPost("add")]
-        // [Authorize(Roles = "Customer")]  // Uncomment if authorization is required
+        [Authorize(Roles = "Customer")]
         public async Task<ActionResult<OrderReadDto>> AddOrder([FromBody] OrderCreateDto createDto)
         {
             // extract user information
@@ -83,7 +84,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // PUT: api/v1/orders/{id}
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<bool>> UpdateOrder(
             [FromRoute] Guid id,
             [FromBody] OrderUpdateDto updateDto
@@ -99,7 +100,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // DELETE: api/v1/orders/{id}
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<bool>> DeleteOrder(Guid id)
         {
             if (id == Guid.Empty)
@@ -118,8 +119,7 @@ namespace Backend_Teamwork.src.Controllers
         // Extra Features
         // GET: api/v1/users/page
         [HttpGet("pagination")]
-        // [Authorize(Roles = "Admin")]  // Accessible by Admin
-
+        [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<OrderReadDto>> GetOrdersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
