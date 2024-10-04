@@ -153,7 +153,7 @@ namespace Backend_Teamwork.src.Services.order
             }
             if (foundOrder.UserId != userId)
             {
-                throw CustomException.Fotbidden("You are not authorized to view this order.");
+                throw CustomException.Forbidden("You are not authorized to view this order.");
             }
 
             return _mapper.Map<Order, OrderReadDto>(foundOrder);
