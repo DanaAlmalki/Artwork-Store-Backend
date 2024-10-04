@@ -125,5 +125,4 @@ if (app.Environment.IsDevelopment())
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-
 app.Run();
