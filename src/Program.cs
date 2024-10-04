@@ -116,6 +116,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 //Convert Timestamp format
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

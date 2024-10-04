@@ -12,7 +12,7 @@ namespace Backend_Teamwork.src.DTO
             public string? ShippingAddress { get; set; }
             public DateTime CreatedAt { get; set; }
             public Guid UserId { get; set; }
-            public List<OrderDetailReadDto> OrderDetails { get; set; }
+            public List<OrderDetailCreateDto> OrderDetails { get; set; }
         }
 
         // DTO for reading order data

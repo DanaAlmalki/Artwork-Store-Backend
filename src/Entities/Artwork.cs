@@ -13,13 +13,13 @@ namespace Backend_Teamwork.src.Entities
         public string Description { get; set; }
 
         public int Quantity { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }
 
-        // OrderDetails 
+        // OrderDetails
         public List<OrderDetails>? OrderDetails { get; set; }
     }
 }
