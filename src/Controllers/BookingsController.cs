@@ -49,8 +49,8 @@ namespace Backend_Teamwork.src.Controllers
             [FromRoute] Guid userId
         )
         {
-            var booking = await _bookingService.GetByUserIdAsync(userId);
-            return Ok(booking);
+            var bookings = await _bookingService.GetByUserIdAsync(userId);
+            return Ok(bookings);
         }
 
         [HttpGet("my-bookings")]
@@ -60,8 +60,8 @@ namespace Backend_Teamwork.src.Controllers
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var convertedUserId = new Guid(userId);
-            var booking = await _bookingService.GetByUserIdAsync(convertedUserId);
-            return Ok(booking);
+            var bookings = await _bookingService.GetByUserIdAsync(convertedUserId);
+            return Ok(bookings);
         }
 
         [HttpGet("search/{status:alpha}")]
@@ -70,8 +70,8 @@ namespace Backend_Teamwork.src.Controllers
             [FromRoute] string status
         )
         {
-            var booking = await _bookingService.GetByStatusAsync(status);
-            return Ok(booking);
+            var bookings = await _bookingService.GetByStatusAsync(status);
+            return Ok(bookings);
         }
 
         [HttpGet("my-bookings/search/{status}")]
@@ -83,8 +83,8 @@ namespace Backend_Teamwork.src.Controllers
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var convertedUserId = new Guid(userId);
-            var booking = await _bookingService.GetByUserIdAndStatusAsync(convertedUserId, status);
-            return Ok(booking);
+            var bookings = await _bookingService.GetByUserIdAndStatusAsync(convertedUserId, status);
+            return Ok(bookings);
         }
 
         [HttpGet("page")]
@@ -153,12 +153,14 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(booking);
         }
 
-        [HttpPut("reject/{id}")]
+        [HttpPut("reject/{workshopId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<BookingReadDto>> RejectBooking([FromRoute] Guid id)
+        public async Task<ActionResult<List<BookingReadDto>>> RejectBooking(
+            [FromRoute] Guid workshopId
+        )
         {
-            var booking = await _bookingService.RejectAsync(id);
-            return Ok(booking);
+            var bookings = await _bookingService.RejectAsync(workshopId);
+            return Ok(bookings);
         }
 
         [HttpPut("my-bookings/cancel/{id}")]

@@ -167,6 +167,7 @@ namespace Backend_Teamwork.src.Services.booking
             return _mapper.Map<Booking, BookingReadDto>(createdBooking);
         }
 
+        //after payment
         public async Task<BookingReadDto> ConfirmAsync(Guid id)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
@@ -193,25 +194,31 @@ namespace Backend_Teamwork.src.Services.booking
             return _mapper.Map<Booking, BookingReadDto>(updatedBooking);
         }
 
-        public async Task<BookingReadDto> RejectAsync(Guid id)
+        //after workshop becomes unavailable
+        public async Task<List<BookingReadDto>> RejectAsync(Guid workshopId)
         {
-            var booking = await _bookingRepository.GetByIdAsync(id);
-            if (booking == null)
+            var workshop = await _workshopRepository.GetByIdAsync(workshopId);
+            //check if the workshop is found
+            if (workshop == null)
             {
-                throw CustomException.NotFound($"Booking with id: {id} not found");
+                throw CustomException.NotFound($"Workshp with id: {workshopId} not found");
             }
-            //1. check if the booking status isn't pending
-            if (booking.Status.ToString() != Status.Pending.ToString())
+            //check if the workshop is available
+            if (workshop.Availability)
             {
-                throw CustomException.BadRequest($"Invalid rejecting");
+                throw CustomException.BadRequest($"Invalid regecting");
             }
-            //2. check if the user pay
-            //var payment =
-
-            //reject booking
-            booking.Status = Status.Rejected;
-            var updatedBooking = await _bookingRepository.UpdateAsync(booking);
-            return _mapper.Map<Booking, BookingReadDto>(updatedBooking);
+            var bookings = await _bookingRepository.GetByWorkshopIdAndStatusAsync(
+                workshopId,
+                Status.Pending
+            );
+            foreach (var booking in bookings)
+            {
+                //reject booking
+                booking.Status = Status.Rejected;
+                var updatedBooking = await _bookingRepository.UpdateAsync(booking);
+            }
+            return _mapper.Map<List<Booking>, List<BookingReadDto>>(bookings);
         }
 
         public async Task<BookingReadDto> CancelAsync(Guid id, Guid userId)
