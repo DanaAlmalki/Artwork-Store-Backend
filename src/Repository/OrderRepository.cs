@@ -84,7 +84,9 @@ namespace Backend_Teamwork.src.Repository
                 );
 
             // Apply pagination
-            orderQuery = orderQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+            orderQuery = orderQuery
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize);
 
             // Sorting logic
             orderQuery = paginationOptions.SortOrder switch

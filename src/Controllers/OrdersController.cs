@@ -61,26 +61,22 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // POST: api/v1/orders
-        [HttpPost("add/{id}")]
+        [HttpPost("add")]
         // [Authorize(Roles = "Customer")]  // Uncomment if authorization is required
-        public async Task<ActionResult<OrderReadDto>> AddOrder(
-            Guid id,
-            [FromBody] OrderCreateDto createDto
-        )
+        public async Task<ActionResult<OrderReadDto>> AddOrder([FromBody] OrderCreateDto createDto)
         {
             // Extract user ID from the authenticated user's claims
-            // var authClaims = HttpContext.User;
-            // var userIdClaim = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
-
-            // if (userIdClaim == null)
-            // {
-            //     return Unauthorized("User is not authenticated.");
-            // }
-
-            // var convertedUserId = new Guid(userIdClaim.Value);
+            // extract user information
+            var authenticateClaims = HttpContext.User;
+            // get user id from claim
+            var userId = authenticateClaims
+                .FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!
+                .Value;
+            // string => guid
+            var userGuid = new Guid(userId);
 
             // Call the service method to create the order
-            var orderCreated = await _orderService.CreateOneAsync(id, createDto);
+            var orderCreated = await _orderService.CreateOneAsync(userGuid, createDto);
 
             // Return 201 Created with the new order
             return CreatedAtAction(

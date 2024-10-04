@@ -31,7 +31,9 @@ namespace Backend_Teamwork.src.Repository
             );
 
             // Apply pagination
-            userQuery = userQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+            userQuery = userQuery
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize);
 
             // Sorting logic
             userQuery = paginationOptions.SortOrder switch

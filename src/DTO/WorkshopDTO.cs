@@ -14,7 +14,7 @@ namespace Backend_Teamwork.src.DTO
             public decimal Price { get; set; }
             public int Capacity { get; set; }
             public bool Availability { get; set; }
-            public DateTime CreatedAt { get; set; }
+            public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
             public Guid UserId { get; set; }
         }
 

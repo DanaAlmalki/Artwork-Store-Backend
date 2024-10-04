@@ -112,8 +112,8 @@ namespace Backend_Teamwork.src.Services.order
             var newOrder = _mapper.Map<OrderCreateDto, Order>(createDto);
 
             // Set the user ID on the new order
-            newOrder.UserId = userId; // Assuming the Order entity has a UserId property
-            newOrder.TotalAmount = totalAmount; // Set the calculated total amount
+            newOrder.UserId = userId;
+            newOrder.TotalAmount = totalAmount;
 
             // Save the order to the repository
             var createdOrder = await _orderRepository.CreateOneAsync(newOrder);
@@ -191,14 +191,14 @@ namespace Backend_Teamwork.src.Services.order
         public async Task<List<OrderReadDto>> GetOrdersByPage(PaginationOptions paginationOptions)
         {
             // Validate pagination options
-            if (paginationOptions.Limit <= 0)
+            if (paginationOptions.PageSize <= 0)
             {
-                throw CustomException.BadRequest("Limit should be greater than 0.");
+                throw CustomException.BadRequest("Page Size should be greater than 0.");
             }
 
-            if (paginationOptions.Offset < 0)
+            if (paginationOptions.PageNumber < 0)
             {
-                throw CustomException.BadRequest("Offset should be 0 or greater.");
+                throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var OrderList = await _orderRepository.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Order>, List<OrderReadDto>>(OrderList);
