@@ -252,7 +252,7 @@ namespace Backend_Teamwork.src.Services.user
             var foundUser = await _userRepository.GetByEmailAsync(createDto.Email);
             if (foundUser == null)
             {
-                throw CustomException.NotFound($"User with {createDto.Email} not found.");
+                throw CustomException.NotFound($"User with E-mail: {createDto.Email} not found.");
             }
 
             // Verify the password
