@@ -61,13 +61,15 @@ namespace Backend_Teamwork.src.Repository
                 _ => artworkSearch.OrderBy(a => a.Title),
             };
 
-            return await artworkSearch.ToListAsync();
+            return await artworkSearch
+                .Include(o => o.Category)
+                .ToListAsync();
         }
 
         // get artwork by id
         public async Task<Artwork?> GetByIdAsync(Guid id)
         {
-            return await _artwork.FindAsync(id);
+            return await _artwork.Include(a => a.Category).FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
