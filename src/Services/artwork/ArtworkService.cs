@@ -21,9 +21,13 @@ namespace Backend_Teamwork.src.Services.artwork
             _mapper = mapper;
         }
 
-        public async Task<ArtworkReadDto> CreateOneAsync(Guid artistId, ArtworkCreateDto creatDto)
+        public async Task<ArtworkReadDto> CreateOneAsync(Guid artistId, ArtworkCreateDto createDto)
         {
-            var artwork = _mapper.Map<ArtworkCreateDto, Artwork>(creatDto);
+            if (createDto == null)
+            {
+                throw CustomException.BadRequest("Artwork creation data cannot be null.");
+            }
+            var artwork = _mapper.Map<ArtworkCreateDto, Artwork>(createDto);
             artwork.ArtistId = artistId;
             var createdArtwork = await _artworkRepo.CreateOneAsync(artwork);
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
@@ -43,6 +47,10 @@ namespace Backend_Teamwork.src.Services.artwork
             }
 
             var artworkList = await _artworkRepo.GetAllAsync(paginationOptions);
+            if (artworkList == null || !artworkList.Any())
+            {
+                throw CustomException.NotFound("No artworks found.");
+            }
             return _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworkList);
         }
 

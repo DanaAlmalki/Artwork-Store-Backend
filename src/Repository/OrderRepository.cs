@@ -18,14 +18,23 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<List<Order>> GetAllAsync()
         {
-            return await _order.Include(o => o.User).ToListAsync();
+            // Include User, OrderDetails, Artwork, and Category
+            return await _order
+                .Include(o => o.User) // Include User details
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Artwork) // Include Artwork
+                .ThenInclude(a => a.Category) // Include Category if it's a related entity
+                .ToListAsync();
         }
 
         public async Task<List<Order>> GetOrdersByUserIdAsync(Guid userId)
         {
             return await _databaseContext
-                .Order.Include(order => order.User) // Include user data
-                .Where(order => order.UserId == userId) // Filter by UserId
+                .Order.Include(o => o.User) // Include User
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Artwork) // Include Artwork
+                .ThenInclude(a => a.Category) // Include Category in Artwork
+                .Where(order => order.UserId == userId)
                 .ToListAsync();
         }
 
@@ -38,8 +47,12 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<Order?> GetByIdAsync(Guid id)
         {
-            // to see the order details
-            return await _order.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == id);
+            return await _order
+                .Include(o => o.User) // Include User
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Artwork) // Include Artwork
+                .ThenInclude(a => a.Category) // Include Category in Artwork
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<bool> DeleteOneAsync(Order Order)
@@ -71,7 +84,9 @@ namespace Backend_Teamwork.src.Repository
                 );
 
             // Apply pagination
-            orderQuery = orderQuery.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+            orderQuery = orderQuery
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize);
 
             // Sorting logic
             orderQuery = paginationOptions.SortOrder switch

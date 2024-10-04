@@ -37,14 +37,14 @@ namespace Backend_Teamwork.src.Services.workshop
         public async Task<List<WorkshopReadDTO>> GetAllAsync(PaginationOptions paginationOptions)
         {
             // Validate pagination options
-            if (paginationOptions.Limit <= 0)
+            if (paginationOptions.PageSize <= 0)
             {
-                throw CustomException.BadRequest("Limit should be greater than 0.");
+                throw CustomException.BadRequest("Page Size should be greater than 0.");
             }
 
-            if (paginationOptions.Offset < 0)
+            if (paginationOptions.PageNumber < 0)
             {
-                throw CustomException.BadRequest("Offset should be 0 or greater.");
+                throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var workshopList = await _workshopRepo.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
