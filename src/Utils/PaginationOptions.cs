@@ -8,8 +8,8 @@ namespace Backend_Teamwork.src.Utils
     public class PaginationOptions
     {
         // Pagination
-        public int Limit { get; set; } = 2;
-        public int Offset { get; set; } = 0;
+        public int PageSize { get; set; } = 2;
+        public int PageNumber { get; set; } = 0;
         // Search
         public string Search { get; set; } = string.Empty;
         // Sort
