@@ -30,7 +30,7 @@ namespace Backend_Teamwork.src.Utils
             return new CustomException(401, message);
         }
 
-        public static CustomException Fotbidden(string message)
+        public static CustomException Forbidden(string message)
         {
             return new CustomException(403, message);
         }

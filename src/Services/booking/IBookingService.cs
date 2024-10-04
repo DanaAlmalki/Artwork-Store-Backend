@@ -21,7 +21,7 @@ namespace Backend_Teamwork.src.Services.booking
         );
         Task<BookingReadDto> CreateAsync(BookingCreateDto booking, Guid userId);
         Task<BookingReadDto> ConfirmAsync(Guid id);
-        Task<BookingReadDto> RejectAsync(Guid id);
+        Task<List<BookingReadDto>> RejectAsync(Guid workshopId);
         Task<BookingReadDto> CancelAsync(Guid id, Guid userId);
     }
 }
