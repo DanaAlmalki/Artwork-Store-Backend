@@ -14,6 +14,6 @@ namespace Backend_Teamwork.src.Services.artwork
         Task<ArtworkReadDto> GetByIdAsync(Guid id);
         Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id);
         Task<bool> DeleteOneAsync(Guid id);
-        Task<bool> UpdateOneAsync(Guid id, ArtworkUpdateDTO updateArtwork);
+        Task<ArtworkReadDto> UpdateOneAsync(Guid id, ArtworkUpdateDTO updateArtwork);
     }
 }

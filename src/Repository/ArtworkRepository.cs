@@ -43,7 +43,7 @@ namespace Backend_Teamwork.src.Repository
             // artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
 
             // pagination
-            artworkSearch = artworkSearch.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+            artworkSearch = artworkSearch.Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize).Take(paginationOptions.PageSize);
 
             // sort
             artworkSearch = paginationOptions.SortOrder switch
@@ -80,11 +80,11 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // update artwork
-        public async Task<bool> UpdateOneAsync(Artwork updateArtwork)
+        public async Task<Artwork?> UpdateOneAsync(Artwork updateArtwork)
         {
             _artwork.Update(updateArtwork);
             await _databaseContext.SaveChangesAsync();
-            return true;
+            return await _artwork.Include(a => a.Category).FirstOrDefaultAsync(a => a.Id == updateArtwork.Id);
         }
     }
 }
