@@ -9,7 +9,7 @@ namespace Backend_Teamwork.src.Utils
     {
         // Pagination
         public int PageSize { get; set; } = 2;
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
 
         // Search
         public string Search { get; set; } = string.Empty;
