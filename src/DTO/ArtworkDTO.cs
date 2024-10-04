@@ -29,7 +29,7 @@ namespace Backend_Teamwork.src.DTO
             public string Title { get; set; }
             public string Description { get; set; }
             public int Quantity { get; set; }
-            public double Price { get; set; }
+            public decimal Price { get; set; }
             public DateTime CreatedAt { get; set; }
             public Category Category { get; set; }
         }
@@ -40,7 +40,7 @@ namespace Backend_Teamwork.src.DTO
             public string? Title { get; set; }
             public string? Description { get; set; }
             public int? Quantity { get; set; }
-            public double? Price { get; set; }
+            public decimal? Price { get; set; }
         }
     }
 }
