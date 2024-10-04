@@ -13,26 +13,6 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class ArtworksController : ControllerBase
     {
-        /* public static List<Artwork> artworks = new List<Artwork>
-        {
-            new Artwork
-            {
-                Title = "first art work",
-                Description = "first art work description",
-                Quantity = 3,
-                Price = 130,
-                CreatedAt = DateTime.Now,
-            },
-            new Artwork
-            {
-                Title = "second art work",
-                Description = "second art work description",
-                Quantity = 7,
-                Price = 80.5,
-                CreatedAt = DateTime.Now,
-            },
-        }; */
-
         private readonly IArtworkService _artworkService;
 
         // Constructor
@@ -43,7 +23,7 @@ namespace Backend_Teamwork.src.Controllers
 
         // Create
         [HttpPost]
-        // [Authorize(Roles = "Artist")]
+        [Authorize(Roles = "Artist")]
         public async Task<ActionResult<ArtworkReadDto>> CreateOne(
             [FromBody] ArtworkCreateDto createDto
         )
@@ -64,13 +44,15 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get all
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll([FromQuery] PaginationOptions paginationOptions)
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll(
+            [FromQuery] PaginationOptions paginationOptions
+        )
         {
             var artworkList = await _artworkService.GetAllAsync(paginationOptions);
             return Ok(artworkList);
         }
 
-        // Get by id
+        // Get by artwork id
         [HttpGet("{id}")]
         public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
         {
@@ -80,7 +62,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // Get by artist Id
         [HttpGet("artist/{artistId}")]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId([FromRoute] Guid artistId)
+        public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId(
+            [FromRoute] Guid artistId
+        )
         {
             var artwork = await _artworkService.GetByArtistIdAsync(artistId);
             return Ok(artwork);
@@ -88,17 +72,20 @@ namespace Backend_Teamwork.src.Controllers
 
         // Update
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin,Artist")]
-        public async Task<ActionResult> UpdateOne(Guid id, ArtworkUpdateDTO updateDTO)
+        [Authorize(Roles = "Admin,Artist")]
+        public async Task<ActionResult> UpdateOne(
+            [FromRoute] Guid id,
+            [FromBody] ArtworkUpdateDTO updateDTO
+        )
         {
-            await _artworkService.UpdateOneAsync(id, updateDTO);
-            return NoContent();
+            var artwork = await _artworkService.UpdateOneAsync(id, updateDTO);
+            return Ok(artwork);
         }
 
         // Delete
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Artist")]
-        public async Task<ActionResult> DeleteOne(Guid id)
+        public async Task<ActionResult> DeleteOne([FromRoute] Guid id)
         {
             await _artworkService.DeleteOneAsync(id);
             return NoContent();

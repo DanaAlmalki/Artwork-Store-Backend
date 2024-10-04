@@ -57,31 +57,35 @@ namespace Backend_Teamwork.src.Services.order
         // Creates a new order
         public async Task<OrderReadDto> CreateOneAsync(Guid userId, OrderCreateDto createDto)
         {
-            if (createDto == null)
+            // Validate the createDto object
+            if (
+                createDto == null
+                || createDto.OrderDetails == null
+                || !createDto.OrderDetails.Any()
+            )
             {
-                throw CustomException.BadRequest("Order data cannot be null.");
+                throw CustomException.BadRequest(
+                    "Invalid order data or no artworks provided in the order."
+                );
             }
 
-            // Ensure the order has at least one artwork to process
-            if (createDto.OrderDetails == null || !createDto.OrderDetails.Any())
-            {
-                throw CustomException.BadRequest("No artworks provided in the order.");
-            }
+            decimal totalAmount = 0; // Initialize total amount
 
-            // Loop through each artwork in the order
+            // Process each artwork in the order
             foreach (var orderDetail in createDto.OrderDetails)
             {
-                // Fetch the artwork from the repository by ID
-                var artwork = await _artworkRepository.GetByIdAsync(orderDetail.Artwork.Id);
+                // Fetch the artwork by its ID
+                var artwork = await _artworkRepository.GetByIdAsync(orderDetail.ArtworkId); // Using ArtworkId
 
+                // Validate if the artwork exists
                 if (artwork == null)
                 {
                     throw CustomException.NotFound(
-                        $"Artwork with ID: {orderDetail.Artwork.Id} not found."
+                        $"Artwork with ID: {orderDetail.ArtworkId} not found."
                     );
                 }
 
-                // Check if the requested quantity is available
+                // Check if there is enough stock for the requested quantity
                 if (artwork.Quantity < orderDetail.Quantity)
                 {
                     throw CustomException.BadRequest(
@@ -89,23 +93,33 @@ namespace Backend_Teamwork.src.Services.order
                     );
                 }
 
-                // Reduce the artwork's available quantity
+                // Reduce artwork stock
                 artwork.Quantity -= orderDetail.Quantity;
 
-                // Update the artwork in the repository
+                // Update the artwork quantity in the repository
                 await _artworkRepository.UpdateOneAsync(artwork);
+
+                // Calculate the total amount for this order detail
+                decimal detailAmount = artwork.Price * orderDetail.Quantity;
+
+                // Add this amount to the total amount
+                totalAmount += detailAmount;
             }
 
-            // Set the order creation time to UTC
+            // Set the order creation time
             createDto.CreatedAt = DateTime.UtcNow;
 
-            // Map and save the order in the repository
-            var newOrder = await _orderRepository.CreateOneAsync(
-                _mapper.Map<OrderCreateDto, Order>(createDto)
-            );
+            var newOrder = _mapper.Map<OrderCreateDto, Order>(createDto);
+
+            // Set the user ID on the new order
+            newOrder.UserId = userId;
+            newOrder.TotalAmount = totalAmount;
+
+            // Save the order to the repository
+            var createdOrder = await _orderRepository.CreateOneAsync(newOrder);
 
             // Return the created order as a DTO
-            return _mapper.Map<Order, OrderReadDto>(newOrder);
+            return _mapper.Map<Order, OrderReadDto>(createdOrder);
         }
 
         //-----------------------------------------------------
@@ -177,14 +191,14 @@ namespace Backend_Teamwork.src.Services.order
         public async Task<List<OrderReadDto>> GetOrdersByPage(PaginationOptions paginationOptions)
         {
             // Validate pagination options
-            if (paginationOptions.Limit <= 0)
+            if (paginationOptions.PageSize <= 0)
             {
-                throw CustomException.BadRequest("Limit should be greater than 0.");
+                throw CustomException.BadRequest("Page Size should be greater than 0.");
             }
 
-            if (paginationOptions.Offset < 0)
+            if (paginationOptions.PageNumber < 0)
             {
-                throw CustomException.BadRequest("Offset should be 0 or greater.");
+                throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var OrderList = await _orderRepository.GetAllAsync(paginationOptions);
             return _mapper.Map<List<Order>, List<OrderReadDto>>(OrderList);

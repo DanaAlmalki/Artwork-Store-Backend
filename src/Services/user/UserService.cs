@@ -49,14 +49,14 @@ namespace Backend_Teamwork.src.Services.user
                 throw CustomException.BadRequest("pagination options cannot be null.");
             }
             // Validate pagination options
-            if (paginationOptions.Limit <= 0)
+            if (paginationOptions.PageSize <= 0)
             {
-                throw CustomException.BadRequest("Limit should be greater than 0.");
+                throw CustomException.BadRequest("Page Size should be greater than 0.");
             }
 
-            if (paginationOptions.Offset < 0)
+            if (paginationOptions.PageNumber < 0)
             {
-                throw CustomException.BadRequest("Offset should be 0 or greater.");
+                throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var UserList = await _userRepository.GetAllAsync(paginationOptions);
 

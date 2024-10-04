@@ -26,8 +26,8 @@ namespace Backend_Teamwork.src.Repository
             await _databaseContext.SaveChangesAsync();
             // return newArtwork;
             return await _artwork
-               .Include(o => o.Category)
-               .FirstOrDefaultAsync(o => o.Id == newArtwork.Id);
+                .Include(o => o.Category)
+                .FirstOrDefaultAsync(o => o.Id == newArtwork.Id);
         }
 
         // get all artworks
@@ -37,13 +37,17 @@ namespace Backend_Teamwork.src.Repository
             var artworkSearch = _artwork.Where(a => a.Title.Contains(paginationOptions.Search));
 
             // price range
-            artworkSearch = artworkSearch.Where(a => a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice);
+            artworkSearch = artworkSearch.Where(a =>
+                a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice
+            );
 
             // date range
             // artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
 
             // pagination
-            artworkSearch = artworkSearch.Skip(paginationOptions.Offset).Take(paginationOptions.Limit);
+            artworkSearch = artworkSearch
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize);
 
             // sort
             artworkSearch = paginationOptions.SortOrder switch
@@ -68,7 +72,10 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
         {
-            return await _artwork.Include(a => a.Category).Where(a => a.ArtistId == id).ToListAsync();
+            return await _artwork
+                .Include(a => a.Category)
+                .Where(a => a.ArtistId == id)
+                .ToListAsync();
         }
 
         // delete artwork
@@ -80,11 +87,13 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // update artwork
-        public async Task<bool> UpdateOneAsync(Artwork updateArtwork)
+        public async Task<Artwork?> UpdateOneAsync(Artwork updateArtwork)
         {
             _artwork.Update(updateArtwork);
             await _databaseContext.SaveChangesAsync();
-            return true;
+            return await _artwork
+                .Include(a => a.Category)
+                .FirstOrDefaultAsync(a => a.Id == updateArtwork.Id);
         }
     }
 }

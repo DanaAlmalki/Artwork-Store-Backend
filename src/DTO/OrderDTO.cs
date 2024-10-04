@@ -9,10 +9,10 @@ namespace Backend_Teamwork.src.DTO
         public class OrderCreateDto
         {
             public decimal TotalAmount { get; set; }
-            public string? ShippingAddress { get; set; }
-            public DateTime CreatedAt { get; set; }
+            public string ShippingAddress { get; set; }
+            public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
             public Guid UserId { get; set; }
-            public List<OrderDetailReadDto> OrderDetails { get; set; }
+            public List<OrderDetailCreateDto> OrderDetails { get; set; }
         }
 
         // DTO for reading order data
@@ -21,8 +21,8 @@ namespace Backend_Teamwork.src.DTO
             public Guid Id { get; set; }
             public decimal TotalAmount { get; set; }
             public string? ShippingAddress { get; set; }
-            public DateTime CreatedAt { get; set; }
-            public User User { get; set; }
+            public DateTime? CreatedAt { get; set; }
+            public Guid UserId { get; set; }
             public List<OrderDetailReadDto> OrderDetails { get; set; }
         }
 
