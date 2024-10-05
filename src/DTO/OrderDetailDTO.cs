@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Backend_Teamwork.src.Entities;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 
@@ -7,7 +8,10 @@ namespace Backend_Teamwork.src.DTO
     {
         public class OrderDetailCreateDto
         {
+            [Required(ErrorMessage = "Artwork Id shouldn't be null")]
             public Guid ArtworkId { get; set; }
+
+            [Range(1, int.MaxValue, ErrorMessage = "Quantity should be greater than zero.")]
             public int Quantity { get; set; }
         }
 
@@ -17,12 +21,11 @@ namespace Backend_Teamwork.src.DTO
             public int Quantity { get; set; }
             public ArtworkReadDto? Artwork { get; set; }
         }
+
         public class OrderDetailUpdateDto
         {
-            public Guid ArtworkId { get; set; }
-            public Guid OrderId { get; set; }
+            [Range(1, int.MaxValue, ErrorMessage = "Quantity should be greater than zero.")]
             public int Quantity { get; set; }
-            public ArtworkReadDto? Artwork { get; set; }
         }
     }
 }
