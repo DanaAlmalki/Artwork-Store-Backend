@@ -18,9 +18,8 @@ namespace Backend_Teamwork.src.Services.order
 
         // delete
         Task<bool> DeleteOneAsync(Guid id);
-
         Task<bool> UpdateOneAsync(Guid id, OrderUpdateDto updateDto);
-
         Task<List<OrderReadDto>> GetOrdersByPage(PaginationOptions paginationOptions);
+        Task<List<OrderReadDto>> SortOrdersByDate();
     }
 }

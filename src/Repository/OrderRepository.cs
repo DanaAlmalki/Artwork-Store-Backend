@@ -78,6 +78,7 @@ namespace Backend_Teamwork.src.Repository
             // Query for orders with optional search
             var orderQuery = _order
                 .Include(o => o.OrderDetails) // Include order details
+                .Include(o => o.User) 
                 .Where(o =>
                     o.ShippingAddress.Contains(paginationOptions.Search)
                     || o.TotalAmount.ToString().Contains(paginationOptions.Search)

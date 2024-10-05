@@ -167,7 +167,7 @@ namespace Backend_Teamwork.src.Services.order
             var foundOrder = await _orderRepository.GetByIdAsync(id);
             if (foundOrder == null)
             {
-                throw CustomException.NotFound("Order not found.");
+                throw CustomException.NotFound($"Order with ID {id} not found.");
             }
             return await _orderRepository.DeleteOneAsync(foundOrder);
         }
@@ -178,14 +178,12 @@ namespace Backend_Teamwork.src.Services.order
             var foundOrder = await _orderRepository.GetByIdAsync(id);
             if (foundOrder == null)
             {
-                throw CustomException.NotFound("Order not found.");
+                throw CustomException.NotFound($"Order with ID {id} not found.");
             }
 
             // Map the update DTO to the existing Order entity
             _mapper.Map(updateDto, foundOrder);
-
             return await _orderRepository.UpdateOneAsync(foundOrder);
-            ;
         }
 
         public async Task<List<OrderReadDto>> GetOrdersByPage(PaginationOptions paginationOptions)
@@ -201,7 +199,22 @@ namespace Backend_Teamwork.src.Services.order
                 throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var OrderList = await _orderRepository.GetAllAsync(paginationOptions);
+            if (OrderList == null || !OrderList.Any())
+            {
+                throw CustomException.NotFound("Orders not found");
+            }
             return _mapper.Map<List<Order>, List<OrderReadDto>>(OrderList);
+        }
+
+        public async Task<List<OrderReadDto>> SortOrdersByDate()
+        {
+            var orders = await _orderRepository.GetAllAsync();
+            if (orders.Count == 0)
+            {
+                throw CustomException.NotFound("Orders not found");
+            }
+            var sortedOrders=orders.OrderBy(x => x.CreatedAt).ToList();
+            return _mapper.Map<List<Order>, List<OrderReadDto>>(sortedOrders);
         }
     }
 }

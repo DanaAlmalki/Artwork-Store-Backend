@@ -22,23 +22,28 @@ namespace Backend_Teamwork.src.Repository
 
         public async Task<List<Booking>> GetAllAsync()
         {
-            //return await _booking.Include(b => b.Workshop).ThenInclude(w => w.UserId).ToListAsync();
-            return await _booking.Include(b => b.Workshop).Include(b => b.User).ToListAsync();
+            return await _booking
+                .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
+                .ToListAsync();
         }
 
         public async Task<Booking?> GetByIdAsync(Guid id)
         {
             return await _booking
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<List<Booking>> GetByUserIdAsync(Guid userId)
         {
             return await _booking
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
         }
@@ -46,8 +51,9 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Booking>> GetByStatusAsync(string status)
         {
             return await _booking
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .Where(b => b.Status.ToString().ToLower() == status.ToLower())
                 .ToListAsync();
         }
@@ -55,8 +61,9 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Booking>> GetByUserIdAndStatusAsync(Guid userId, string status)
         {
             return await _booking
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .Where(b => b.Status.ToString() == status.ToString() && b.UserId == userId)
                 .ToListAsync();
         }
@@ -66,7 +73,9 @@ namespace Backend_Teamwork.src.Repository
             Status status
         )
         {
-            return await _booking.Where(b => b.WorkshopId == workshopId && b.Status == status).ToListAsync();
+            return await _booking
+                .Where(b => b.WorkshopId == workshopId && b.Status == status)
+                .ToListAsync();
         }
 
         public async Task<bool> GetByUserIdAndWorkshopIdAsync(Guid userId, Guid workshopId)
@@ -77,8 +86,9 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Booking>> GetWithPaginationAsync(PaginationOptions paginationOptions)
         {
             return await _booking
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
                 .Take(paginationOptions.PageSize)
                 .ToListAsync();
@@ -88,10 +98,11 @@ namespace Backend_Teamwork.src.Repository
             PaginationOptions paginationOptions
         )
         {
-            var bookings= _booking.Where(b=>b.UserId.ToString()==paginationOptions.Search);
+            var bookings = _booking.Where(b => b.UserId.ToString() == paginationOptions.Search);
             return await bookings
-                .Include(b => b.Workshop)
                 .Include(b => b.User)
+                .Include(b => b.Workshop)
+                .ThenInclude(w => w.User)
                 .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
                 .Take(paginationOptions.PageSize)
                 .ToListAsync();
