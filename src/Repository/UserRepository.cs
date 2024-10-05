@@ -25,8 +25,8 @@ namespace Backend_Teamwork.src.Repository
         {
             // Combined search logic with OR for name, email, or phone number
             var userQuery = _user.Where(a =>
-                a.Name.Contains(paginationOptions.Search)
-                || a.Email.Contains(paginationOptions.Search)
+                a.Name.ToLower().Contains(paginationOptions.Search.ToLower())
+                || a.Email.ToLower().Contains(paginationOptions.Search.ToLower())
                 || a.PhoneNumber.Contains(paginationOptions.Search)
             );
 
