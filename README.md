@@ -115,11 +115,20 @@ The API will be available at: `http://localhost:5125`
 
 ### User
 
+- **GET** `/api/users` – Get all users.
+- **GET** `/api/users/{id}` – Get user by ID.
+- **GET** `/api/users/profile` – Get user profile information.
+- **GET** `/api/users/email/{email}` – Get user by email.
 - **POST** `/api/users` – Register a new user.
+- **POST** `/api/users/create-admin` – Create a new admin user.
 - **POST** `/api/users/signin` – Login and get JWT token.
-- **GET** `/api/users/search-by-name/{name}` - Search user by name.
-- **GET** `/api/users/search-by-phone/{phoneNumber}` - Search user by phone number.
-- **GET** `/api/users/page` - Pagination for users.
+- **GET** `/api/users/search-by-name/{name}` – Search user by name.
+- **GET** `/api/users/search-by-phone/{phoneNumber}` – Search user by phone number.
+- **GET** `/api/users/pagination` – Pagination for users.
+- **GET** `/api/users/count` – Get total number of users.
+- **PUT** `/api/users/{id}` – Update a user by ID.
+- **PUT** `/api/users/profile` – Update user profile information.
+- **DELETE** `/api/users/{id}` – Delete a user by ID.
 
 ### Artwork
 
@@ -129,6 +138,9 @@ The API will be available at: `http://localhost:5125`
 - **GET** `/api/artworks/artist/{artistId}` – Get artworks by artist ID.
 - **PUT** `/api/artworks/{id}` – Update an artwork (requires Admin or Artist role).
 - **DELETE** `/api/artworks/{id}` – Delete an artwork (requires Admin or Artist role).
+- **GET** `/api/artworks/pagination` – Get artworks with pagination options (optional).
+- **GET** `/api/artworks/featured` – Get featured artworks (optional).
+- **GET** `/api/artworks/search` – Search artworks by title or description (optional).
 
 ### Category
 
@@ -145,9 +157,12 @@ The API will be available at: `http://localhost:5125`
 - **GET** `/api/orders` – Get all orders.
 - **GET** `/api/orders/sort-by-date` – Sort orders by date.
 - **GET** `/api/orders/{id}` – Get order by ID.
-- **POST** `/api/orders` – Create a new order.
-- **PUT** `/api/orders/{id}` – Update an order.
-- **DELETE** `/api/orders/{id}` – Delete an order.
+- **GET** `/api/orders/my-orders` – Get all orders for the authenticated customer.
+- **GET** `/api/orders/my-orders/{id}` – Get a specific order for the authenticated customer by ID.
+- **GET** `/api/orders/pagination` – Get orders with pagination for admins.
+- **POST** `/api/orders/add` – Create a new order.
+- **PUT** `/api/orders/{id}` – Update an existing order by ID.
+- **DELETE** `/api/orders/{id}` – Delete an order by ID.
 
 ## 🌐 Deployment
 
