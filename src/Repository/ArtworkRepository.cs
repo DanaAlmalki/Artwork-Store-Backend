@@ -39,9 +39,6 @@ namespace Backend_Teamwork.src.Repository
                 a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice
             );
 
-            // date range
-            // artworkSearch = artworkSearch.Where(a => a.CreatedAt >= paginationOptions.StartDate && a.CreatedAt <= paginationOptions.EndDate);
-
             // pagination
             artworkSearch = artworkSearch
                 .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)

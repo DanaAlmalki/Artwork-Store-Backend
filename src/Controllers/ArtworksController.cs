@@ -22,6 +22,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Create
+        // End-Point: api/v1/artworks
         [HttpPost]
         [Authorize(Roles = "Artist")]
         public async Task<ActionResult<ArtworkReadDto>> CreateOne(
@@ -43,6 +44,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Get all
+        // End-Point: api/v1/artworks
         [HttpGet]
         public async Task<ActionResult<List<ArtworkReadDto>>> GetAll(
             [FromQuery] PaginationOptions paginationOptions
@@ -53,6 +55,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Get by artwork id
+        // End-Point: api/v1/artworks/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ArtworkReadDto>> GetById([FromRoute] Guid id)
         {
@@ -61,6 +64,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Get by artist Id
+        // End-Point: api/v1/artworks/artist/{id}
         [HttpGet("artist/{artistId}")]
         public async Task<ActionResult<List<ArtworkReadDto>>> GetByArtistId(
             [FromRoute] Guid artistId
@@ -71,6 +75,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Update
+        // End-Point: api/v1/artworks/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult> UpdateOne(
@@ -83,6 +88,7 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Delete
+        // End-Point: api/v1/artworks/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult> DeleteOne([FromRoute] Guid id)

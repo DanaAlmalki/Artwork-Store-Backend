@@ -20,9 +20,5 @@ namespace Backend_Teamwork.src.Utils
         // Price range
         public decimal? LowPrice { get; set; } = 0;
         public decimal? HighPrice { get; set; } = 10000;
-
-        // Date range !! give an error in postgresql
-        //public DateTime? StartDate { get; set; } = DateTime.MinValue;
-        //public DateTime? EndDate { get; set; } = DateTime.Now;
     }
 }
