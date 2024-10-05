@@ -78,9 +78,9 @@ namespace Backend_Teamwork.src.Controllers
 
         // POST: api/v1/users/signin
         [HttpPost("signin")]
-        public async Task<ActionResult<string>> SignIn([FromBody] UserCreateDto createDto)
+        public async Task<ActionResult<string>> SignIn([FromBody] UserSigninDto signinDto)
         {
-            var token = await _userService.SignInAsync(createDto);
+            var token = await _userService.SignInAsync(signinDto);
             return Ok(token);
         }
 

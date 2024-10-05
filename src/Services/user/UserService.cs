@@ -242,22 +242,22 @@ namespace Backend_Teamwork.src.Services.user
         }
 
         // Signs in a user with their credentials
-        public async Task<string> SignInAsync(UserCreateDto createDto)
+        public async Task<string> SignInAsync(UserSigninDto signinDto)
         {
-            if (createDto == null)
+            if (signinDto == null)
             {
                 throw CustomException.BadRequest("User data cannot be null.");
             }
 
-            var foundUser = await _userRepository.GetByEmailAsync(createDto.Email);
+            var foundUser = await _userRepository.GetByEmailAsync(signinDto.Email);
             if (foundUser == null)
             {
-                throw CustomException.NotFound($"User with E-mail: {createDto.Email} not found.");
+                throw CustomException.NotFound($"User with E-mail: {signinDto.Email} not found.");
             }
 
             // Verify the password
             bool isMatched = PasswordUtils.VerifyPassword(
-                createDto.Password,
+                signinDto.Password,
                 foundUser.Password,
                 foundUser.Salt
             );
