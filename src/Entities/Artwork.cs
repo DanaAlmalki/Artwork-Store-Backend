@@ -20,10 +20,10 @@ namespace Backend_Teamwork.src.Entities
         ]
         public required string Description { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Quantity should be greater than zero.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity should be greater than zero.")]
         public int Quantity { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price should be greater than zero.")]
+        [Range(1.0, double.MaxValue, ErrorMessage = "Price should be greater than zero.")]
         public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid UserId { get; set; }
