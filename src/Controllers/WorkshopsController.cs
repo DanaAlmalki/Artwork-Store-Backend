@@ -23,23 +23,13 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         public async Task<ActionResult<List<WorkshopReadDTO>>> GetWorkshop()
         {
             var workshops = await _workshopService.GetAllAsync();
-            if (workshops == null || !workshops.Any())
-            {
-                return NotFound();
-            }
-
             return Ok(workshops);
         }
 
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Admin")]  // Only Admin
         public async Task<ActionResult<WorkshopReadDTO>> GetWorkshopById([FromRoute] Guid id)
         {
             var workshop = await _workshopService.GetByIdAsync(id);
-            if (workshop == null)
-            {
-                return NotFound($"Workshop with ID {id} not found.");
-            }
             return Ok(workshop);
         }
 
@@ -49,15 +39,11 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         )
         {
             var workshops = await _workshopService.GetAllAsync(paginationOptions);
-            if (workshops == null || !workshops.Any())
-            {
-                return NotFound();
-            }
             return Ok(workshops);
         }
 
         [HttpPost]
-        // [Authorize(Roles = "Admin,Artist")]
+        [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult<WorkshopReadDTO>> CreateWorkshop(
             [FromBody] WorkshopCreateDTO createDto
         )
@@ -80,32 +66,22 @@ namespace sda_3_online_Backend_Teamwork.src.Controllers
         }
 
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "Admin,Artist")]
+        [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult<bool>> DeleteWorkshop([FromRoute] Guid id)
         {
             var isDeleted = await _workshopService.DeleteOneAsync(id);
-
-            if (!isDeleted)
-            {
-                return NotFound($"Workshop with ID {id} not found.");
-            }
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin,Artist")]
+        [Authorize(Roles = "Admin,Artist")]
         public async Task<ActionResult<bool>> UpdateWorkshop(
-            Guid userId,
+            Guid id,
             [FromBody] WorkshopUpdateDTO updateDto
         )
         {
-            var updateWorkshop = await _workshopService.UpdateOneAsync(userId, updateDto);
-
-            if (!updateWorkshop)
-            {
-                return NotFound($"Workshop with ID {userId} not found.");
-            }
-            return NoContent();
+            var updateWorkshop = await _workshopService.UpdateOneAsync(id, updateDto);
+            return Ok(updateWorkshop);
         }
     }
 }

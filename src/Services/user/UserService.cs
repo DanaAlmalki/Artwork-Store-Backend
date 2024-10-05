@@ -95,18 +95,18 @@ namespace Backend_Teamwork.src.Services.user
         //-----------------------------------------------------
 
         // Retrieves a user by their ID (Only Admin)
-        public async Task<UserReadDto> GetByIdAsync(Guid id)
+        public async Task<UserReadDto> GetByIdAsync(Guid userId)
         {
-            var foundUser = await _userRepository.GetByIdAsync(id);
+            var foundUser = await _userRepository.GetByIdAsync(userId);
             if (foundUser == null)
             {
-                throw CustomException.NotFound($"User with id: {id} not found");
+                throw CustomException.NotFound($"User with id: {userId} not found");
             }
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
 
         // Retrieves a user by their ID
-        public async Task<UserReadDto> GetByIdAsync(Guid id, Guid userId)
+        /*public async Task<UserReadDto> GetByIdAsync(Guid id)
         {
             if (id != userId)
             {
@@ -118,7 +118,7 @@ namespace Backend_Teamwork.src.Services.user
                 throw CustomException.NotFound($"User with id: {id} not found");
             }
             return _mapper.Map<User, UserReadDto>(foundUser);
-        }
+        }*/
 
         //-----------------------------------------------------
 
@@ -176,7 +176,7 @@ namespace Backend_Teamwork.src.Services.user
         }
 
         // Updates a user by their ID
-        public async Task<bool> UpdateOneAsync(Guid id, Guid userId, UserUpdateDto updateDto)
+        /*public async Task<bool> UpdateOneAsync(Guid userId, UserUpdateDto updateDto)
         {
             if (id == Guid.Empty)
             {
@@ -205,7 +205,7 @@ namespace Backend_Teamwork.src.Services.user
             }
 
             return updatedUser;
-        }
+        }*/
 
         //-----------------------------------------------------
 

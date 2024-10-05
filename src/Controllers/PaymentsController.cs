@@ -1,6 +1,8 @@
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Services.payment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using static Backend_Teamwork.src.DTO.PaymentDTO;
 
 namespace Backend_Teamwork.src.Controllers
 {
@@ -8,93 +10,51 @@ namespace Backend_Teamwork.src.Controllers
     [Route("api/v1/[controller]")]
     public class PaymentController : ControllerBase
     {
-        public static List<Payment> payments = new List<Payment>()
+        private readonly IPaymentService _paymentService;
+
+        public PaymentController(IPaymentService paymentService)
         {
-            new Payment
-            {
-                // Id = 1,
-                PaymentMethod = "Credit Card ",
-                Amount = 100.0m,
-                CreatedAt = new DateTime(2024, 9, 20),
-            },
-            new Payment
-            {
-                // Id = 2,
-                PaymentMethod = "PayPal",
-                Amount = 250.0m,
-                CreatedAt = new DateTime(2024, 9, 12),
-            },
-            new Payment
-            {
-                // Id = 2,
-                PaymentMethod = "Bank Transfer",
-                Amount = 850.0m,
-                CreatedAt = new DateTime(2024, 9, 12),
-            },
-        };
+            _paymentService = paymentService;
+        }
 
         [HttpGet]
-        public ActionResult GetPayments()
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<Payment>>> GetPayments()
         {
-            if (payments.Count == 0)
-            {
-                return NotFound();
-            }
+            var payments = await _paymentService.GetAllAsync();
             return Ok(payments);
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetPaymentById(Guid id)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Payment>> GetPaymentById(Guid id)
         {
-            Payment? foundPayment = payments.FirstOrDefault(p => p.Id == id);
-            if (foundPayment == null)
-            {
-                return NotFound();
-            }
-            return Ok(foundPayment);
-        }
-
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public ActionResult GetPaymentByPage(int pageNumber, int pageSize)
-        {
-            var pagedPayment = payments.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            return Ok(pagedPayment);
+            var payment = await _paymentService.GetByIdAsync(id);
+            return Ok(payment);
         }
 
         [HttpPost]
-        public ActionResult CreatePayment(Payment newPayment)
+        [Authorize]
+        public async Task<ActionResult<Payment>> CreatePayment(PaymentCreateDTO newPayment)
         {
-            payments.Add(newPayment);
-            return CreatedAtAction(nameof(GetPaymentById), new { id = newPayment.Id }, newPayment);
+            var payment = await _paymentService.CreateOneAsync(newPayment);
+            return CreatedAtAction(nameof(GetPaymentById), new { id = payment.Id }, payment);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeletePayment(Guid id)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeletePayment(Guid id)
         {
-            Payment? foundpayment = payments.FirstOrDefault(p => p.Id == id);
-            if (foundpayment == null)
-            {
-                return NotFound();
-            }
-            payments.Remove(foundpayment);
+            await _paymentService.DeleteOneAsync(id);
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdatePayment(Guid id, Payment updatedPayment)
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdatePayment(Guid id, PaymentUpdateDTO updatedPayment)
         {
-            Payment? existingPayment = payments.FirstOrDefault(p => p.Id == id);
-
-            if (existingPayment == null)
-            {
-                return NotFound();
-            }
-
-            existingPayment.PaymentMethod = updatedPayment.PaymentMethod;
-            existingPayment.Amount = updatedPayment.Amount;
-            existingPayment.CreatedAt = updatedPayment.CreatedAt;
-
-            return NoContent();
+            var payment = _paymentService.UpdateOneAsync(id,updatedPayment);
+            return Ok(payment);
         }
     }
 }

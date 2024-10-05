@@ -17,13 +17,11 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // create in database
-        public async Task<Workshop> CreateOneAsync(Workshop newWorkshop)
+        public async Task<Workshop?> CreateOneAsync(Workshop newWorkshop)
         {
             await _workshops.AddAsync(newWorkshop);
             await _databaseContext.SaveChangesAsync();
-            return await _workshops
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == newWorkshop.Id);
+            return await GetByIdAsync(newWorkshop.Id);
         }
 
         // get by id
