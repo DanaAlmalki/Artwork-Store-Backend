@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Middleware;
@@ -80,6 +81,9 @@ builder.Services.AddAuthorization(options =>
 //add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 //add swagger
 builder.Services.AddSwaggerGen();
@@ -90,6 +94,8 @@ app.MapGet("/", () => "Server is running");
 
 //Convert to Timestamp format
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+//
 
 //test database connection
 using (var scope = app.Services.CreateScope())
