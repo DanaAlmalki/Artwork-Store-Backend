@@ -85,6 +85,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseRouting();
+app.MapGet("/", () => "Server is running");
 
 //Convert to Timestamp format
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -127,6 +129,5 @@ if (app.Environment.IsDevelopment())
 }
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
 
 app.Run();
