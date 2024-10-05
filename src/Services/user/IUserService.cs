@@ -27,6 +27,6 @@ namespace Backend_Teamwork.src.Services.user
         Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);
         Task<int> GetTotalUsersCountAsync();
 
-        Task<string> SignInAsync(UserCreateDto createDto);
+        Task<string> SignInAsync(UserSigninDto createDto);
     }
 }

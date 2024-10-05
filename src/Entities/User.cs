@@ -27,13 +27,11 @@ namespace Backend_Teamwork.src.Entities
 
         [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Password is required.")]
 
-        [
-            Required(ErrorMessage = "Password shouldn't be null"),
-            MinLength(8, ErrorMessage = "Password should be at at least 8 characters"),
-        ]
-        public string Password { get; set; }
-        public string? Description { set; get; }
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
+        public string Password { get; set; }    
+            public string? Description { set; get; }
         public byte[]? Salt { get; set; }
         public UserRole Role { get; set; } = UserRole.Customer;
 

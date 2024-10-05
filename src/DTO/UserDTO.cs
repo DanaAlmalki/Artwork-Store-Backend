@@ -23,16 +23,23 @@ namespace Backend_Teamwork.src.DTO
 
             [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
             public string Email { get; set; }
+            
 
-            [
-                Required(ErrorMessage = "Password shouldn't be null"),
-                MinLength(8, ErrorMessage = "Password should be at at least 8 characters"),
-            ]
+            [Required(ErrorMessage = "Password is required.")]
+            [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
             public string Password { get; set; }
             public UserRole Role { get; set; } = UserRole.Customer; // Default to Customer
 
             // Artist-specific properties (optional)
             public string? Description { get; set; } // Nullable, only for Artists
+        }
+        public class UserSigninDto
+        {
+            [EmailAddress(ErrorMessage = "Please provide a valid email address.")]
+            public string Email { get; set; }
+
+            [Required(ErrorMessage = "Password is required.")]
+            public string Password { get; set; }
         }
 
         // DTO for reading User data (including Artist)
