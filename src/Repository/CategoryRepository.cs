@@ -36,11 +36,11 @@ namespace Backend_Teamwork.src.Repository
             return await _category.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
-        public async Task<List<Category>> GetWithPaginationAsync(int pageNumber, int pageSize)
+        public async Task<List<Category>> GetWithPaginationAsync(PaginationOptions paginationOptions)
         {
             return await _category
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
         }

@@ -70,6 +70,7 @@ builder
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
 });
 
 //add controllers
@@ -105,13 +106,12 @@ using (var scope = app.Services.CreateScope())
     }
 }
 app.UseHttpsRedirection();
+
 //use middleware
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 //use controllers
 app.MapControllers();
@@ -124,6 +124,5 @@ if (app.Environment.IsDevelopment())
 }
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
 
 app.Run();

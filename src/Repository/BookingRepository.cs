@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
+using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Teamwork.src.Repository
@@ -73,28 +74,26 @@ namespace Backend_Teamwork.src.Repository
             return await _booking.AnyAsync(b => b.UserId == userId && b.WorkshopId == workshopId);
         }
 
-        public async Task<List<Booking>> GetWithPaginationAsync(int pageNumber, int pageSize)
+        public async Task<List<Booking>> GetWithPaginationAsync(PaginationOptions paginationOptions)
         {
             return await _booking
                 .Include(b => b.Workshop)
                 .Include(b => b.User)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize)
                 .ToListAsync();
         }
 
         public async Task<List<Booking>> GetByUserIdWithPaginationAsync(
-            Guid userId,
-            int pageNumber,
-            int pageSize
+            PaginationOptions paginationOptions
         )
         {
-            var bookings = _booking.Where(b => b.UserId == userId);
+            var bookings= _booking.Where(b=>b.UserId.ToString()==paginationOptions.Search);
             return await bookings
                 .Include(b => b.Workshop)
                 .Include(b => b.User)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize)
                 .ToListAsync();
         }
 
