@@ -7,9 +7,9 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
 ## Features
 
 - **👤 User Management**:
-  - Register new User (Customer/Artist)
+  - Register new User (Customer/Artist/Admin)
   - User authentication with JWT token
-  - Role-based access control (Artist, Customer)
+  - Role-based access control (Artist, Customer, Admin)
 - **🖼️ Product Management (Artworks)**:
   - Create new artwork listing (title, description, price)
   - Update artwork information
@@ -44,7 +44,7 @@ This is a backend solution for an e-commerce platform dedicated to selling paint
 
 - **.Net 8**: Web API Framework
 - **Entity Framework Core**: ORM for database interactions
-- **PostgreSQl **: Relational database for storing data
+- **PostgreSQl**: Relational database for storing data
 - **JWT**: For user authentication and authorization
 - **AutoMapper**: For object mapping
 - **Swagger**: API documentation
@@ -140,7 +140,6 @@ The API will be available at: `http://localhost:5125`
 - **PUT** `/api/categories/{id}` – Update a category.
 - **DELETE** `/api/categories/{id}` – Delete a category.
 
-
 ### Order
 
 - **GET** `/api/orders` – Get all orders.
@@ -152,15 +151,15 @@ The API will be available at: `http://localhost:5125`
 
 ## 🌐 Deployment
 
-The application is deployed and can be accessed at: [https://your-deploy-link.com](https://your-deploy-link.com)
+The application is deployed and can be accessed at: [https://sda-3-online-backend-teamwork-yjdp.onrender.com](https://sda-3-online-backend-teamwork-yjdp.onrender.com/)
 
 ## 👩‍💻 Team Members
 
-- **Lead** : Abeer Aljohani (@AbeerAljohanii) 👩‍💻
-- Bashaer Alhuthali (bashaer310) 👩‍💻
-- Danah Almalki (DanaAlmalki) 👩‍💻
-- Manar Almalawi (mal-manar) 👩‍💻
-- Shuaa Almarwani (Shuaa-99) 👩‍💻
+- **Lead**: [Abeer Aljohani 👩‍💻](https://github.com/AbeerAljohanii)
+- [Bashaer Alhuthali 👩‍💻](https://github.com/bashaer310)
+- [Danah Almalki 👩‍💻](https://github.com/DanaAlmalki)
+- [Manar Almalawi 👩‍💻](https://github.com/mal-manar)
+- [Shuaa Almarwani 👩‍💻](https://github.com/Shuaa-99)
 
 ## License
 
