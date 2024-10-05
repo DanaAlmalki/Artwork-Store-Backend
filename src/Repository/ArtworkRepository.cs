@@ -20,14 +20,12 @@ namespace Backend_Teamwork.src.Repository
 
         // Methods
         // create artwork
-        public async Task<Artwork> CreateOneAsync(Artwork newArtwork)
+        public async Task<Artwork?> CreateOneAsync(Artwork newArtwork)
         {
             await _artwork.AddAsync(newArtwork);
             await _databaseContext.SaveChangesAsync();
             // return newArtwork;
-            return await _artwork
-                .Include(o => o.Category)
-                .FirstOrDefaultAsync(o => o.Id == newArtwork.Id);
+            return await GetByIdAsync(newArtwork.Id);
         }
 
         // get all artworks
@@ -61,22 +59,20 @@ namespace Backend_Teamwork.src.Repository
                 _ => artworkSearch.OrderBy(a => a.Title),
             };
 
-            return await artworkSearch
-                .Include(o => o.Category)
-                .ToListAsync();
+            return await artworkSearch.Include(o => o.Category).ToListAsync();
         }
 
         // get artwork by id
         public async Task<Artwork?> GetByIdAsync(Guid id)
         {
-            return await _artwork.Include(a => a.Category).FirstOrDefaultAsync(a => a.Id == id);
+            return await _artwork.Include(a => a.Category).Include(a=>a.User).FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
         {
             return await _artwork
                 .Include(a => a.Category)
-                .Where(a => a.ArtistId == id)
+                .Where(a => a.UserId == id)
                 .ToListAsync();
         }
 
@@ -93,9 +89,7 @@ namespace Backend_Teamwork.src.Repository
         {
             _artwork.Update(updateArtwork);
             await _databaseContext.SaveChangesAsync();
-            return await _artwork
-                .Include(a => a.Category)
-                .FirstOrDefaultAsync(a => a.Id == updateArtwork.Id);
+            return await GetByIdAsync(updateArtwork.Id);
         }
     }
 }

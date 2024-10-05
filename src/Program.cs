@@ -7,6 +7,7 @@ using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.booking;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.order;
+using Backend_Teamwork.src.Services.payment;
 using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Services.workshop;
 using Backend_Teamwork.src.Utils;
@@ -42,6 +43,9 @@ builder.Services.AddScoped<IUserService, UserService>().AddScoped<UserRepository
 builder.Services.AddScoped<IOrderService, OrderService>().AddScoped<OrderRepository>();
 builder.Services.AddScoped<IWorkshopService, WorkshopService>().AddScoped<WorkshopRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>().AddScoped<BookingRepository>();
+
+//builder.Services.AddScoped<IPaymentService, IPaymentService>().AddScoped<PaymentRepository>();
+
 
 //add logic for authentication
 builder
@@ -108,7 +112,6 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 //use middleware
-
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -122,8 +125,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
 
 app.Run();

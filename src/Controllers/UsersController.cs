@@ -37,19 +37,20 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(user);
         }
 
-        [HttpGet("profile/{id}")]
-        public async Task<ActionResult<UserReadDto>> GetInformationById([FromRoute] Guid id)
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<ActionResult<UserReadDto>> GetInformationById()
         {
             // Get the user ID from the token claims
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var convertedUserId = new Guid(userId);
-            var user = await _userService.GetByIdAsync(id, convertedUserId);
+            var user = await _userService.GetByIdAsync(convertedUserId);
             return Ok(user);
         }
 
         // GET: api/v1/users/email
-        [HttpGet("email")]
+        [HttpGet("email/{email}")]
         [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetByEmail([FromRoute] string email)
         {
@@ -94,7 +95,8 @@ namespace Backend_Teamwork.src.Controllers
             return NoContent();
         } // should ask my teammates
 
-        [HttpPut("profile/{id}")]
+        [HttpPut("profile")]
+        [Authorize]
         public async Task<ActionResult<bool>> UpdateProfileInformation(
             [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
@@ -104,7 +106,7 @@ namespace Backend_Teamwork.src.Controllers
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var convertedUserId = new Guid(userId);
-            await _userService.UpdateOneAsync(id, convertedUserId, updateDto);
+            await _userService.UpdateOneAsync(convertedUserId, updateDto);
             return NoContent();
         } // should ask my teammates
 

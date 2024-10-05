@@ -31,6 +31,10 @@ namespace Backend_Teamwork.src.Services.workshop
         public async Task<List<WorkshopReadDTO>> GetAllAsync()
         {
             var workshopList = await _workshopRepo.GetAllAsync();
+            if (workshopList == null || !workshopList.Any())
+            {
+                throw CustomException.NotFound("Workshops not found");
+            }
             return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
         }
 
@@ -47,25 +51,32 @@ namespace Backend_Teamwork.src.Services.workshop
                 throw CustomException.BadRequest("Page Number should be 0 or greater.");
             }
             var workshopList = await _workshopRepo.GetAllAsync(paginationOptions);
+            if (workshopList == null || !workshopList.Any())
+            {
+                throw CustomException.NotFound("Workshops not found");
+            }
             return _mapper.Map<List<Workshop>, List<WorkshopReadDTO>>(workshopList);
         }
 
         public async Task<WorkshopReadDTO> GetByIdAsync(Guid id)
         {
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
+            if (foundworkshop == null)
+            {
+                throw CustomException.NotFound($"Workshop with ID {id} not found.");
+            }
             return _mapper.Map<Workshop, WorkshopReadDTO>(foundworkshop);
         }
 
         public async Task<bool> DeleteOneAsync(Guid id)
         {
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
-            bool isDeleted = await _workshopRepo.DeleteOneAsync(foundworkshop);
-
-            if (isDeleted)
+            if (foundworkshop == null)
             {
-                return true;
+                throw CustomException.NotFound($"Workshop with ID {id} not found.");
             }
-            return false;
+            return await _workshopRepo.DeleteOneAsync(foundworkshop);
+            ;
         }
 
         public async Task<bool> UpdateOneAsync(Guid id, WorkshopUpdateDTO workshopupdateDto)
@@ -73,7 +84,7 @@ namespace Backend_Teamwork.src.Services.workshop
             var foundworkshop = await _workshopRepo.GetByIdAsync(id);
             if (foundworkshop == null)
             {
-                return false;
+                throw CustomException.NotFound($"Workshop with ID {id} not found.");
             }
             _mapper.Map(workshopupdateDto, foundworkshop);
             return await _workshopRepo.UpdateOneAsync(foundworkshop);

@@ -13,6 +13,6 @@ namespace Backend_Teamwork.src.Entities
         public bool Availability { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; } = null!;
     }
 }

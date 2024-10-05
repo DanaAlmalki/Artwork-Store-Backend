@@ -11,7 +11,6 @@ namespace Backend_Teamwork.src.DTO
             public decimal TotalAmount { get; set; }
             public string ShippingAddress { get; set; }
             public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-            public Guid UserId { get; set; }
             public List<OrderDetailCreateDto> OrderDetails { get; set; }
         }
 

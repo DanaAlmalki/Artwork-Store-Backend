@@ -15,6 +15,7 @@ namespace Backend_Teamwork.src.Entities
         public Workshop Workshop { get; set; } = null!;
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
+        public Payment? Payment { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
