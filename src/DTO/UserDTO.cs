@@ -12,8 +12,6 @@ namespace Backend_Teamwork.src.DTO
             public string Email { get; set; }
             public string Password { get; set; }
             public UserRole Role { get; set; } = UserRole.Customer; // Default to Customer
-            public byte[]? Salt { get; set; }
-
             // Artist-specific properties (optional)
             public string? Description { get; set; } // Nullable, only for Artists
         }

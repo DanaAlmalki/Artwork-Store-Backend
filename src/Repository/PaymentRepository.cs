@@ -2,12 +2,14 @@ using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Utils;
 using Microsoft.EntityFrameworkCore;
+
 namespace Backend_Teamwork.src.Repository
 {
     public class PaymentRepository
     {
         private readonly DbSet<Payment> _payment;
         private readonly DatabaseContext _databaseContext;
+
         public PaymentRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
@@ -15,19 +17,23 @@ namespace Backend_Teamwork.src.Repository
         }
 
         // create in database
-        public async Task<Payment> CreateOneAsync(Payment newPayment)
+        public async Task<Payment?> CreateOneAsync(Payment newPayment)
         {
             await _payment.AddAsync(newPayment);
             await _databaseContext.SaveChangesAsync();
-            return await _payment
-            .FirstOrDefaultAsync(P => P.Id == newPayment.Id);
+            return await GetByIdAsync(newPayment.Id);
         }
+
         // get by id
         public async Task<Payment?> GetByIdAsync(Guid id)
         {
-            return await _payment.FindAsync(id);
+            return await _payment
+                .Include(p => p.Order)
+                .Include(p => p.Booking)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
-        // delete 
+
+        // delete
         public async Task<bool> DeleteOneAsync(Payment deletePayment)
         {
             _payment.Remove(deletePayment);
@@ -35,7 +41,7 @@ namespace Backend_Teamwork.src.Repository
             return true;
         }
 
-        // update 
+        // update
         public async Task<bool> UpdateOneAsync(Payment updatePayment)
         {
             if (updatePayment == null)
@@ -45,22 +51,10 @@ namespace Backend_Teamwork.src.Repository
             return true;
         }
 
-        // get all 
+        // get all
         public async Task<List<Payment>> GetAllAsync()
         {
-            return await _payment.ToListAsync();
+            return await _payment.Include(p => p.Order).Include(p => p.Booking).ToListAsync();
         }
-
-        // with order
-        public async Task<Payment> GetPaymentByOrderAsync(Guid paymentId)
-        {
-            return await _databaseContext.Payment
-            .Include(p => p.Order)
-            .FirstOrDefaultAsync(p => p.Id == paymentId);
-
-
-
-        }
-
     }
 }

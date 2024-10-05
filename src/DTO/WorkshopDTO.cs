@@ -6,8 +6,8 @@ namespace Backend_Teamwork.src.DTO
     {
         public class WorkshopCreateDTO
         {
-            public string? Name { get; set; }
-            public string? Location { get; set; }
+            public string Name { get; set; }
+            public string Location { get; set; }
             public string? Description { get; set; }
             public DateTime StartTime { get; set; }
             public DateTime EndTime { get; set; }
@@ -15,7 +15,7 @@ namespace Backend_Teamwork.src.DTO
             public int Capacity { get; set; }
             public bool Availability { get; set; }
             public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-            public Guid UserId { get; set; }
+            public Guid? UserId { get; set; }
         }
 
         public class WorkshopReadDTO
@@ -40,6 +40,8 @@ namespace Backend_Teamwork.src.DTO
             public string? Description { get; set; }
             public DateTime StartTime { get; set; }
             public DateTime EndTime { get; set; }
+            public bool Availability { get; set; }
+            public decimal Price { get; set; }
             public int Capacity { get; set; }
         }
     }

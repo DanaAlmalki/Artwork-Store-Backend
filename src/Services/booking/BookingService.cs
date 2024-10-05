@@ -160,7 +160,6 @@ namespace Backend_Teamwork.src.Services.booking
             var mappedBooking = _mapper.Map<BookingCreateDto, Booking>(booking);
             mappedBooking.UserId = userId;
             mappedBooking.Status = Status.Pending;
-            mappedBooking.CreatedAt = DateTime.Now;
             var createdBooking = await _bookingRepository.CreateAsync(mappedBooking);
             return _mapper.Map<Booking, BookingReadDto>(createdBooking);
         }
@@ -196,12 +195,12 @@ namespace Backend_Teamwork.src.Services.booking
         public async Task<List<BookingReadDto>> RejectAsync(Guid workshopId)
         {
             var workshop = await _workshopRepository.GetByIdAsync(workshopId);
-            //check if the workshop is found
+            //1. check if the workshop is found
             if (workshop == null)
             {
                 throw CustomException.NotFound($"Workshp with id: {workshopId} not found");
             }
-            //check if the workshop is available
+            //2. check if the workshop is available
             if (workshop.Availability)
             {
                 throw CustomException.BadRequest($"Invalid regecting");
@@ -210,6 +209,11 @@ namespace Backend_Teamwork.src.Services.booking
                 workshopId,
                 Status.Pending
             );
+            //3. check if there is booking with Pending Status
+            if (bookings == null)
+            {
+                throw CustomException.BadRequest($"Invalid regecting");
+            }
             foreach (var booking in bookings)
             {
                 //reject booking

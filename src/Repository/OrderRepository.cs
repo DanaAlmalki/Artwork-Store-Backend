@@ -38,11 +38,11 @@ namespace Backend_Teamwork.src.Repository
                 .ToListAsync();
         }
 
-        public async Task<Order> CreateOneAsync(Order newOrder)
+        public async Task<Order?> CreateOneAsync(Order newOrder)
         {
             await _order.AddAsync(newOrder);
             await _databaseContext.SaveChangesAsync();
-            return newOrder;
+            return await GetByIdAsync(newOrder.Id);
         }
 
         public async Task<Order?> GetByIdAsync(Guid id)
@@ -78,6 +78,7 @@ namespace Backend_Teamwork.src.Repository
             // Query for orders with optional search
             var orderQuery = _order
                 .Include(o => o.OrderDetails) // Include order details
+                .Include(o => o.User) 
                 .Where(o =>
                     o.ShippingAddress.Contains(paginationOptions.Search)
                     || o.TotalAmount.ToString().Contains(paginationOptions.Search)
@@ -99,14 +100,6 @@ namespace Backend_Teamwork.src.Repository
             };
 
             return await orderQuery.ToListAsync();
-        }
-
-        // with Payment
-        public async Task<Order> GetOrdertWithPaymentAsync(Guid orerId)
-        {
-            return await _databaseContext
-                .Order.Include(o => o.Payment)
-                .FirstOrDefaultAsync(o => o.Id == orerId);
         }
     }
 }

@@ -14,14 +14,14 @@ namespace Backend_Teamwork.src.Services.user
         Task<UserReadDto> CreateOneAsync(UserCreateDto createDto);
 
         // Get by id
+        //Task<UserReadDto> GetOneByIdAsync(Guid userId);
         Task<UserReadDto> GetByIdAsync(Guid id);
-        Task<UserReadDto> GetByIdAsync(Guid id, Guid userId);
 
         // delete
         Task<bool> DeleteOneAsync(Guid id);
 
+        //Task<bool> UpdateOneByIdAsync(Guid userId, UserUpdateDto updateDto);
         Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
-        Task<bool> UpdateOneAsync(Guid id, Guid userId, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
         Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);

@@ -11,6 +11,7 @@ namespace Backend_Teamwork.src.DTO
         public class BookingCreateDto
         {
             public Guid WorkshopId { get; set; }
+            public DateTime? CreatedAt { get; set; } = DateTime.Now;
         }
 
         public class BookingReadDto

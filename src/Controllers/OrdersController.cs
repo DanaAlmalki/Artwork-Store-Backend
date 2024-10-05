@@ -90,12 +90,8 @@ namespace Backend_Teamwork.src.Controllers
             [FromBody] OrderUpdateDto updateDto
         )
         {
-            var updateOrder = await _orderService.UpdateOneAsync(id, updateDto);
-            if (!updateOrder)
-            {
-                return NotFound($"Order with ID {id} not found.");
-            }
-            return NoContent();
+            var isUpdated = await _orderService.UpdateOneAsync(id, updateDto);
+            return Ok(isUpdated);
         }
 
         // DELETE: api/v1/orders/{id}
@@ -103,16 +99,7 @@ namespace Backend_Teamwork.src.Controllers
         [Authorize(Roles = "Admin")] // Accessible by Admin
         public async Task<ActionResult<bool>> DeleteOrder(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                return BadRequest("Invalid user ID");
-            }
-            var isDeleted = await _orderService.DeleteOneAsync(id);
-
-            if (!isDeleted)
-            {
-                return NotFound($"Order with ID {id} not found.");
-            }
+            await _orderService.DeleteOneAsync(id);
             return NoContent();
         }
 
@@ -120,27 +107,20 @@ namespace Backend_Teamwork.src.Controllers
         // GET: api/v1/users/page
         [HttpGet("pagination")]
         [Authorize(Roles = "Admin")] // Accessible by Admin
-        public async Task<ActionResult<OrderReadDto>> GetOrdersByPage(
+        public async Task<ActionResult<List<OrderReadDto>>> GetOrdersByPage(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
             var orders = await _orderService.GetOrdersByPage(paginationOptions);
-            if (orders == null || !orders.Any())
-            {
-                return NotFound();
-            }
             return Ok(orders);
         }
 
         [HttpGet("sort-by-date")]
-        public async Task<ActionResult<OrderReadDto>> SortOrdersByDate()
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<OrderReadDto>>> SortOrdersByDate()
         {
-            var orders = await _orderService.GetAllAsync();
-            if (orders.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(orders.OrderBy(x => x.CreatedAt).ToList());
+            var orders = await _orderService.SortOrdersByDate();
+            return Ok(orders);
         }
     }
 }

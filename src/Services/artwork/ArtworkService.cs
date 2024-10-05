@@ -12,23 +12,31 @@ namespace Backend_Teamwork.src.Services.artwork
     {
         private readonly ArtworkRepository _artworkRepo;
         private readonly UserRepository _userRepo;
+        private readonly CategoryRepository _categoryRepo;
         private readonly IMapper _mapper;
 
-        public ArtworkService(ArtworkRepository artworkRepo, UserRepository userRepo, IMapper mapper)
+        public ArtworkService(
+            ArtworkRepository artworkRepo,
+            UserRepository userRepo,
+            CategoryRepository categoryRepo,
+            IMapper mapper
+        )
         {
             _artworkRepo = artworkRepo;
             _userRepo = userRepo;
+            _categoryRepo = categoryRepo;
             _mapper = mapper;
         }
 
         public async Task<ArtworkReadDto> CreateOneAsync(Guid artistId, ArtworkCreateDto createDto)
         {
-            if (createDto == null)
+            var foundCategory = await _categoryRepo.GetByIdAsync(createDto.CategoryId);
+            if (foundCategory == null)
             {
-                throw CustomException.BadRequest("Artwork creation data cannot be null.");
+                throw CustomException.NotFound($"Category with id: {createDto.CategoryId} not found");
             }
             var artwork = _mapper.Map<ArtworkCreateDto, Artwork>(createDto);
-            artwork.ArtistId = artistId;
+            artwork.UserId = artistId;
             var createdArtwork = await _artworkRepo.CreateOneAsync(artwork);
             return _mapper.Map<Artwork, ArtworkReadDto>(createdArtwork);
         }
@@ -67,14 +75,18 @@ namespace Backend_Teamwork.src.Services.artwork
         public async Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id)
         {
             // check if user exist
-            var user = await _userRepo.GetByIdAsync(id) ?? throw CustomException.NotFound($"User with id: {id} not found");
+            var user =
+                await _userRepo.GetByIdAsync(id)
+                ?? throw CustomException.NotFound($"User with id: {id} not found");
             // check the role of user
             if (user.Role.ToString() != UserRole.Artist.ToString())
             {
                 throw CustomException.BadRequest($"User with id: {id} is not an Artist");
             }
             // check if user(artist) has artwork
-            var artworks = await _artworkRepo.GetByArtistIdAsync(id) ?? throw CustomException.NotFound($"Artist with id: {id} has no artworks");
+            var artworks =
+                await _artworkRepo.GetByArtistIdAsync(id)
+                ?? throw CustomException.NotFound($"Artist with id: {id} has no artworks");
             var artworkList = _mapper.Map<List<Artwork>, List<ArtworkReadDto>>(artworks);
             return artworkList;
         }
