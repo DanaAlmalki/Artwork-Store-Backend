@@ -32,7 +32,7 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Artwork>> GetAllAsync(PaginationOptions paginationOptions)
         {
             // search by title
-            var artworkSearch = _artwork.Where(a => a.Title.Contains(paginationOptions.Search));
+            var artworkSearch = _artwork.Where(a => a.Title.ToLower().Contains(paginationOptions.Search.ToLower()));
 
             // price range
             artworkSearch = artworkSearch.Where(a =>
