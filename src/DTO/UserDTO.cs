@@ -15,30 +15,43 @@ namespace Backend_Teamwork.src.DTO
             ]
             public string? Name { get; set; }
 
-            [RegularExpression(
-                @"^\+966[5][0-9]{8}$",
-                ErrorMessage = "Phone number should be a valid Saudi phone number"
-            )]
+            [
+                Required(ErrorMessage = "Phone number shouldn't be null"),
+                RegularExpression(
+                    @"^\+966[5][0-9]{8}$",
+                    ErrorMessage = "Phone number should be a valid Saudi phone number"
+                )
+            ]
             public string? PhoneNumber { get; set; }
 
-            [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
+            [
+                Required(ErrorMessage = "Email shouldn't be null"),
+                EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")
+            ]
             public string Email { get; set; }
-            
 
-            [Required(ErrorMessage = "Password is required.")]
-            [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
+            [
+                Required(ErrorMessage = "Password shouldn't be null"),
+                MinLength(8, ErrorMessage = "Password should be at at least 8 characters")
+            ]
             public string Password { get; set; }
+
+            [Required(ErrorMessage = "Role shouldn't be null")]
             public UserRole Role { get; set; } = UserRole.Customer; // Default to Customer
 
             // Artist-specific properties (optional)
             public string? Description { get; set; } // Nullable, only for Artists
         }
+
         public class UserSigninDto
         {
-            [EmailAddress(ErrorMessage = "Please provide a valid email address.")]
+            [
+                Required(ErrorMessage = "Email shouldn't be null"),
+                EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")
+            ]
             public string Email { get; set; }
 
-            [Required(ErrorMessage = "Password is required.")]
+            [Required(ErrorMessage = "Password shouldn't be null")]
             public string Password { get; set; }
         }
 
@@ -65,13 +78,19 @@ namespace Backend_Teamwork.src.DTO
             ]
             public string? Name { get; set; }
 
-            [RegularExpression(
-                @"^\+966[5][0-9]{8}$",
-                ErrorMessage = "Phone number should be a valid Saudi phone number"
-            )]
+            [
+                Required(ErrorMessage = "Phone number shouldn't be null"),
+                RegularExpression(
+                    @"^\+966[5][0-9]{8}$",
+                    ErrorMessage = "Phone number should be a valid Saudi phone number"
+                )
+            ]
             public string? PhoneNumber { get; set; }
 
-            [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
+            [
+                Required(ErrorMessage = "Email shouldn't be null"),
+                EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")
+            ]
             public string Email { get; set; }
 
             [

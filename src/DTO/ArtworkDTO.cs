@@ -22,8 +22,8 @@ namespace Backend_Teamwork.src.DTO
 
             [
                 Required(ErrorMessage = "Description shouldn't be null"),
-                MinLength(10, ErrorMessage = "Description should be at at least 6 characters"),
-                MaxLength(200, ErrorMessage = "Description shouldn't be more than 30 characters")
+                MinLength(30, ErrorMessage = "Description should be at at least 30 characters"),
+                MaxLength(200, ErrorMessage = "Description shouldn't be more than 200 characters")
             ]
             public string Description { get; set; }
 
@@ -32,7 +32,9 @@ namespace Backend_Teamwork.src.DTO
 
             [Range(1.0, double.MaxValue, ErrorMessage = "Price should be greater than zero.")]
             public decimal Price { get; set; }
-            public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+            public DateTime? CreatedAt { get; set; } = DateTime.Now;
+
+            [Required(ErrorMessage = "Category Id shouldn't be null")]
             public Guid CategoryId { get; set; }
         }
 
@@ -61,8 +63,8 @@ namespace Backend_Teamwork.src.DTO
 
             [
                 Required(ErrorMessage = "Description shouldn't be null"),
-                MinLength(10, ErrorMessage = "Description should be at at least 6 characters"),
-                MaxLength(200, ErrorMessage = "Description shouldn't be more than 30 characters")
+                MinLength(30, ErrorMessage = "Description should be at at least 30 characters"),
+                MaxLength(200, ErrorMessage = "Description shouldn't be more than 200 characters")
             ]
             public string Description { get; set; }
 
