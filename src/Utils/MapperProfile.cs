@@ -37,7 +37,8 @@ namespace Backend_Teamwork.src.Utils
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
 
-            CreateMap<Order, OrderReadDto>();
+            CreateMap<Order, OrderReadDto>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User));
             CreateMap<OrderCreateDto, Order>();
             CreateMap<OrderUpdateDto, Order>()
                 .ForAllMembers(opts =>

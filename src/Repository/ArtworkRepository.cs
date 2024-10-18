@@ -32,7 +32,9 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<Artwork>> GetAllAsync(PaginationOptions paginationOptions)
         {
             // search by title
-            var artworkSearch = _artwork.Where(a => a.Title.ToLower().Contains(paginationOptions.Search.ToLower()));
+            var artworkSearch = _artwork.Where(a =>
+                a.Title.ToLower().Contains(paginationOptions.Search.ToLower())
+            );
 
             // price range
             artworkSearch = artworkSearch.Where(a =>
@@ -56,21 +58,21 @@ namespace Backend_Teamwork.src.Repository
                 _ => artworkSearch.OrderBy(a => a.Title),
             };
 
-            return await artworkSearch.Include(o => o.Category).ToListAsync();
+            return await artworkSearch.Include(o => o.Category).Include(o => o.User).ToListAsync();
         }
 
         // get artwork by id
         public async Task<Artwork?> GetByIdAsync(Guid id)
         {
-            return await _artwork.Include(a => a.Category).Include(a=>a.User).FirstOrDefaultAsync(a => a.Id == id);
+            return await _artwork
+                .Include(a => a.Category)
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<List<Artwork>> GetByArtistIdAsync(Guid id)
         {
-            return await _artwork
-                .Include(a => a.Category)
-                .Where(a => a.UserId == id)
-                .ToListAsync();
+            return await _artwork.Include(a => a.Category).Where(a => a.UserId == id).ToListAsync();
         }
 
         // delete artwork
