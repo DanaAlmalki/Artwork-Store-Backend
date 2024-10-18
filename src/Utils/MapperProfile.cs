@@ -19,6 +19,10 @@ namespace Backend_Teamwork.src.Utils
             CreateMap<User, UserReadDto>();
             CreateMap<UserCreateDto, User>();
             CreateMap<UserUpdateDto, User>()
+                .ForMember(
+                    dest => dest.Description,
+                    opt => opt.Condition(src => src.Description != null)
+                )
                 .ForAllMembers(opts =>
                     opts.Condition((src, dest, srcProperty) => srcProperty != null)
                 );
