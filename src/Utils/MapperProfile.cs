@@ -1,6 +1,5 @@
 using AutoMapper;
 using Backend_Teamwork.src.Entities;
-using Backend_Teamwork.src.Repository;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
 using static Backend_Teamwork.src.DTO.BookingDTO;
 using static Backend_Teamwork.src.DTO.CategoryDTO;

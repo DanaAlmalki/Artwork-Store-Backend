@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Backend_Teamwork.src.Entities;
 using static Backend_Teamwork.src.DTO.OrderDetailDTO;
 using static Backend_Teamwork.src.DTO.UserDTO;
 

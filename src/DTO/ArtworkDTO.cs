@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Backend_Teamwork.src.Entities;
-using Backend_Teamwork.src.Repository;
 using static Backend_Teamwork.src.DTO.UserDTO;
 
 namespace Backend_Teamwork.src.DTO
