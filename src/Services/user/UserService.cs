@@ -25,10 +25,21 @@ namespace Backend_Teamwork.src.Services.user
         }
 
         // Retrieves all users
-        public async Task<List<UserReadDto>> GetAllAsync()
+        public async Task<List<UserReadDto>> GetAllAsync(PaginationOptions paginationOptions)
         {
-            var UserList = await _userRepository.GetAllAsync();
-            if (UserList.Count == 0)
+            // Validate pagination options
+            if (paginationOptions.PageSize <= 0)
+            {
+                throw CustomException.BadRequest("PageSize should be greater than 0.");
+            }
+
+            if (paginationOptions.PageNumber <= 0)
+            {
+                throw CustomException.BadRequest("PageNumber should be greater than 0.");
+            }
+
+            var UserList = await _userRepository.GetAllAsync(paginationOptions);
+            if (!UserList.Any() || UserList == null)
             {
                 throw CustomException.NotFound($"Users not found");
             }
@@ -41,38 +52,22 @@ namespace Backend_Teamwork.src.Services.user
             return await _userRepository.GetCountAsync();
         }
 
-        // Retrieves users with pagination options
-        public async Task<List<UserReadDto>> GetUsersByPage(PaginationOptions paginationOptions)
-        {
-            if (paginationOptions == null)
-            {
-                throw CustomException.BadRequest("pagination options cannot be null.");
-            }
-            // Validate pagination options
-            if (paginationOptions.PageSize <= 0)
-            {
-                throw CustomException.BadRequest("Page Size should be greater than 0.");
-            }
-
-            if (paginationOptions.PageNumber < 0)
-            {
-                throw CustomException.BadRequest("Page Number should be 0 or greater.");
-            }
-            var UserList = await _userRepository.GetAllAsync(paginationOptions);
-
-            if (UserList.Count == 0)
-            {
-                throw CustomException.NotFound("No users found.");
-            }
-            return _mapper.Map<List<User>, List<UserReadDto>>(UserList);
-        }
-
         // Creates a new user
         public async Task<UserReadDto> CreateOneAsync(UserCreateDto createDto)
         {
             if (createDto == null)
             {
                 throw CustomException.BadRequest("User data cannot be null.");
+            }
+            if (
+                createDto
+                    .Role.ToString()
+                    .Equals(UserRole.Admin.ToString(), StringComparison.OrdinalIgnoreCase)
+            )
+            {
+                throw CustomException.UnAuthorized(
+                    "Only admin users can create other admin accounts."
+                );
             }
             // Hash password before saving to the database
             PasswordUtils.HashPassword(
@@ -94,7 +89,7 @@ namespace Backend_Teamwork.src.Services.user
 
         //-----------------------------------------------------
 
-        // Retrieves a user by their ID (Only Admin)
+        // Retrieves a user by their ID (Admin,customer,artist)
         public async Task<UserReadDto> GetByIdAsync(Guid userId)
         {
             var foundUser = await _userRepository.GetByIdAsync(userId);
@@ -104,21 +99,6 @@ namespace Backend_Teamwork.src.Services.user
             }
             return _mapper.Map<User, UserReadDto>(foundUser);
         }
-
-        // Retrieves a user by their ID
-        /*public async Task<UserReadDto> GetByIdAsync(Guid id)
-        {
-            if (id != userId)
-            {
-                throw CustomException.Forbidden("You are not authorized to view this profile.");
-            }
-            var foundUser = await _userRepository.GetByIdAsync(id);
-            if (foundUser == null)
-            {
-                throw CustomException.NotFound($"User with id: {id} not found");
-            }
-            return _mapper.Map<User, UserReadDto>(foundUser);
-        }*/
 
         //-----------------------------------------------------
 
@@ -147,12 +127,16 @@ namespace Backend_Teamwork.src.Services.user
 
         //-----------------------------------------------------
 
-        // Updates a user by their ID (Only Admin)
+        // Updates a user by their ID
         public async Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto)
         {
             if (id == Guid.Empty)
             {
                 throw CustomException.BadRequest("Invalid user ID");
+            }
+            if (updateDto == null)
+            {
+                throw CustomException.BadRequest("Update data cannot be null");
             }
 
             var foundUser = await _userRepository.GetByIdAsync(id);
@@ -164,6 +148,18 @@ namespace Backend_Teamwork.src.Services.user
             // Map the update DTO to the existing User entity
             _mapper.Map(updateDto, foundUser);
 
+            // Hash password before saving to the database if it's provided
+            if (!string.IsNullOrEmpty(updateDto.Password))
+            {
+                PasswordUtils.HashPassword(
+                    updateDto.Password,
+                    out string hashedPassword,
+                    out byte[] salt
+                );
+                foundUser.Password = hashedPassword;
+                foundUser.Salt = salt;
+            }
+
             var updatedUser = await _userRepository.UpdateOneAsync(foundUser);
 
             // Check if the update was successful
@@ -174,38 +170,6 @@ namespace Backend_Teamwork.src.Services.user
 
             return updatedUser;
         }
-
-        // Updates a user by their ID
-        /*public async Task<bool> UpdateOneAsync(Guid userId, UserUpdateDto updateDto)
-        {
-            if (id == Guid.Empty)
-            {
-                throw CustomException.BadRequest("Invalid user ID");
-            }
-            if (id != userId)
-            {
-                throw CustomException.Forbidden("You are not authorized to update this profile.");
-            }
-
-            var foundUser = await _userRepository.GetByIdAsync(userId);
-            if (foundUser == null)
-            {
-                throw CustomException.NotFound($"User with ID {userId} not found.");
-            }
-
-            // Map the update DTO to the existing User entity
-            _mapper.Map(updateDto, foundUser);
-
-            var updatedUser = await _userRepository.UpdateOneAsync(foundUser);
-
-            // Check if the update was successful
-            if (!updatedUser)
-            {
-                throw CustomException.BadRequest("Failed to update user.");
-            }
-
-            return updatedUser;
-        }*/
 
         //-----------------------------------------------------
 

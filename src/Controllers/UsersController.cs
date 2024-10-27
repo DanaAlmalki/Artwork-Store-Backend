@@ -22,14 +22,16 @@ namespace Backend_Teamwork.src.Controllers
 
         // GET: api/v1/users
         [HttpGet]
-        [Authorize(Roles = "Admin")] // Accessible by Admin
-        public async Task<ActionResult<List<UserReadDto>>> GetUsers()
+        [Authorize(Roles = "Admin")] // Only Admin
+        public async Task<ActionResult<List<UserReadDto>>> GetUsers(
+            [FromQuery] PaginationOptions paginationOptions
+        )
         {
-            var users = await _userService.GetAllAsync();
+            var users = await _userService.GetAllAsync(paginationOptions);
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<UserReadDto>> GetUserById([FromRoute] Guid id)
         {
@@ -84,8 +86,8 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(token);
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<bool>> UpdateUser(
             [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
@@ -98,7 +100,6 @@ namespace Backend_Teamwork.src.Controllers
         [HttpPut("profile")]
         [Authorize]
         public async Task<ActionResult<bool>> UpdateProfileInformation(
-            [FromRoute] Guid id,
             [FromBody] UserUpdateDto updateDto
         )
         {
@@ -108,10 +109,10 @@ namespace Backend_Teamwork.src.Controllers
             var convertedUserId = new Guid(userId);
             await _userService.UpdateOneAsync(convertedUserId, updateDto);
             return NoContent();
-        } // should ask my teammates
+        }
 
         // DELETE: api/v1/users/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<bool>> DeleteUser([FromRoute] Guid id)
         {
@@ -120,27 +121,6 @@ namespace Backend_Teamwork.src.Controllers
         }
 
         // Extra Features
-
-        // search-by-phone-number
-        [HttpGet("search-by-phone/{phoneNumber}")]
-        [Authorize(Roles = "Admin")] // Only Admin
-        public async Task<ActionResult<UserReadDto>> GetByPhone([FromRoute] string phoneNumber)
-        {
-            var user = await _userService.GetByPhoneNumberAsync(phoneNumber);
-            return Ok(user);
-        }
-
-        // GET: api/v1/users/page
-        [HttpGet("pagination")]
-        [Authorize(Roles = "Admin")] // Only Admin
-        public async Task<ActionResult<UserReadDto>> GetUsersByPage(
-            [FromQuery] PaginationOptions paginationOptions
-        )
-        {
-            var users = await _userService.GetUsersByPage(paginationOptions);
-            return Ok(users);
-        }
-
         // GET: api/v1/users/count
         [HttpGet("count")]
         [Authorize(Roles = "Admin")] // Only Admin

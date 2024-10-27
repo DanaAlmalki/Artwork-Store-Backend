@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Backend_Teamwork.src.Entities;
 using static Backend_Teamwork.src.DTO.OrderDetailDTO;
+using static Backend_Teamwork.src.DTO.UserDTO;
 
 namespace Backend_Teamwork.src.DTO
 {
@@ -28,7 +28,7 @@ namespace Backend_Teamwork.src.DTO
             public decimal TotalAmount { get; set; }
             public string? ShippingAddress { get; set; }
             public DateTime? CreatedAt { get; set; }
-            public User User { get; set; }
+            public UserReadDto User { get; set; }
             public List<OrderDetailReadDto> OrderDetails { get; set; }
         }
 
