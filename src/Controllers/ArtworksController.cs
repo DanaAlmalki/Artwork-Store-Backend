@@ -46,12 +46,19 @@ namespace Backend_Teamwork.src.Controllers
         // Get all
         // End-Point: api/v1/artworks
         [HttpGet]
-        public async Task<ActionResult<List<ArtworkReadDto>>> GetAll(
+        public async Task<ActionResult<ArtworkListDto>> GetAll(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
             var artworkList = await _artworkService.GetAllAsync(paginationOptions);
-            return Ok(artworkList);
+            var totalCount = await _artworkService.CountArtworksAsync();
+
+            var response = new ArtworkListDto {
+                Artworks = artworkList,
+                TotalCount = totalCount
+            };
+
+            return Ok(response);
         }
 
         // Get by artwork id

@@ -13,6 +13,7 @@ namespace Backend_Teamwork.src.DTO
         // create Artwork
         public class ArtworkCreateDto
         {
+            public String ImageUrl {get; set;} 
             [
                 Required(ErrorMessage = "Title shouldn't be null"),
                 MinLength(6, ErrorMessage = "Title should be at at least 6 characters"),
@@ -22,8 +23,7 @@ namespace Backend_Teamwork.src.DTO
 
             [
                 Required(ErrorMessage = "Description shouldn't be null"),
-                MinLength(10, ErrorMessage = "Description should be at at least 6 characters"),
-                MaxLength(200, ErrorMessage = "Description shouldn't be more than 30 characters")
+                MinLength(10, ErrorMessage = "Description should be at at least 6 characters")
             ]
             public string Description { get; set; }
 
@@ -40,6 +40,7 @@ namespace Backend_Teamwork.src.DTO
         public class ArtworkReadDto
         {
             public Guid Id { get; set; }
+            public String ImageUrl {get; set;}
             public string Title { get; set; }
             public string Description { get; set; }
             public int Quantity { get; set; }
@@ -52,6 +53,7 @@ namespace Backend_Teamwork.src.DTO
         // update
         public class ArtworkUpdateDTO
         {
+            public String ImageUrl {get; set;} 
             [
                 Required(ErrorMessage = "Title shouldn't be null"),
                 MinLength(6, ErrorMessage = "Title should be at at least 6 characters"),
@@ -61,8 +63,7 @@ namespace Backend_Teamwork.src.DTO
 
             [
                 Required(ErrorMessage = "Description shouldn't be null"),
-                MinLength(10, ErrorMessage = "Description should be at at least 6 characters"),
-                MaxLength(200, ErrorMessage = "Description shouldn't be more than 30 characters")
+                MinLength(10, ErrorMessage = "Description should be at at least 6 characters")
             ]
             public string Description { get; set; }
 
@@ -71,6 +72,11 @@ namespace Backend_Teamwork.src.DTO
 
             [Range(1.0, double.MaxValue, ErrorMessage = "Price should be greater than zero.")]
             public decimal Price { get; set; }
+        }
+
+        public class ArtworkListDto {
+            public List<ArtworkReadDto> Artworks {get; set;}
+            public int TotalCount {get; set;}
         }
     }
 }

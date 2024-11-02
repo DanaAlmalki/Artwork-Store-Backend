@@ -15,8 +15,7 @@ namespace Backend_Teamwork.src.Entities
 
         [
             Required(ErrorMessage = "Description shouldn't be null"),
-            MinLength(10, ErrorMessage = "Description should be at at least 6 characters"),
-            MaxLength(200, ErrorMessage = "Description shouldn't be more than 30 characters")
+            MinLength(10, ErrorMessage = "Description should be at at least 6 characters")
         ]
         public required string Description { get; set; }
 
@@ -33,5 +32,6 @@ namespace Backend_Teamwork.src.Entities
 
         // OrderDetails
         public List<OrderDetails>? OrderDetails { get; set; }
+        public String? ImageUrl {get; set;}
     }
 }

@@ -59,6 +59,10 @@ namespace Backend_Teamwork.src.Repository
             return await artworkSearch.Include(o => o.Category).ToListAsync();
         }
 
+        public async Task<int> CountAsync(){
+            return await _databaseContext.Set<Artwork>().CountAsync();
+        }
+
         // get artwork by id
         public async Task<Artwork?> GetByIdAsync(Guid id)
         {

@@ -46,6 +46,20 @@ builder.Services.AddScoped<IBookingService, BookingService>().AddScoped<BookingR
 
 //builder.Services.AddScoped<IPaymentService, IPaymentService>().AddScoped<PaymentRepository>();
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000")
+                                              .AllowAnyHeader()
+                                                  .AllowAnyMethod()
+                                                  .SetIsOriginAllowed((host) => true).AllowCredentials();
+                      });
+});
+
 
 //add logic for authentication
 builder
@@ -112,6 +126,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 //use middleware
 app.UseMiddleware<ErrorHandlerMiddleware>();
