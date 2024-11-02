@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+
 
 namespace Backend_Teamwork.src.Entities
 {
@@ -25,16 +21,23 @@ namespace Backend_Teamwork.src.Entities
         )]*/
         public string PhoneNumber { get; set; }
 
-        [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
+        [
+            Required(ErrorMessage = "Email shouldn't be null"),
+            EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")
+        ]
         public string Email { get; set; }
 
         [
-            Required(ErrorMessage = "Password shouldn't be null"),
-            MinLength(8, ErrorMessage = "Password should be at at least 8 characters"),
+            Required(ErrorMessage = "Password shouldn't be null."),
+            MinLength(8, ErrorMessage = "Password should be at at least 8 characters")
         ]
         public string Password { get; set; }
         public string? Description { set; get; }
+
+        [Required(ErrorMessage = "Salt shouldn't be null")]
         public byte[]? Salt { get; set; }
+
+        [Required(ErrorMessage = "Role shouldn't be null")]
         public UserRole Role { get; set; } = UserRole.Customer;
 
         [JsonConverter(typeof(JsonStringEnumConverter))]

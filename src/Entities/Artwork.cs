@@ -25,8 +25,12 @@ namespace Backend_Teamwork.src.Entities
         [Range(1.0, double.MaxValue, ErrorMessage = "Price should be greater than zero.")]
         public decimal Price { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        [Required(ErrorMessage = "User Id shouldn't be null")]
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
+
+        [Required(ErrorMessage = "Category Id shouldn't be null")]
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = null!;
 

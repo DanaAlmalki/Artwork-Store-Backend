@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Backend_Teamwork.src.Database;
 using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Middleware;
@@ -7,13 +8,11 @@ using Backend_Teamwork.src.Services.artwork;
 using Backend_Teamwork.src.Services.booking;
 using Backend_Teamwork.src.Services.category;
 using Backend_Teamwork.src.Services.order;
-using Backend_Teamwork.src.Services.payment;
 using Backend_Teamwork.src.Services.user;
 using Backend_Teamwork.src.Services.workshop;
 using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using static Backend_Teamwork.src.Entities.User;
@@ -94,6 +93,9 @@ builder.Services.AddAuthorization(options =>
 //add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 //add swagger
 builder.Services.AddSwaggerGen();
@@ -104,6 +106,8 @@ app.MapGet("/", () => "Server is running");
 
 //Convert to Timestamp format
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+//
 
 //test database connection
 using (var scope = app.Services.CreateScope())

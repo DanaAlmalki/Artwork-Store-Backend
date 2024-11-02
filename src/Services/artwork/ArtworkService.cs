@@ -3,7 +3,6 @@ using Backend_Teamwork.src.Entities;
 using Backend_Teamwork.src.Repository;
 using Backend_Teamwork.src.Utils;
 using static Backend_Teamwork.src.DTO.ArtworkDTO;
-using static Backend_Teamwork.src.DTO.UserDTO;
 using static Backend_Teamwork.src.Entities.User;
 
 namespace Backend_Teamwork.src.Services.artwork

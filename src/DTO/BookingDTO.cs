@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Backend_Teamwork.src.Entities;
 
 namespace Backend_Teamwork.src.DTO
@@ -10,6 +7,7 @@ namespace Backend_Teamwork.src.DTO
     {
         public class BookingCreateDto
         {
+            [Required(ErrorMessage = "Workshop Id shouldn't be null"),]
             public Guid WorkshopId { get; set; }
             public DateTime? CreatedAt { get; set; } = DateTime.Now;
         }
