@@ -16,17 +16,8 @@ namespace Backend_Teamwork.src.DTO
             ]
             public string Name { get; set; }
 
-            /*[RegularExpression(
-                @"^\+966[5][0-9]{8}$",
-                ErrorMessage = "Phone number should be a valid Saudi phone number"
-            )]*/
-            public string? PhoneNumber { get; set; }
             [
                 Required(ErrorMessage = "Phone number shouldn't be null"),
-                RegularExpression(
-                    @"^\+966[5][0-9]{8}$",
-                    ErrorMessage = "Phone number should be a valid Saudi phone number"
-                )
             ]
             public string PhoneNumber { get; set; }
 
@@ -84,10 +75,6 @@ namespace Backend_Teamwork.src.DTO
             ]
             public string? Name { get; set; }
 
-            [RegularExpression(
-                @"^\+966[5][0-9]{8}$",
-                ErrorMessage = "Phone number should be a valid Saudi phone number"
-            )]
             public string? PhoneNumber { get; set; }
 
             [EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")]
