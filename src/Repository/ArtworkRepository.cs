@@ -10,6 +10,8 @@ namespace Backend_Teamwork.src.Repository
         private readonly DbSet<Artwork> _artwork;
         private readonly DatabaseContext _databaseContext; // for dependency injection
 
+        private int ArtworkLength;
+
         // Dependency Injection
         public ArtworkRepository(DatabaseContext databaseContext)
         {
@@ -41,6 +43,9 @@ namespace Backend_Teamwork.src.Repository
                 a.Price >= paginationOptions.LowPrice && a.Price <= paginationOptions.HighPrice
             );
 
+            // count length after filtering but before pagination
+            ArtworkLength = artworkSearch.Count();    
+
             // sort
             artworkSearch = paginationOptions.SortOrder switch
             {
@@ -61,8 +66,9 @@ namespace Backend_Teamwork.src.Repository
             return await artworkSearch.Include(o => o.Category).Include(o => o.User).ToListAsync();
         }
 
-        public async Task<int> CountAsync(){
-            return await _databaseContext.Set<Artwork>().CountAsync();
+        public int Count(){
+            return ArtworkLength;
+            //return await _databaseContext.Set<Artwork>().CountAsync();
         }
 
         // get artwork by id

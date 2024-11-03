@@ -51,7 +51,7 @@ namespace Backend_Teamwork.src.Controllers
         )
         {
             var artworkList = await _artworkService.GetAllAsync(paginationOptions);
-            var totalCount = await _artworkService.CountArtworksAsync();
+            var totalCount = _artworkService.CountArtworks();
 
             var response = new ArtworkListDto {
                 Artworks = artworkList,

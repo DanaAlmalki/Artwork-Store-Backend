@@ -7,7 +7,7 @@ namespace Backend_Teamwork.src.Services.artwork
     {
         Task<ArtworkReadDto> CreateOneAsync(Guid userId, ArtworkCreateDto artwork);
         Task<List<ArtworkReadDto>> GetAllAsync(PaginationOptions paginationOptions);
-        Task<int> CountArtworksAsync();
+        int CountArtworks();
         Task<ArtworkReadDto> GetByIdAsync(Guid id);
         Task<List<ArtworkReadDto>> GetByArtistIdAsync(Guid id);
         Task<bool> DeleteOneAsync(Guid id);
