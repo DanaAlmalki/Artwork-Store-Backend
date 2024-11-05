@@ -55,7 +55,7 @@ namespace Backend_Teamwork.src.Repository
                 "price" => artworkSearch.OrderBy(a => a.Price),
                 "price_desc" => artworkSearch.OrderByDescending(a => a.Price),
                 // name ascending
-                _ => artworkSearch.OrderBy(a => a.Title),
+                "name" => artworkSearch.OrderBy(a => a.Title),
             };
 
             // pagination
