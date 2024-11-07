@@ -19,6 +19,9 @@ using static Backend_Teamwork.src.Entities.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
+builder.Services.AddControllersWithViews();
+
 //connect to database
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("Local")

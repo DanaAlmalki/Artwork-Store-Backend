@@ -188,23 +188,6 @@ namespace Backend_Teamwork.src.Services.user
             return _mapper.Map<User, UserReadDto>(user);
         }
 
-        // Retrieves a user by their phone number
-        public async Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(phoneNumber))
-            {
-                throw CustomException.BadRequest("Phone Number is required");
-            }
-
-            var user = await _userRepository.GetByPhoneNumberAsync(phoneNumber);
-            if (user == null)
-            {
-                throw CustomException.NotFound("User not found.");
-            }
-            return _mapper.Map<User, UserReadDto>(user);
-            ;
-        }
-
         // Signs in a user with their credentials
         public async Task<string> SignInAsync(UserSigninDto signinDto)
         {

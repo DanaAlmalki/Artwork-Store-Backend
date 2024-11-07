@@ -24,7 +24,7 @@ namespace Backend_Teamwork.src.Database
             modelBuilder.HasPostgresEnum<UserRole>();
             modelBuilder.HasPostgresEnum<Status>();
 
-            modelBuilder.Entity<User>().HasIndex(x => x.PhoneNumber).IsUnique();
+            //modelBuilder.Entity<User>().HasIndex(x => x.PhoneNumber).IsUnique();
             modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
 
             modelBuilder
@@ -34,7 +34,7 @@ namespace Backend_Teamwork.src.Database
                     {
                         Id = Guid.NewGuid(),
                         Name = "Abeer",
-                        PhoneNumber = "0563034770",
+                        //PhoneNumber = "0563034770",
                         Email = "abeer@gmail.com",
                         Password = PasswordUtils.HashPassword(
                             "123",

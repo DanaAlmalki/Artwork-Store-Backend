@@ -19,11 +19,7 @@ namespace Backend_Teamwork.src.Repository
         public async Task<List<User>> GetAllAsync(PaginationOptions paginationOptions)
         {
             // Combined search logic with OR for name, email, or phone number
-            var userQuery = _user.Where(a =>
-                a.Name.ToLower().Contains(paginationOptions.Search.ToLower())
-                || a.Email.ToLower().Contains(paginationOptions.Search.ToLower())
-                || a.PhoneNumber.Contains(paginationOptions.Search) // if u try this the dont put the number with +, it does not work
-            // I think I need to add the country code in the front-end part for the phone number search.
+            var userQuery = _user.Where(a => a.Email.ToLower().Contains(paginationOptions.Search.ToLower())
             );
 
             // Apply pagination
@@ -81,11 +77,6 @@ namespace Backend_Teamwork.src.Repository
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _user.FirstOrDefaultAsync(c => c.Email == email);
-        }
-
-        public async Task<User?> GetByPhoneNumberAsync(string phoneNumber)
-        {
-            return await _user.FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
         public async Task<User?> GetByNameAsync(string name)

@@ -86,7 +86,7 @@ namespace Backend_Teamwork.src.Controllers
             return Ok(token);
         }
 
-        [HttpPut("{id:guid}")]
+        /*[HttpPut("{id:guid}")]
         [Authorize(Roles = "Admin")] // Only Admin
         public async Task<ActionResult<bool>> UpdateUser(
             [FromRoute] Guid id,
@@ -96,6 +96,7 @@ namespace Backend_Teamwork.src.Controllers
             await _userService.UpdateOneAsync(id, updateDto);
             return NoContent();
         } // should ask my teammates
+        */
 
         [HttpPut("profile")]
         [Authorize]

@@ -24,7 +24,6 @@ namespace Backend_Teamwork.src.Services.user
         Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
-        Task<UserReadDto> GetByPhoneNumberAsync(string phoneNumber);
         Task<int> GetTotalUsersCountAsync();
 
         Task<string> SignInAsync(UserSigninDto createDto);

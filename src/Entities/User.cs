@@ -9,29 +9,22 @@ namespace Backend_Teamwork.src.Entities
         public Guid Id { get; set; }
 
         [
-            Required(ErrorMessage = "Name shouldn't be null"),
-            MinLength(2, ErrorMessage = "Name should be at at least 2 characters"),
-            MaxLength(10, ErrorMessage = "Name shouldn't be more than 10 characters")
+            MaxLength(30, ErrorMessage = "Name shouldn't be more than 30 characters")
         ]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        /*[RegularExpression(
-            @"^\+966[5][0-9]{8}$",
-            ErrorMessage = "Phone number should be a valid Saudi phone number"
-        )]*/
-        public string PhoneNumber { get; set; }
 
         [
             Required(ErrorMessage = "Email shouldn't be null"),
             EmailAddress(ErrorMessage = "Email should be with right format: @gmail.com")
         ]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [
             Required(ErrorMessage = "Password shouldn't be null."),
             MinLength(8, ErrorMessage = "Password should be at at least 8 characters")
         ]
-        public string Password { get; set; }
+        public required string Password { get; set; }
         public string? Description { set; get; }
 
         [Required(ErrorMessage = "Salt shouldn't be null")]
