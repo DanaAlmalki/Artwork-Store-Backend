@@ -21,7 +21,7 @@ namespace Backend_Teamwork.src.Services.user
         Task<bool> DeleteOneAsync(Guid id);
 
         //Task<bool> UpdateOneByIdAsync(Guid userId, UserUpdateDto updateDto);
-        Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
+        Task<UserReadDto> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
         Task<int> GetTotalUsersCountAsync();

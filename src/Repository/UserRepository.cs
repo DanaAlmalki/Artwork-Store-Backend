@@ -65,13 +65,13 @@ namespace Backend_Teamwork.src.Repository
             return true;
         }
 
-        public async Task<bool> UpdateOneAsync(User updateUser)
+        public async Task<User> UpdateOneAsync(User updateUser)
         {
-            if (updateUser == null)
-                return false;
+            //if (updateUser == null)
+            //    return false;
             _user.Update(updateUser);
             await _databaseContext.SaveChangesAsync();
-            return true;
+            return updateUser;
         }
 
         public async Task<User?> GetByEmailAsync(string email)

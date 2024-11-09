@@ -108,8 +108,8 @@ namespace Backend_Teamwork.src.Controllers
             var authClaims = HttpContext.User;
             var userId = authClaims.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
             var convertedUserId = new Guid(userId);
-            await _userService.UpdateOneAsync(convertedUserId, updateDto);
-            return NoContent();
+            var updatedUser = await _userService.UpdateOneAsync(convertedUserId, updateDto);
+            return Ok(updatedUser);
         }
 
         // DELETE: api/v1/users/{id}

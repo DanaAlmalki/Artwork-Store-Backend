@@ -128,7 +128,7 @@ namespace Backend_Teamwork.src.Services.user
         //-----------------------------------------------------
 
         // Updates a user by their ID
-        public async Task<bool> UpdateOneAsync(Guid id, UserUpdateDto updateDto)
+        public async Task<UserReadDto> UpdateOneAsync(Guid id, UserUpdateDto updateDto)
         {
             if (id == Guid.Empty)
             {
@@ -163,12 +163,12 @@ namespace Backend_Teamwork.src.Services.user
             var updatedUser = await _userRepository.UpdateOneAsync(foundUser);
 
             // Check if the update was successful
-            if (!updatedUser)
+            if (updatedUser==null)
             {
                 throw CustomException.BadRequest("Failed to update user.");
             }
 
-            return updatedUser;
+            return _mapper.Map<User, UserReadDto>(updatedUser);
         }
 
         //-----------------------------------------------------
@@ -211,7 +211,7 @@ namespace Backend_Teamwork.src.Services.user
 
             if (!isMatched)
             {
-                throw CustomException.UnAuthorized($"Unauthorized access.");
+                throw CustomException.UnAuthorized($"Password is incorrect.");
             }
 
             var TokenUtil = new TokenUtils(_configuration);
