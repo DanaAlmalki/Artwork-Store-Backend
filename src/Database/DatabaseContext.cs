@@ -37,7 +37,7 @@ namespace Backend_Teamwork.src.Database
                         //PhoneNumber = "0563034770",
                         Email = "abeer@gmail.com",
                         Password = PasswordUtils.HashPassword(
-                            "123",
+                            "12345678",
                             out string hashedPassword,
                             out byte[] salt
                         ),

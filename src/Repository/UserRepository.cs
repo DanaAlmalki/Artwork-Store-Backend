@@ -9,6 +9,7 @@ namespace Backend_Teamwork.src.Repository
     {
         private readonly DbSet<User> _user;
         private readonly DatabaseContext _databaseContext;
+        private int UserLength;
 
         public UserRepository(DatabaseContext databaseContext)
         {
@@ -22,10 +23,7 @@ namespace Backend_Teamwork.src.Repository
             var userQuery = _user.Where(a => a.Email.ToLower().Contains(paginationOptions.Search.ToLower())
             );
 
-            // Apply pagination
-            userQuery = userQuery
-                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
-                .Take(paginationOptions.PageSize);
+            UserLength = userQuery.Count();
 
             // Sorting logic
             userQuery = paginationOptions.SortOrder switch
@@ -33,10 +31,20 @@ namespace Backend_Teamwork.src.Repository
                 "name_desc" => userQuery.OrderByDescending(a => a.Name),
                 "email_desc" => userQuery.OrderByDescending(a => a.Email),
                 "email_asc" => userQuery.OrderBy(a => a.Email),
-                _ => userQuery.OrderBy(a => a.Name), // Default to ascending by name
+                "name" => userQuery.OrderBy(a => a.Name), // Default to ascending by name
             };
 
+            // Apply pagination
+            userQuery = userQuery
+                .Skip((paginationOptions.PageNumber - 1) * paginationOptions.PageSize)
+                .Take(paginationOptions.PageSize);
+
             return await userQuery.ToListAsync();
+        }
+
+        public int Count(){
+            return UserLength;
+            //return await _databaseContext.Set<Artwork>().CountAsync();
         }
 
         public async Task<int> GetCountAsync()

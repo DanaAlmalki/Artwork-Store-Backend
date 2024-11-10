@@ -47,9 +47,8 @@ namespace Backend_Teamwork.src.Services.user
         }
 
         // Gets the total count of users
-        public async Task<int> GetTotalUsersCountAsync()
-        {
-            return await _userRepository.GetCountAsync();
+        public int CountUsers(){
+            return _userRepository.Count();
         }
 
         // Creates a new user

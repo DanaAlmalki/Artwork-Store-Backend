@@ -8,6 +8,8 @@ namespace Backend_Teamwork.src.Services.user
         // Get all
         Task<List<UserReadDto>> GetAllAsync(PaginationOptions paginationOptions);
 
+        int CountUsers();
+
         // Task<List<UserReadDto>> GetUsersByPage(PaginationOptions paginationOptions);
 
         // create
@@ -24,8 +26,7 @@ namespace Backend_Teamwork.src.Services.user
         Task<UserReadDto> UpdateOneAsync(Guid id, UserUpdateDto updateDto);
 
         Task<UserReadDto> GetByEmailAsync(string email);
-        Task<int> GetTotalUsersCountAsync();
-
+        
         Task<string> SignInAsync(UserSigninDto createDto);
     }
 }

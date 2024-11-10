@@ -76,5 +76,10 @@ namespace Backend_Teamwork.src.DTO
             [MinLength(2, ErrorMessage = "Description should be at at least 2 characters")]
             public string? Description { get; set; }
         }
+
+        public class UserListDto {
+            public List<UserReadDto> Users {get; set;}
+            public int TotalCount {get; set;}
+        }
     }
 }

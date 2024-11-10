@@ -9,7 +9,7 @@ namespace Backend_Teamwork.src.DTO
         // create Artwork
         public class ArtworkCreateDto
         {
-            public String ImageUrl {get; set;} 
+            public string ImageUrl {get; set;} 
             [
                 Required(ErrorMessage = "Title shouldn't be null"),
                 MinLength(6, ErrorMessage = "Title should be at at least 6 characters"),
@@ -51,7 +51,7 @@ namespace Backend_Teamwork.src.DTO
         // update
         public class ArtworkUpdateDTO
         {
-            public String ImageUrl {get; set;} 
+            public string ImageUrl {get; set;} 
             [
                 Required(ErrorMessage = "Title shouldn't be null"),
                 MinLength(6, ErrorMessage = "Title should be at at least 6 characters"),

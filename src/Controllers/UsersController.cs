@@ -23,12 +23,19 @@ namespace Backend_Teamwork.src.Controllers
         // GET: api/v1/users
         [HttpGet]
         [Authorize(Roles = "Admin")] // Only Admin
-        public async Task<ActionResult<List<UserReadDto>>> GetUsers(
+        public async Task<ActionResult<List<UserListDto>>> GetUsers(
             [FromQuery] PaginationOptions paginationOptions
         )
         {
             var users = await _userService.GetAllAsync(paginationOptions);
-            return Ok(users);
+            var totalCount = _userService.CountUsers();
+
+            var response = new UserListDto {
+                Users = users,
+                TotalCount = totalCount
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{id:guid}")]
@@ -121,6 +128,7 @@ namespace Backend_Teamwork.src.Controllers
             return NoContent();
         }
 
+        /*
         // Extra Features
         // GET: api/v1/users/count
         [HttpGet("count")]
@@ -129,6 +137,6 @@ namespace Backend_Teamwork.src.Controllers
         {
             var count = await _userService.GetTotalUsersCountAsync();
             return Ok(count);
-        }
+        }*/
     }
 }
