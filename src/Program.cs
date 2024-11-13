@@ -13,14 +13,12 @@ using Backend_Teamwork.src.Services.workshop;
 using Backend_Teamwork.src.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using static Backend_Teamwork.src.Entities.User;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container
-builder.Services.AddControllersWithViews();
 
 //connect to database
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
@@ -29,10 +27,13 @@ var dataSourceBuilder = new NpgsqlDataSourceBuilder(
 dataSourceBuilder.MapEnum<UserRole>();
 dataSourceBuilder.MapEnum<Status>();
 
+builder.Services.AddSingleton(dataSourceBuilder);
+
 //add database connection
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseNpgsql(dataSourceBuilder.Build());
+    options.ConfigureWarnings(x => x.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning));
 });
 
 //add auto-mapper
@@ -91,6 +92,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
+    options.AddPolicy("ArtistOnly", policy => policy.RequireRole("Artist"));
 });
 
 //add controllers
