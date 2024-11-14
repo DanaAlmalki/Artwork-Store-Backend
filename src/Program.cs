@@ -53,16 +53,19 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000")
-                                              .AllowAnyHeader()
-                                                  .AllowAnyMethod()
-                                                  .SetIsOriginAllowed((host) => true).AllowCredentials();
-                      });
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000", "https://artwork-store-frontend.onrender.com")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed((host) => true)
+                .AllowCredentials();
+        }
+    );
 });
-
 
 //add logic for authentication
 builder
